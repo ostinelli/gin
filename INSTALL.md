@@ -4,12 +4,12 @@
 
 ### MacOS
 
- * Install Perl Compatible Regular Expressions & LuaJIT:
+##### Install Perl Compatible Regular Expressions & LuaJIT:
 ```
 $ brew install pcre luajit
 ````
 
- * Download & install OpenResty
+##### Download & install OpenResty
 ```
 $ wget http://openresty.org/download/ngx_openresty-VERSION.tar.gz
 $ tar zxvf ngx_openresty-VERSION.tar.gz
@@ -20,4 +20,10 @@ $ ./configure \
 	--with-luajit
 $ make
 $ make install
+```
+
+##### Configure the PATH
+Assuming you have installed OpenResty into `/usr/local/openresty` (this is the default), we make our nginx executable of our OpenResty installation available in our PATH environment, adding at the end of `~/.bash_profile`:
+```
+export PATH=/usr/local/openresty/nginx/sbin:$PATH
 ```
