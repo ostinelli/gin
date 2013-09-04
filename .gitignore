@@ -1,3 +1,5 @@
+logs
+
 # vim
 .*.sw[a-z]
 *.un~
