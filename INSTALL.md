@@ -27,3 +27,13 @@ Assuming you have installed OpenResty into `/usr/local/openresty` (this is the d
 ```
 export PATH=/usr/local/openresty/nginx/sbin:$PATH
 ```
+
+##### Install Lua & Luarocks (Lua package manager)
+```
+$ brew install lua luarocks
+```
+
+##### Install test framework
+```
+luarocks install busted
+```
