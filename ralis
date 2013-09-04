@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+HELP = "RALIS 0.1, a RESTful API web framework.
+Usage: ralis COMMAND [ARGS]
+
+The most common ralis commands are:
+ start       Starts the Ralis server
+ stop        Stops the Ralis server
+
+"
+
+class AppLauncher
+	def self.start
+		output = `nginx -p \`pwd\`/ -c conf/nginx.conf`
+		raise output unless $? == 0
+		puts "App was succesfully started."
+	end
+
+	def self.stop
+		output = `nginx -s stop -p \`pwd\`/ -c conf/nginx.conf`
+		raise output unless $? == 0
+		puts "App was succesfully stopped."
+	end
+end
+
+
+case ARGV.first
+when 'start' then AppLauncher.start
+when 'stop' then AppLauncher.stop
+else puts HELP
+end
