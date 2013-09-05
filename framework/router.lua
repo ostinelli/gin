@@ -1,0 +1,37 @@
+local _M = {}
+
+function _M.handler(ngx)
+	ngx.header.content_type = 'application/json'
+
+	ngx.say('Hello!')
+
+	-- if ngx.var.uri == '/json' then
+	-- 	local resp = {message = "Hello, World!"}
+	-- 	ngx.print( encode(resp) )
+	-- elseif ngx.var.uri == '/db' then
+
+	-- 	local mysqlconn = {
+	-- 		host = "DBHOSTNAME",
+	-- 		port = 3306,
+	-- 		database = "hello_world",
+	-- 		user = "benchmarkdbuser",
+	-- 		password = "benchmarkdbpass"
+	-- 	}
+
+	-- 	local db, err = mysql:new()
+	-- 	local ok, err = db:connect(mysqlconn)
+	-- 	local num_queries = tonumber(ngx.var.arg_queries) or 1
+	-- 	local worlds = {}
+	-- 	for i=1, num_queries do
+	-- 		local wid = random(1, 10000)
+	-- 		insert(worlds, db:query('SELECT * FROM World WHERE id = '..wid)[1])
+	-- 	end
+	-- 	ngx.print( encode(worlds) )
+	-- 	local ok, err = db:set_keepalive(0, 256)
+	-- elseif ngx.var.uri == '/plaintext' then
+	-- 	ngx.header.content_type = 'text/plain'
+	-- 	ngx.print('Hello, World!')
+	-- end
+end
+
+return _M
