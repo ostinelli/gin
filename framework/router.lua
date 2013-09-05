@@ -1,9 +1,12 @@
-local _M = {}
+package.path = './app/controllers/?.lua;' .. package.path
 
-function _M.handler(ngx)
+local M = {}
+
+function M.handler(ngx)
 	ngx.header.content_type = 'application/json'
 
-	ngx.say('Hello!')
+	local controller = require 'users_controller'
+	controller.index(ngx)
 
 	-- if ngx.var.uri == '/json' then
 	-- 	local resp = {message = "Hello, World!"}
@@ -34,4 +37,8 @@ function _M.handler(ngx)
 	-- end
 end
 
-return _M
+function M.dispatcher(ngx)
+
+end
+
+return M
