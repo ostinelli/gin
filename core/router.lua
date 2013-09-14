@@ -13,7 +13,7 @@ end
 
 function Router.build_routes(ngx)
 	local routes = require('app/routes')
-	return routes.dispatchers()
+	return routes.dispatchers
 end
 
 return Router

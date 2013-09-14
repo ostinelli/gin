@@ -1,1 +1,1 @@
-package.path = './app/?.lua;./framework/?.lua;' .. package.path
+package.path = './?.lua;' .. package.path
