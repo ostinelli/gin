@@ -1,11 +1,7 @@
-local M = {}
+local routes = require('core/routes')
 
-function M.routes(ngx)
-	M.get("/users", { controller = "users", action = "index" })
-end
+-- define routes
+routes.get("/users", { controller = "users", action = "index" })
+routes.get("/users/:id", { controller = "users", action = "show" })
 
-function M.get(pattern, route_info)
-	return 'ok'
-end
-
-return M
+return routes
