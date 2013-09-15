@@ -15,28 +15,47 @@ describe("Routes", function()
 			routes.add('GET', "/users", { controller = "users", action = "index" })
 
 			assert.are.same({
-				["^/users/?\\??$"] = {
-					GET = { controller = "users", action = "index", params = {} }
+				[1] = {
+					pattern = "^/users/?\\??$",
+					GET = { controller = "users_controller", action = "index", params = {} }
 				}
 			}, routes.dispatchers)
 		end)
 
 		it("adds a named parameter route", function()
-			routes.add('POST', "/users/:id", { controller = "users", action = "show" })
+			routes.add('GET', "/users/:id", { controller = "users", action = "show" })
 
 			assert.are.same({
-				["^/users/([^/]+)/?\\??$"] = {
-					POST = { controller = "users", action = "show", params = { id = nil } }
+				[1] = {
+					pattern = "^/users/([^/]+)/?\\??$",
+					GET = { controller = "users_controller", action = "show", params = { id = nil } }
 				}
 			}, routes.dispatchers)
 		end)
 
-		it("adds multiple named parameter routes", function()
-			routes.add('POST', "/users/:user_id/messages/:id", { controller = "messages", action = "show" })
+		it("adds routes with multiple named parameters", function()
+			routes.add('GET', "/users/:user_id/messages/:id", { controller = "messages", action = "show" })
 
 			assert.are.same({
-				["^/users/([^/]+)/messages/([^/]+)/?\\??$"] = {
-					POST = { controller = "messages", action = "show", params = { user_id = nil, id = nil } }
+				[1] = {
+					pattern = "^/users/([^/]+)/messages/([^/]+)/?\\??$",
+					GET = { controller = "messages_controller", action = "show", params = { user_id = nil, id = nil } }
+				}
+			}, routes.dispatchers)
+		end)
+
+		it("add multiple routes", function()
+			routes.add('GET', "/users", { controller = "users", action = "index" })
+			routes.add('POST', "/users", { controller = "users", action = "create" })
+
+			assert.are.same({
+				[1] = {
+					pattern = "^/users/?\\??$",
+					GET = { controller = "users_controller", action = "index", params = {} }
+				},
+				[2] = {
+					pattern = "^/users/?\\??$",
+					POST = { controller = "users_controller", action = "create", params = {} }
 				}
 			}, routes.dispatchers)
 		end)
@@ -45,8 +64,9 @@ describe("Routes", function()
 			routes.add('PUT', "/users/:(.*)", { controller = "messages", action = "show" })
 
 			assert.are.same({
-				["^/users/:(.*)/?\\??$"] = {
-					PUT = { controller = "messages", action = "show", params = {} }
+				[1] = {
+					pattern = "^/users/:(.*)/?\\??$",
+					PUT = { controller = "messages_controller", action = "show", params = {} }
 				}
 			}, routes.dispatchers)
 		end)

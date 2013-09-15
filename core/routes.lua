@@ -26,17 +26,16 @@ meta = {
 }
 setmetatable(Routes, meta)
 
+
 function Routes.add(method, pattern, route_info)
 	pattern, params = Routes.build_named_parameters(pattern)
 
 	pattern = "^" .. pattern .. "/?\\??$"
 
-	if Routes.dispatchers[pattern] == nil then
-		Routes.dispatchers[pattern] = {}
-	end
+	route_info.controller = route_info.controller .. "_controller"
+	route_info.params = params
 
-	Routes.dispatchers[pattern][method] = route_info
-	Routes.dispatchers[pattern][method].params = params
+	table.insert(Routes.dispatchers, { pattern = pattern, [method] = route_info })
 end
 
 function Routes.build_named_parameters(pattern)
