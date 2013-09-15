@@ -1,27 +1,32 @@
 local Routes = {}
 Routes.dispatchers = {}
 
--- format of dispatchers:
--- {
--- 	"$/users^": {
--- 		regex = regex,
--- 		GET = { controller = "users", action = "index", params = {} }
--- 	},
--- 	...
--- }
 
 function Routes.get(pattern, route_info)
 	Routes.dispatchers[pattern] = route_info
 end
 
 function Routes.add(method, pattern, route_info)
-	pattern = "$" .. pattern .. "^"
+	pattern, params = Routes.build_named_parameters(pattern)
+
+	pattern = "^" .. pattern .. "/?\\??$"
 
 	if Routes.dispatchers[pattern] == nil then
-		Routes.dispatchers[pattern] = { regex = nil }
+		Routes.dispatchers[pattern] = {}
 	end
 
-	Routes.dispatchers[pattern][method] = {controller = "users", action = "index", params = {} }
+	Routes.dispatchers[pattern][method] = route_info
+	Routes.dispatchers[pattern][method].params = params
 end
+
+function Routes.build_named_parameters(pattern)
+	params = {}
+	new_pattern = string.gsub(pattern, "/:([A-Za-z_]+)", function(m)
+		params[m] = nil
+		return "/([^/]+)"
+	end)
+	return new_pattern, params
+end
+
 
 return Routes
