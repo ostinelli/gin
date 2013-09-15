@@ -1,6 +1,6 @@
 local M = {}
 
-function M.index(ngx)
+function M.index(ngx, params)
 	ngx.say('Hello Users!')
 end
 
