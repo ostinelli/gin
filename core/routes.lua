@@ -30,7 +30,7 @@ setmetatable(Routes, meta)
 function Routes.add(method, pattern, route_info)
 	pattern, params = Routes.build_named_parameters(pattern)
 
-	pattern = "^" .. pattern .. "/?\\??$"
+	pattern = "^" .. pattern .. "/???$"
 
 	route_info.controller = route_info.controller .. "_controller"
 	route_info.params = params
@@ -40,9 +40,9 @@ end
 
 function Routes.build_named_parameters(pattern)
 	params = {}
-	new_pattern = string.gsub(pattern, "/:([A-Za-z_]+)", function(m)
-		params[m] = nil
-		return "/([^/]+)"
+	new_pattern = string.gsub(pattern, "/:([A-Za-z0-9_]+)", function(m)
+		table.insert(params, m)
+		return "/([A-Za-z0-9_]+)"
 	end)
 	return new_pattern, params
 end

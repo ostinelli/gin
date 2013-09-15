@@ -16,7 +16,7 @@ describe("Routes", function()
 
 			assert.are.same({
 				[1] = {
-					pattern = "^/users/?\\??$",
+					pattern = "^/users/???$",
 					GET = { controller = "users_controller", action = "index", params = {} }
 				}
 			}, routes.dispatchers)
@@ -27,8 +27,8 @@ describe("Routes", function()
 
 			assert.are.same({
 				[1] = {
-					pattern = "^/users/([^/]+)/?\\??$",
-					GET = { controller = "users_controller", action = "show", params = { id = nil } }
+					pattern = "^/users/([A-Za-z0-9_]+)/???$",
+					GET = { controller = "users_controller", action = "show", params = { [1] = "id" } }
 				}
 			}, routes.dispatchers)
 		end)
@@ -38,8 +38,8 @@ describe("Routes", function()
 
 			assert.are.same({
 				[1] = {
-					pattern = "^/users/([^/]+)/messages/([^/]+)/?\\??$",
-					GET = { controller = "messages_controller", action = "show", params = { user_id = nil, id = nil } }
+					pattern = "^/users/([A-Za-z0-9_]+)/messages/([A-Za-z0-9_]+)/???$",
+					GET = { controller = "messages_controller", action = "show", params = { [1] = "user_id", [2] = "id" } }
 				}
 			}, routes.dispatchers)
 		end)
@@ -50,11 +50,11 @@ describe("Routes", function()
 
 			assert.are.same({
 				[1] = {
-					pattern = "^/users/?\\??$",
+					pattern = "^/users/???$",
 					GET = { controller = "users_controller", action = "index", params = {} }
 				},
 				[2] = {
-					pattern = "^/users/?\\??$",
+					pattern = "^/users/???$",
 					POST = { controller = "users_controller", action = "create", params = {} }
 				}
 			}, routes.dispatchers)
@@ -65,7 +65,7 @@ describe("Routes", function()
 
 			assert.are.same({
 				[1] = {
-					pattern = "^/users/:(.*)/?\\??$",
+					pattern = "^/users/:(.*)/???$",
 					PUT = { controller = "messages_controller", action = "show", params = {} }
 				}
 			}, routes.dispatchers)
