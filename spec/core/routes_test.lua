@@ -51,4 +51,38 @@ describe("Routes", function()
 			}, routes.dispatchers)
 		end)
 	end)
+
+	describe("Helpers", function()
+
+		before_each(function()
+			spy.on(routes, 'add')
+			t = { controller = "users", action = "index" }
+		end)
+
+		after_each(function()
+			routes.add:revert()
+		end)
+
+		supported_http_methods = {
+			GET = true,
+			POST = true,
+			HEAD = true,
+			OPTIONS = true,
+			PUT = true,
+			PATCH = true,
+			DELETE = true,
+			TRACE = true,
+			CONNECT = true
+		}
+
+		for method, _ in pairs(supported_http_methods) do
+
+			describe("." .. method, function()
+				it("calls the .add method with ".. method, function()
+					routes[method]("/users", t)
+					assert.spy(routes.add).was_called_with(method, "/users", t)
+				end)
+			end)
+		end
+	end)
 end)

@@ -1,7 +1,7 @@
 local routes = require('core/routes')
 
 -- define routes
-routes.get("/users", { controller = "users", action = "index" })
-routes.get("/users/:id", { controller = "users", action = "show" })
+routes.GET("/users", { controller = "users", action = "index" })
+routes.GET("/users/:id", { controller = "users", action = "show" })
 
 return routes
