@@ -1,5 +1,4 @@
 package.path = './app/controllers/?.lua;' .. package.path
-local utils = require('core/utils')
 
 local Router = {}
 
@@ -22,27 +21,26 @@ end
 
 function Router.match(ngx)
 	uri = ngx.var.uri
-	-- method = ngx.req.get_method()
+	method = ngx.var.request_method
 
-			-- ngx.error("URI", 'test')
-			-- ngx.error("PATTERN", dispatcher.pattern)
+	for _, dispatcher in ipairs(Router.dispatchers) do
+		if dispatcher[method] then -- avoid matching if method is not defined
+			match = { string.match(uri, dispatcher.pattern) }
 
-	-- for _, dispatcher in ipairs(Router.dispatchers) do
-	-- 	-- avoid matching if method is not defined
-	-- 	if dispatcher[method] then
-	-- 		ngx.error("URI", uri)
-	-- 		ngx.error("PATTERN", dispatcher.pattern)
-	-- 		match = utils.pack(string.match(uri, dispatcher.pattern))
+			if #match > 0 then
+				params = {}
+				for i, v in ipairs(match) do
+					if dispatcher[method].params[i] then
+						params[dispatcher[method].params[i]] = match[i]
+					else
+						table.insert(params, match[i])
+					end
+				end
 
-	-- 		if #match > 0 then
-	-- 			ngx.error("MATCH", match[1])
-	-- 			-- match found"
-	-- 			return dispatcher[method].controller,
-	-- 				dispatcher[method].action
-	-- 		end
-	-- 	end
-	-- end
-	-- return "users_controller", "index"
+				return dispatcher[method].controller, dispatcher[method].action, params
+			end
+		end
+	end
 end
 
 return Router
