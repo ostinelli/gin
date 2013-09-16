@@ -21,16 +21,11 @@ class AppLauncher
 		raise output unless $? == 0
 		puts "App was succesfully stopped."
 	end
-
-	def self.bench
-		output = `siege -b -t 10s http://localhost:8080/users`
-	end
 end
 
 
 case ARGV.first
 when 'start' then AppLauncher.start
 when 'stop' then AppLauncher.stop
-when 'stop' then AppLauncher.bench
 else puts HELP
 end
