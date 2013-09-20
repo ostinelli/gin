@@ -2,7 +2,7 @@ package.path = './app/controllers/?.lua;' .. package.path
 
 local Router = {}
 
-local routes = require('app/routes')
+local routes = require('config/routes')
 Router.dispatchers = routes.dispatchers
 
 
