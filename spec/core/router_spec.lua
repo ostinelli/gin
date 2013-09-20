@@ -4,18 +4,18 @@ describe("Router", function()
 
 	before_each(function()
 		router = require 'core/router'
+		routes = require('core/routes')
 		router.dispatchers = {}
 	end)
 
 	after_each(function()
 		package.loaded['core/router'] = nil
+		package.loaded['core/routes'] = nil
 	end)
 
 	describe(".match", function()
 		before_each(function()
 			-- set routes
-			local routes = require('core/routes')
-
 			routes.POST("/users", { controller = "users", action = "create" })
 			routes.GET("/users", { controller = "users", action = "index" })
 			routes.GET("/users/:id", { controller = "users", action = "show" })
