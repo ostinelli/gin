@@ -9,7 +9,7 @@ describe("Router", function()
         ngx = {
             HTTP_NOT_FOUND = 404,
             exit = function(code) return end,
-            say = function(say) return end,
+            print = function(print) return end,
             header = { content_type = '' }
         }
     end)
@@ -25,40 +25,65 @@ describe("Router", function()
     end)
 
     describe(".handler", function()
-        it("raises a 404 error if no match is found", function()
-            -- redefine the matching function
-            router.match = function(ngx) return end
-            stub(ngx, 'exit')
+        describe("when no match is found", function()
+            before_each(function()
+                router.match = function(ngx) return end
+            end)
 
-            router.handler(ngx)
+            it("raises a 404 error if no match is found", function()
+                stub(ngx, 'exit')
 
-            assert.stub(ngx.exit).was.called_with(ngx.HTTP_NOT_FOUND)
+                router.handler(ngx)
 
-            ngx.exit:revert()
+                assert.stub(ngx.exit).was.called_with(ngx.HTTP_NOT_FOUND)
+
+                ngx.exit:revert()
+            end)
         end)
 
-        it("calls the action of an instance of the matched controller name", function()
-            -- redefine the matching function
-            router.match = function(ngx) return "controller_name", "action", "params" end
+        describe("when a match is found", function()
+            before_each(function()
+                router.match = function(ngx) return "controller_name", "action", "params" end
 
-            local instance = {} -- we're going to set self to instance so we can assert on it
-            local TestController = {}
-            function TestController:action()
-                instance = self
-                return
-            end
-            -- dinamically load package controller_name (hack to stub a 'require' statement)
-            package.loaded['controller_name'] = TestController
+                instance = {} -- we're going to set self to instance so we can assert on it
+                TestController = {}
+                function TestController:action()
+                    instance = self
+                    return { name = 'ralis' }
+                end
+                -- dinamically load package controller_name (hack to stub a 'require' statement)
+                package.loaded['controller_name'] = TestController
+            end)
 
-            spy.on(TestController, 'action')
+            after_each(function()
+                instance = nil
+                TestController = nil
+                package.loaded['controller_name'] = nil
+            end)
 
-            router.handler(ngx)
+            it("calls the action of an instance of the matched controller name", function()
+                spy.on(TestController, 'action')
 
-            assert.spy(TestController.action).was.called()
-            assert.are.same(ngx, instance.ngx)
-            assert.are.same("params", instance.params)
+                router.handler(ngx)
 
-            TestController.action:revert()
+                assert.spy(TestController.action).was.called()
+
+                -- assert the instance was initialized with the correct arguments
+                assert.are.same(ngx, instance.ngx)
+                assert.are.same("params", instance.params)
+
+                TestController.action:revert()
+            end)
+
+            it("calls nginx with the serialized json of the controller response", function()
+                spy.on(ngx, 'print')
+
+                router.handler(ngx)
+
+                assert.spy(ngx.print).was_called_with('{"name":"ralis"}')
+
+                ngx.print:revert()
+            end)
         end)
     end)
 

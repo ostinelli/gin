@@ -1,11 +1,11 @@
 local MessagesController = {}
 
 function MessagesController:index()
-    return 'Index of messages for user: ' .. self.params.user_id
+    return { recipient = self.params.user_id, messages = { 'abc' } }
 end
 
 function MessagesController:show()
-    return 'Messages with id: ' .. self.params.id .. ' of user: ' .. self.params.user_id
+    return { message = { id = self.params.id, recipient = self.params.user_id, body = "Ralis is awesome." } }
 end
 
 return MessagesController

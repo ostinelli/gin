@@ -1,6 +1,7 @@
 package.path = './app/controllers/?.lua;' .. package.path
 
 -- init routes and load modules
+local cjson = require 'cjson'
 local routes = require 'config/routes'
 local Controller = require 'core/controller'
 
@@ -23,7 +24,7 @@ function Router.handler(ngx)
         setmetatable(controller_instance, {__index = matched_controller})
         -- call action
         local result = controller_instance[action](controller_instance)
-        ngx.say(result)
+        ngx.print(cjson.encode(result))
     else
         -- 404
         ngx.exit(ngx.HTTP_NOT_FOUND)

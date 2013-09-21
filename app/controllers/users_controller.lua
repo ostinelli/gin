@@ -1,11 +1,11 @@
 local UsersController = {}
 
 function UsersController:index()
-    return 'Index of Users!'
+    return { users = { 'roberto' } }
 end
 
 function UsersController:show()
-    return 'Page of user with id: ' .. self.params.id
+    return { name = self.params.id }
 end
 
 return UsersController

@@ -53,3 +53,8 @@ $ brew install lua luarocks
 ```
 luarocks install busted
 ```
+
+##### The Json converter
+```
+luarocks install lua-cjson
+```
