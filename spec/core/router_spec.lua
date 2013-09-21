@@ -5,14 +5,61 @@ describe("Router", function()
     before_each(function()
         router = require 'core/router'
         routes = require 'core/routes'
-        router.dispatchers = {}
+        Controller = require 'core/controller'
+        ngx = {
+            HTTP_NOT_FOUND = 404,
+            exit = function(code) return end,
+            say = function(say) return end,
+            header = { content_type = '' }
+        }
     end)
 
     after_each(function()
         package.loaded['core/router'] = nil
         package.loaded['core/routes'] = nil
+        package.loaded['core/controller'] = nil
         router = nil
         routes = nil
+        Controller = nil
+        ngx = nil
+    end)
+
+    describe(".handler", function()
+        it("raises a 404 error if no match is found", function()
+            -- redefine the matching function
+            router.match = function(ngx) return end
+            stub(ngx, 'exit')
+
+            router.handler(ngx)
+
+            assert.stub(ngx.exit).was.called_with(ngx.HTTP_NOT_FOUND)
+
+            ngx.exit:revert()
+        end)
+
+        it("calls the action of an instance of the matched controller name", function()
+            -- redefine the matching function
+            router.match = function(ngx) return "controller_name", "action", "params" end
+
+            local instance = {} -- we're going to set self to instance so we can assert on it
+            local TestController = {}
+            function TestController:action()
+                instance = self
+                return
+            end
+            -- dinamically load package controller_name (hack to stub a 'require' statement)
+            package.loaded['controller_name'] = TestController
+
+            spy.on(TestController, 'action')
+
+            router.handler(ngx)
+
+            assert.spy(TestController.action).was.called()
+            assert.are.same(ngx, instance.ngx)
+            assert.are.same("params", instance.params)
+
+            TestController.action:revert()
+        end)
     end)
 
     describe(".match", function()
