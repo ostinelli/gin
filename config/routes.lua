@@ -1,4 +1,4 @@
-local routes = require('core/routes')
+local routes = require 'core/routes'
 
 -- define routes
 routes.GET("/users", { controller = "users", action = "index" })

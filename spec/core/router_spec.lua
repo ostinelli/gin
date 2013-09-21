@@ -4,13 +4,15 @@ describe("Router", function()
 
     before_each(function()
         router = require 'core/router'
-        routes = require('core/routes')
+        routes = require 'core/routes'
         router.dispatchers = {}
     end)
 
     after_each(function()
         package.loaded['core/router'] = nil
         package.loaded['core/routes'] = nil
+        router = nil
+        routes = nil
     end)
 
     describe(".match", function()

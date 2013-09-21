@@ -1,8 +1,8 @@
 package.path = './app/controllers/?.lua;' .. package.path
 
 -- init routes and load modules
-local routes = require('config/routes')
-local Controller = require('core/controller')
+local routes = require 'config/routes'
+local Controller = require 'core/controller'
 
 -- init Router and set routes
 local Router = {}

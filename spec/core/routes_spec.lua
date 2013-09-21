@@ -3,11 +3,12 @@ require 'spec/spec_helper'
 describe("Routes", function()
 
     before_each(function()
-        routes = require 'core/routes'
+        routes = require('core/routes')
     end)
 
     after_each(function()
         package.loaded['core/routes'] = nil
+        routes = nil
     end)
 
     describe(".add", function()
