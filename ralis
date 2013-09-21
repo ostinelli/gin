@@ -23,23 +23,8 @@ class AppLauncher
     end
 end
 
-class SpecHelper
-    def self.spec(test)
-        case test
-        when 'core' then core
-        else puts "Supported test types are: core."
-        end
-    end
-
-    def self.core
-        puts `busted spec/core`
-    end
-end
-
-
 case ARGV[0]
 when 'start' then AppLauncher.start
 when 'stop' then AppLauncher.stop
-when 'spec' then SpecHelper.spec(ARGV[1])
 else puts HELP
 end
