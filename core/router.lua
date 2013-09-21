@@ -9,12 +9,11 @@ local Controller = require 'core/controller'
 local Router = {}
 Router.dispatchers = routes.dispatchers
 
-
 -- main handler function, called from nginx
 function Router.handler(ngx)
     ngx.header.content_type = 'application/json'
     -- get routes
-    controller_name, action, params = Router.match(ngx)
+    local controller_name, action, params = Router.match(ngx)
 
     if controller_name then
         -- load matched controller
@@ -33,15 +32,15 @@ end
 
 -- match request to routes
 function Router.match(ngx)
-    uri = ngx.var.uri
-    method = ngx.var.request_method
+    local uri = ngx.var.uri
+    local method = ngx.var.request_method
 
     for _, dispatcher in ipairs(Router.dispatchers) do
         if dispatcher[method] then -- avoid matching if method is not defined in dispatcher
-            match = { string.match(uri, dispatcher.pattern) }
+            local match = { string.match(uri, dispatcher.pattern) }
 
             if #match > 0 then
-                params = {}
+                local params = {}
                 for i, v in ipairs(match) do
                     if dispatcher[method].params[i] then
                         params[dispatcher[method].params[i]] = match[i]
