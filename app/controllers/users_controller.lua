@@ -1,11 +1,11 @@
-local M = {}
+local UsersController = {}
 
-function M.index(ngx, params)
-    ngx.say('Index of Users!')
+function UsersController:index()
+    return 'Index of Users!'
 end
 
-function M.show(ngx, params)
-    ngx.say('Show user with id: ' .. params.id)
+function UsersController:show()
+    return 'Page of user with id: ' .. self.params.id
 end
 
-return M
+return UsersController
