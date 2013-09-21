@@ -11,13 +11,13 @@ The most common ralis commands are:
 
 class AppLauncher
     def self.start
-        output = `nginx -p \`pwd\`/ -c conf/nginx.conf`
+        output = `nginx -p \`pwd\`/ -c config/nginx.conf`
         raise output unless $? == 0
         puts "App was succesfully started."
     end
 
     def self.stop
-        output = `nginx -s stop -p \`pwd\`/ -c conf/nginx.conf`
+        output = `nginx -s stop -p \`pwd\`/ -c config/nginx.conf`
         raise output unless $? == 0
         puts "App was succesfully stopped."
     end
