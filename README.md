@@ -58,3 +58,8 @@ luarocks install busted
 ```
 luarocks install lua-cjson
 ```
+
+##### Lua File System
+```
+luarocks install LuaFileSystem
+```

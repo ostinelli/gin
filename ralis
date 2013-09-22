@@ -1,18 +1,16 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env lua
 
-require './cli/ralis_launcher'
-
-HELP = "RALIS v0.1, a RESTful API web framework.
+local help_description = [[RALIS v0.1, a RESTful API web framework.
 Usage: ralis COMMAND [ARGS]
 
 The most common ralis commands are:
  start       Starts the Ralis server
  stop        Stops the Ralis server
+]]
 
-"
+local launcher = require 'cli/ralis_launcher'
 
-case ARGV[0]
-when 'start' then Ralis::Launcher.start
-when 'stop' then Ralis::Launcher.stop
-else puts HELP
+if arg[1] == 'start' then launcher.start()
+elseif arg[1] == 'stop' then launcher.stop()
+else print(help_description)
 end
