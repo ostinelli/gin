@@ -59,7 +59,13 @@ luarocks install busted
 luarocks install lua-cjson
 ```
 
-##### Lua File System
+##### Lua socket
 ```
-luarocks install LuaFileSystem
+luarocks install luasocket
 ```
+
+
+## TODO:
+
+ * add query strings to params
+ * create response object passed in controllers
