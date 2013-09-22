@@ -1,7 +1,12 @@
 package.path = './app/controllers/?.lua;' .. package.path
 
--- init routes and load modules
+-- init module dependencies
 local cjson = require 'cjson'
+
+-- init Environment
+require 'core/ralis'
+
+-- load modules
 local routes = require 'config/routes'
 local Controller = require 'core/controller'
 
@@ -11,7 +16,9 @@ Router.dispatchers = routes.dispatchers
 
 -- main handler function, called from nginx
 function Router.handler(ngx)
+    -- add headers
     ngx.header.content_type = 'application/json'
+    ngx.header["X-Server"] = 'ralis/0.1';
     -- get routes
     local controller_name, action, params = Router.match(ngx)
 
