@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-HELP = "RALIS 0.1, a RESTful API web framework.
+require './cli/ralis_launcher'
+
+HELP = "RALIS v0.1, a RESTful API web framework.
 Usage: ralis COMMAND [ARGS]
 
 The most common ralis commands are:
@@ -9,22 +11,8 @@ The most common ralis commands are:
 
 "
 
-class AppLauncher
-    def self.start
-        output = `nginx -p \`pwd\`/ -c config/nginx.conf`
-        raise output unless $? == 0
-        puts "App was succesfully started."
-    end
-
-    def self.stop
-        output = `nginx -s stop -p \`pwd\`/ -c config/nginx.conf`
-        raise output unless $? == 0
-        puts "App was succesfully stopped."
-    end
-end
-
 case ARGV[0]
-when 'start' then AppLauncher.start
-when 'stop' then AppLauncher.stop
+when 'start' then Ralis::Launcher.start
+when 'stop' then Ralis::Launcher.stop
 else puts HELP
 end
