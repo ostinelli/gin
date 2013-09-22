@@ -1,6 +1,8 @@
 #!/usr/bin/env lua
 
-local help_description = [[RALIS v0.1, a RESTful API web framework.
+require 'core/ralis'
+
+local help_description = "RALIS v" .. Ralis.version ..", a RESTful API web framework." .. [[
 Usage: ralis COMMAND [ARGS]
 
 The most common ralis commands are:

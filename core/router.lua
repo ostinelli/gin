@@ -18,7 +18,7 @@ Router.dispatchers = routes.dispatchers
 function Router.handler(ngx)
     -- add headers
     ngx.header.content_type = 'application/json'
-    ngx.header["X-Server"] = 'ralis/0.1';
+    ngx.header["X-Server"] = 'ralis/'.. Ralis.version;
     -- get routes
     local controller_name, action, params = Router.match(ngx)
 
