@@ -4,7 +4,13 @@ describe("UsersController", function()
 
     describe("#show", function()
         it("does stuff", function()
-            visit('GET', "/users", { page = 2 })
+            local request = Request.new({
+                method = 'GET',
+                url = "/users",
+                query = { page = 2 }
+            })
+
+            -- response = hit(request)
         end)
     end)
 end)
