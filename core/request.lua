@@ -1,4 +1,4 @@
-local Request = {}
+Request = {}
 Request.__index = Request
 
 function Request.new(options)

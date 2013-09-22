@@ -1,4 +1,4 @@
-local Response = {}
+Response = {}
 Response.__index = Response
 
 function Response.new(options)

@@ -1,7 +1,6 @@
 require 'spec/spec_helper'
 
 describe("Router", function()
-
     before_each(function()
         router = require 'core/router'
         routes = require 'core/routes'

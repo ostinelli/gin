@@ -4,7 +4,7 @@ describe("Response", function()
     describe(".new", function()
         describe("when no options are passed in", function()
             it("initializes an instance with defaults", function()
-                local response = require('core/response').new()
+                local response = Response.new()
 
                 assert.are.same('GET', response.method)
                 assert.are.same("/", response.url)
@@ -16,7 +16,7 @@ describe("Response", function()
 
         describe("when options are passed in", function()
             it("saves them to the instance", function()
-                local response = require('core/response').new({
+                local response = Response.new({
                     method = 'PUT',
                     url = "/users",
                     query = { page = 2 },

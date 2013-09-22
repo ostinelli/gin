@@ -1,10 +1,8 @@
 package.path = './app/controllers/?.lua;' .. package.path
 
 -- init module dependencies
-local cjson = require 'cjson'
-
--- init Environment
 require 'core/ralis'
+local cjson = require 'cjson'
 
 -- load modules
 local routes = require 'config/routes'
