@@ -2,7 +2,6 @@ package.path = './app/controllers/?.lua;' .. package.path
 
 -- init module dependencies
 require 'core/ralis'
-local cjson = require 'cjson'
 
 -- load modules
 local routes = require 'config/routes'
@@ -28,7 +27,7 @@ function Router.handler(ngx)
         setmetatable(controller_instance, {__index = matched_controller})
         -- call action
         local result = controller_instance[action](controller_instance)
-        ngx.print(cjson.encode(result))
+        ngx.print(CJSON.encode(result))
     else
         -- 404
         ngx.exit(ngx.HTTP_NOT_FOUND)
