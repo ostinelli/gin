@@ -6,9 +6,7 @@ describe("Response", function()
             it("initializes an instance with defaults", function()
                 local response = Response.new()
 
-                assert.are.same('GET', response.method)
-                assert.are.same("/", response.url)
-                assert.are.same({}, response.query)
+                assert.are.same(nil, response.status)
                 assert.are.same({}, response.headers)
                 assert.are.same("", response.body)
             end)
@@ -17,16 +15,12 @@ describe("Response", function()
         describe("when options are passed in", function()
             it("saves them to the instance", function()
                 local response = Response.new({
-                    method = 'PUT',
-                    url = "/users",
-                    query = { page = 2 },
+                    status = 403,
                     headers = { ["X-Custom"] = "custom" },
                     body = "The body."
                 })
 
-                assert.are.same('PUT', response.method)
-                assert.are.same("/users", response.url)
-                assert.are.same({ page = 2 }, response.query)
+                assert.are.same(403, response.status)
                 assert.are.same({ ["X-Custom"] = "custom" }, response.headers)
                 assert.are.same("The body.", response.body)
             end)

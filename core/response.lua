@@ -5,9 +5,7 @@ function Response.new(options)
     options = options or {}
 
     local instance = {
-        method = options.method or 'GET',
-        url = options.url or "/",
-        query = options.query or {},
+        status = options.status,
         headers = options.headers or {},
         body = options.body or "",
     }
