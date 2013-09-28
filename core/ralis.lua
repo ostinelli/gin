@@ -1,5 +1,5 @@
 require 'core/request'
-require 'core/response'
+CJSON = require 'cjson'
 
 Ralis = {}
 
