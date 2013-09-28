@@ -1,3 +1,4 @@
+
 Request = {}
 Request.__index = Request
 
@@ -11,25 +12,25 @@ function Request.new(ngx)
     return instance
 end
 
-function Request:__index(index)
-    local out = rawget(rawget(self, '__cache'), index)
-    if out then return out end
+function Request:uri_params()
+    return self:get_and_set_cache('uri_params', ngx.req.get_uri_args)
+end
 
-    if index == 'uri_params' then
-        self.__cache[index] = ngx.req.get_uri_args()
-        return self.__cache[index]
+function Request:headers()
+    return self:get_and_set_cache('headers', ngx.req.get_headers)
+end
 
-    elseif index == 'headers' then
-        self.__cache[index] = ngx.req.get_headers()
-        return self.__cache[index]
+function Request:post_params()
+    return self:get_and_set_cache('post_params', ngx.req.get_post_args)
+end
 
-    elseif index == 'post_params' then
-        self.__cache[index] = ngx.req.get_post_args()
-        return self.__cache[index]
+function Request:get_and_set_cache(index, fun)
+    local value = self.__cache[index]
+    if value then return value end
 
-    else
-        return rawget(self, index)
-    end
+    value = fun()
+    self.__cache.uri_params = value
+    return value
 end
 
 return Request
