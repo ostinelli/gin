@@ -1,36 +1,38 @@
-
 Request = {}
 Request.__index = Request
 
 function Request.new(ngx)
+    -- read body
+    ngx.req.read_body()
+    -- init instancce
     local instance = {
         ngx = ngx,
-        body = ngx.req.read_body(),
+        body = ngx.req.get_body_data() or '',
         __cache = {}
     }
     setmetatable(instance, Request)
     return instance
 end
 
-function Request:uri_params()
-    return self:get_and_set_cache('uri_params', ngx.req.get_uri_args)
-end
+function Request:__index(index)
+    local out = rawget(rawget(self, '__cache'), index)
+    if out then return out end
 
-function Request:headers()
-    return self:get_and_set_cache('headers', ngx.req.get_headers)
-end
+    if index == 'uri_params' then
+        self.__cache[index] = ngx.req.get_uri_args()
+        return self.__cache[index]
 
-function Request:post_params()
-    return self:get_and_set_cache('post_params', ngx.req.get_post_args)
-end
+    elseif index == 'headers' then
+        self.__cache[index] = ngx.req.get_headers()
+        return self.__cache[index]
 
-function Request:get_and_set_cache(index, fun)
-    local value = self.__cache[index]
-    if value then return value end
+    elseif index == 'body_params' then
+        self.__cache[index] = ngx.req.get_post_args()
+        return self.__cache[index]
 
-    value = fun()
-    self.__cache.uri_params = value
-    return value
+    else
+        return rawget(self, index)
+    end
 end
 
 return Request
