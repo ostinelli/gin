@@ -2,21 +2,26 @@ require 'ralis.spec.runner'
 
 describe("Router", function()
     before_each(function()
-        router = require 'core/router'
-        routes = require 'core/routes'
-        Controller = require 'core/controller'
+        package.loaded['config.routes'] = {}    -- stub the real routes loading
+        router = require 'ralis.core.router'
+        routes = require 'ralis.core.routes'
+        Controller = require 'ralis.core.controller'
         ngx = {
             HTTP_NOT_FOUND = 404,
             exit = function(code) return end,
             print = function(print) return end,
-            header = { content_type = '' }
+            header = { content_type = '' },
+            req = {
+                read_body = function() return end,
+                get_body_data = function() return end
+            }
         }
     end)
 
     after_each(function()
-        package.loaded['core/router'] = nil
-        package.loaded['core/routes'] = nil
-        package.loaded['core/controller'] = nil
+        package.loaded['ralis.core.router'] = nil
+        package.loaded['ralis.core.routes'] = nil
+        package.loaded['ralis.core.controller'] = nil
         router = nil
         routes = nil
         Controller = nil

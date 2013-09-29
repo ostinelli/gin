@@ -28,7 +28,7 @@ describe("Request", function()
         end)
 
         it("sets body to empty string if no body is returned", function()
-            ngx = { req = { read_body = function() return end } }
+            ngx.req.get_body_data = function() return end
             local request = Request.new(ngx)
 
             assert.are.equal("", request.body)
