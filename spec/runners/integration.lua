@@ -23,8 +23,7 @@ function IntegrationRunner.encode_table(args)
 end
 
 function IntegrationRunner.hit(request)
-    launcher.start()
-
+    -- build full url
     local full_url = url.build({
         scheme = 'http',
         host = '127.0.0.1',
@@ -33,8 +32,17 @@ function IntegrationRunner.hit(request)
         query = IntegrationRunner.encode_table(request.uri_params)
     })
 
-    local response_body = {}
+    -- ensure content-length is set
+    if request.headers == nil then request.headers = {} end
+    if request.headers["content-length"] == nil and request.headers["Content-Length"] then
+        request.headers["content-length"] = request.body:len()
+    end
 
+    -- start nginx
+    launcher.start()
+
+    -- hit server
+    local response_body = {}
     local ok, response_status, response_headers = http.request({
         method = request.method,
         url = full_url,
@@ -45,10 +53,12 @@ function IntegrationRunner.hit(request)
     })
     response_body = table.concat(response_body, "")
 
+    -- stop nginx
     launcher.stop()
 
     if ok == nil then error("An error occurred while connecting to the test server.") end
 
+    -- buidl response object and return
     local response = ResponseSpec.new({
         status = response_status,
         headers = response_headers,
