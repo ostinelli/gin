@@ -6,7 +6,7 @@ source = {
 }
 
 description = {
-    summary = "A fast, low-latency, low-memory footprint, HTTP compliant API framework with Test Driven Development helpers and patterns",
+    summary = "A fast, low-latency, low-memory footprint, web JSON-API framework with Test Driven Development helpers and patterns.",
     homepage = "http://ralis.io",
     maintainer = "Roberto Ostinelli <roberto@ostinelli.net>",
     license = "MIT"
