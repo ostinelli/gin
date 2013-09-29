@@ -23,11 +23,14 @@ function IntegrationRunner.encode_table(args)
 end
 
 function IntegrationRunner.hit(request)
+    -- get port
+    local app_conf = Ralis.conf_params()
+
     -- build full url
     local full_url = url.build({
         scheme = 'http',
         host = '127.0.0.1',
-        port = 7201,
+        port = app_conf.port,
         path = request.url,
         query = IntegrationRunner.encode_table(request.uri_params)
     })
