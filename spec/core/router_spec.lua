@@ -1,4 +1,4 @@
-require 'spec/spec_helper'
+require 'spec/runner'
 
 describe("Router", function()
     before_each(function()
