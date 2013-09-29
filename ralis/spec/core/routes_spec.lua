@@ -1,4 +1,4 @@
-require 'spec/runner'
+require 'ralis.spec.runner'
 
 describe("Routes", function()
 

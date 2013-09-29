@@ -1,4 +1,4 @@
-require 'core/request'
+require 'ralis.core.request'
 CJSON = require 'cjson'
 
 Ralis = {}
@@ -40,7 +40,7 @@ end
 
 function Ralis.conf_params()
     -- read config file
-    local app_config = require 'config/app_config'
+    local app_config = require 'config.app_config'
 
     -- build params and set defaults
     return {

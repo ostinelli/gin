@@ -1,4 +1,4 @@
-require 'spec/runner'
+require 'ralis.spec.runner'
 
 describe("Router", function()
     before_each(function()

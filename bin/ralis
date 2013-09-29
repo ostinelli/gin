@@ -1,0 +1,21 @@
+#!/usr/bin/env lua
+
+require 'ralis.core.ralis'
+
+local help_description = "RALIS v" .. Ralis.version ..", a RESTful API web framework." .. [[
+Usage: ralis COMMAND [ARGS]
+
+The available ralis commands are:
+ new [name]      Create a new Ralis application
+ start           Starts the Ralis server
+ stop            Stops the Ralis server
+]]
+
+local launcher = require 'ralis.cli.launcher'
+local application = require 'ralis.cli.application'
+
+if arg[1] == 'new' and arg[2] then application.new(arg[2])
+elseif arg[1] == 'start' then launcher.start()
+elseif arg[1] == 'stop' then launcher.stop()
+else print(help_description)
+end

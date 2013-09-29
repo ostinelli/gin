@@ -1,10 +1,11 @@
-require 'spec/runner'
+require 'ralis.spec.runner'
 
 describe("Request", function()
     before_each(function()
         ngx = {
             req = {
-                read_body = function() return "" end,
+                read_body = function() return end,
+                get_body_data = function() return "request-body" end,
                 get_uri_args = function() return { uri_param = '2' } end,
                 get_headers = function() return { ["Content-Type"] = "application/json" } end,
                 get_post_args = function() return { body_param = '2' } end

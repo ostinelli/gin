@@ -1,11 +1,11 @@
 package.path = './app/controllers/?.lua;' .. package.path
 
 -- init module dependencies
-require 'core/ralis'
+require 'ralis.core.ralis'
 
 -- load modules
-local routes = require 'config/routes'
-local Controller = require 'core/controller'
+local routes = require 'config.routes'
+local Controller = require 'ralis.core.controller'
 
 -- init Router and set routes
 local Router = {}

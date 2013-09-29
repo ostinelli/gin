@@ -1,10 +1,15 @@
-require 'core/ralis'
+require 'ralis.core.ralis'
 
 local RalisLauncher = {}
 RalisLauncher.nginx_conf_source = 'config/nginx.conf'
 RalisLauncher.nginx_conf_tmp_dir = 'tmp'
+RalisLauncher.dirs = {
+    'logs',
+    'tmp'
+}
 
 function RalisLauncher.start()
+    RalisLauncher.create_dirs()
     RalisLauncher.create_nginx_conf()
     result = os.execute("nginx -p `pwd`/ -c " .. RalisLauncher.nginx_conf_file_path())
     if result == 0 and Ralis.env ~= 'test' then print("Ralis app was succesfully started.") end
@@ -20,6 +25,12 @@ function RalisLauncher.stop()
         end
     end
     RalisLauncher.remove_nginx_conf()
+end
+
+function RalisLauncher.create_dirs()
+    for _, dir in pairs(RalisLauncher.dirs) do
+        lfs.mkdir(dir)
+    end
 end
 
 function RalisLauncher.create_nginx_conf()

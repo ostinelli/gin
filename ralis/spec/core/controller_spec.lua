@@ -1,11 +1,14 @@
-require 'spec/runner'
-local c = require 'core/controller'
+require 'ralis.spec.runner'
+local c = require 'ralis.core.controller'
 
 describe("Controller", function()
 
     describe(".new", function()
         before_each(function()
-            ngx = { req = { read_body = function() return "request-body" end } }
+            ngx = { req = {
+                read_body = function() return end,
+                get_body_data = function() return "request-body" end,
+            } }
             params = {}
             controller = c.new(ngx, params)
         end)
