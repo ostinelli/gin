@@ -1,7 +1,7 @@
 local http = require 'socket.http'
 local url = require 'socket.url'
 local launcher = require 'cli/ralis_launcher'
-local ResponseSpec = require 'spec/runner/response'
+local ResponseSpec = require 'spec/runners/response'
 
 local IntegrationRunner = {}
 
