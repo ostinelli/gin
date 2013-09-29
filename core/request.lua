@@ -4,7 +4,7 @@ Request.__index = Request
 function Request.new(ngx)
     -- read body
     ngx.req.read_body()
-    -- init instancce
+
     local instance = {
         ngx = ngx,
         body = ngx.req.get_body_data() or '',

@@ -2,6 +2,8 @@ local Controller = {}
 Controller.__index = Controller
 
 function Controller.new(ngx, params)
+    params = params or {}
+
     local instance = {
         ngx = ngx,
         params = params,
