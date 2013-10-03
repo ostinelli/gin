@@ -8,6 +8,11 @@ RalisLauncher.dirs = {
     'tmp'
 }
 
+local function convert_boolean_to_onoff(value)
+    if value == true then value = 'on' else value = 'off' end
+    return value
+end
+
 function RalisLauncher.start()
     RalisLauncher.create_dirs()
     RalisLauncher.create_nginx_conf()
@@ -55,8 +60,7 @@ function RalisLauncher.create_nginx_conf()
     local nginx_content = nginx_conf_template
     nginx_content = string.gsub(nginx_content, "{{RALIS_PORT}}", conf_params.port)
     nginx_content = string.gsub(nginx_content, "{{RALIS_ENV}}", Ralis.env)
-    nginx_content = string.gsub(nginx_content, "{{WORKER_CONNECTIONS}}", conf_params.worker_connections)
-    nginx_content = string.gsub(nginx_content, "{{WORKER_PROCESSES}}", conf_params.worker_processes)
+    nginx_content = string.gsub(nginx_content, "{{RALIS_CODE_CACHE}}", convert_boolean_to_onoff(conf_params.code_cache))
 
     -- write conf file
     local fw = io.open(RalisLauncher.nginx_conf_file_path(), "w")

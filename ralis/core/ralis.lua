@@ -12,20 +12,17 @@ Ralis.env = os.getenv("RALIS_ENV") or 'development'
 -- get config params
 Ralis.default_app_config = {
     test = {
-        worker_processes = 1,
-        worker_connections = 1024,
+        code_cache = false,
         port = 7201
     },
 
     production = {
-        worker_processes = 4,
-        worker_connections = 16384,
+        code_cache = true,
         port = 80
     },
 
     other = {
-        worker_processes = 1,
-        worker_connections = 1024,
+        code_cache = false,
         port = 7200
     }
 }
@@ -45,8 +42,7 @@ function Ralis.conf_params()
     -- build params and set defaults
     return {
         port = Ralis.default_conf_param('port', app_config),
-        worker_processes = Ralis.default_conf_param('worker_processes', app_config),
-        worker_connections = Ralis.default_conf_param('worker_connections', app_config),
+        code_cache = Ralis.default_conf_param('code_cache', app_config)
     }
 end
 

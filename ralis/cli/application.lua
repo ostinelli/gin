@@ -4,20 +4,17 @@ local app_config = [[
 local AppConfig = {}
 
 AppConfig.development = {
-    worker_processes = 1,
-    worker_connections = 1024,
+    code_cache = false,
     port = 7200
 }
 
 AppConfig.test = {
-    worker_processes = 1,
-    worker_connections = 1024,
+    code_cache = false,
     port = 7201
 }
 
 AppConfig.production = {
-    worker_processes = 4,
-    worker_connections = 16384,
+    code_cache = true,
     port = 80
 }
 
@@ -26,11 +23,11 @@ return AppConfig
 
 
 local nginx_config = [[
-worker_processes {{WORKER_PROCESSES}};
+worker_processes 1;
 pid tmp/{{RALIS_ENV}}-nginx.pid;
 
 events {
-    worker_connections {{WORKER_CONNECTIONS}};
+    worker_connections 1024;
 }
 
 http {
@@ -43,6 +40,7 @@ http {
         listen {{RALIS_PORT}};
 
         location / {
+            lua_code_cache {{RALIS_CODE_CACHE}};
             content_by_lua 'require(\"ralis.core.router\").handler(ngx)';
         }
     }
