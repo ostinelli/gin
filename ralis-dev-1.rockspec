@@ -27,6 +27,7 @@ build = {
         ["ralis.cli.application"] = "ralis/cli/application.lua",
         ["ralis.core.ralis"] = "ralis/core/ralis.lua",
         ["ralis.core.controller"] = "ralis/core/controller.lua",
+        ["ralis.core.response"] = "ralis/core/response.lua",
         ["ralis.core.request"] = "ralis/core/request.lua",
         ["ralis.core.router"] = "ralis/core/router.lua",
         ["ralis.core.routes"] = "ralis/core/routes.lua",

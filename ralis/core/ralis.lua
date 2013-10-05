@@ -1,4 +1,6 @@
+require 'ralis.core.response'
 require 'ralis.core.request'
+
 CJSON = require 'cjson'
 
 Ralis = {}
