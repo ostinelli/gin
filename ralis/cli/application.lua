@@ -100,6 +100,7 @@ RalisApplication.files = {
     ['config/settings.lua'] = settings,
     ['config/nginx.conf'] = nginx_config,
     ['config/routes.lua'] = routes,
+    ['config/initializers/.gitkeep'] = "",
     ['app/controllers/pages_controller.lua'] = pages_controller,
     ['spec/controllers/pages_controller_spec.lua'] = pages_controller_spec,
     ['spec/spec_helper.lua'] = spec_helper
