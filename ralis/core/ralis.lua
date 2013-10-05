@@ -10,7 +10,7 @@ Ralis.version = '0.1'
 Ralis.env = os.getenv("RALIS_ENV") or 'development'
 
 -- settings
--- local settings = require 'ralis.core.settings'
--- Ralis.settings = settings.for_current_environment()
+local settings = require 'ralis.core.settings'
+Ralis.settings = settings.for_current_environment()
 
 return Ralis

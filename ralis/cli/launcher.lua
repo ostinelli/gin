@@ -17,7 +17,7 @@ function RalisLauncher.start()
     RalisLauncher.create_dirs()
     RalisLauncher.create_nginx_conf()
     result = os.execute("nginx -p `pwd`/ -c " .. RalisLauncher.nginx_conf_file_path())
-    if result == 0 and Ralis.env ~= 'test' then print("Ralis app was succesfully started.") end
+    if result == 0 and Ralis.env ~= 'test' then print("Ralis app was succesfully started on port " .. Ralis.settings.port) end
 end
 
 function RalisLauncher.stop()
@@ -53,14 +53,11 @@ function RalisLauncher.create_nginx_conf()
 
 ]] .. nginx_conf_template
 
-    -- get conf params
-    local conf_params = Ralis.conf_params()
-
     -- inject params in content
     local nginx_content = nginx_conf_template
-    nginx_content = string.gsub(nginx_content, "{{RALIS_PORT}}", conf_params.port)
+    nginx_content = string.gsub(nginx_content, "{{RALIS_PORT}}", Ralis.settings.port)
     nginx_content = string.gsub(nginx_content, "{{RALIS_ENV}}", Ralis.env)
-    nginx_content = string.gsub(nginx_content, "{{RALIS_CODE_CACHE}}", convert_boolean_to_onoff(conf_params.code_cache))
+    nginx_content = string.gsub(nginx_content, "{{RALIS_CODE_CACHE}}", convert_boolean_to_onoff(Ralis.settings.code_cache))
 
     -- write conf file
     local fw = io.open(RalisLauncher.nginx_conf_file_path(), "w")

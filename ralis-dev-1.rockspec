@@ -30,6 +30,7 @@ build = {
         ["ralis.core.request"] = "ralis/core/request.lua",
         ["ralis.core.router"] = "ralis/core/router.lua",
         ["ralis.core.routes"] = "ralis/core/routes.lua",
+        ["ralis.core.settings"] = "ralis/core/settings.lua",
         ["ralis.spec.runner"] = "ralis/spec/runner.lua",
         ["ralis.spec.runners.integration"] = "ralis/spec/runners/integration.lua",
         ["ralis.spec.runners.response"] = "ralis/spec/runners/response.lua"
