@@ -28,6 +28,7 @@ build = {
         ["ralis.core.ralis"] = "ralis/core/ralis.lua",
         ["ralis.core.bashcolors"] = "ralis/core/bashcolors.lua",
         ["ralis.core.controller"] = "ralis/core/controller.lua",
+        ["ralis.core.error"] = "ralis/core/error.lua",
         ["ralis.core.helpers"] = "ralis/core/helpers.lua",
         ["ralis.core.response"] = "ralis/core/response.lua",
         ["ralis.core.request"] = "ralis/core/request.lua",

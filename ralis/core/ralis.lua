@@ -1,6 +1,7 @@
-require 'ralis.core.response'
-require 'ralis.core.request'
+require 'ralis.core.error'
 require 'ralis.core.helpers'
+require 'ralis.core.request'
+require 'ralis.core.response'
 
 JSON = require 'cjson'
 local lfs = require"lfs"

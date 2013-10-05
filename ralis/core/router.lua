@@ -26,15 +26,33 @@ function Router.handler(ngx)
         local controller_instance = Controller.new(ngx, params)
         setmetatable(controller_instance, {__index = matched_controller})
         -- call action
-        local result = controller_instance[action](controller_instance)
-        -- set status
-        ngx.status = controller_instance.response.status
-        -- set headers
-        for k, v in pairs(controller_instance.response.headers) do
-            ngx.header[k] = v
+        local ok, result = pcall(function() return controller_instance[action](controller_instance) end)
+
+        if ok then
+            -- set status
+            ngx.status = controller_instance.response.status
+            -- set headers
+            for k, v in pairs(controller_instance.response.headers) do
+                ngx.header[k] = v
+            end
+            -- print body
+            ngx.print(JSON.encode(result))
+        else
+            -- an error was raised
+            local err = Errors[result.code]
+            -- set status
+            ngx.status = err.status
+            -- set headers
+            for k, v in pairs(err.headers) do
+                ngx.header[k] = v
+            end
+            -- print body
+            local err_body = {
+                code = result.code,
+                message = err.message
+            }
+            ngx.print(JSON.encode(err_body))
         end
-        -- print body
-        ngx.print(JSON.encode(result))
     else
         -- 404
         ngx.exit(ngx.HTTP_NOT_FOUND)
