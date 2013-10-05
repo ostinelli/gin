@@ -26,6 +26,7 @@ build = {
         ["ralis.cli.launcher"] = "ralis/cli/launcher.lua",
         ["ralis.cli.application"] = "ralis/cli/application.lua",
         ["ralis.core.ralis"] = "ralis/core/ralis.lua",
+        ["ralis.core.bashcolors"] = "ralis/core/bashcolors.lua",
         ["ralis.core.controller"] = "ralis/core/controller.lua",
         ["ralis.core.helpers"] = "ralis/core/helpers.lua",
         ["ralis.core.response"] = "ralis/core/response.lua",

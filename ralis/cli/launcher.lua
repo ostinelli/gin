@@ -1,4 +1,5 @@
 require 'ralis.core.ralis'
+local bashcolors = require 'ralis.core.bashcolors'
 
 local RalisLauncher = {}
 RalisLauncher.nginx_conf_source = 'config/nginx.conf'
@@ -17,11 +18,14 @@ function RalisLauncher.start()
     RalisLauncher.create_dirs()
     RalisLauncher.create_nginx_conf()
 
-    RalisLauncher.stop_nginx()
     result = RalisLauncher.start_nginx()
 
-    if result == 0 and Ralis.env ~= 'test' then
-        print("Ralis app was succesfully started on port " .. Ralis.settings.port .. ' (' .. Ralis.env .. ').')
+    if result == 0 then
+        if Ralis.env ~= 'test' then
+            print("Ralis app was succesfully started on port " .. Ralis.settings.port .. ' (' .. Ralis.env .. ').')
+        end
+    else
+        print(bashcolors.red .. "ERROR:" .. bashcolors.reset .. " Could not start Ralis app (is it running already?).")
     end
 end
 
@@ -32,7 +36,7 @@ function RalisLauncher.stop()
         if result == 0 then
             print("Ralis app was succesfully stopped.")
         else
-            print("ERROR: Could not stop Ralis app (maybe not started?).")
+            print(bashcolors.red .. "ERROR:" .. bashcolors.reset .. " Could not stop Ralis app (are you sure it is running?).")
         end
     end
     RalisLauncher.remove_nginx_conf()

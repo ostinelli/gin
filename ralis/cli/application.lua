@@ -1,4 +1,5 @@
 local lfs = require 'lfs'
+local bashcolors = require 'ralis.core.bashcolors'
 
 local settings = [[
 local Settings = {}
@@ -116,7 +117,7 @@ function RalisApplication.create_files(parent)
         local full_file_path = parent .. "/" .. file_path
         mkdirs(full_file_path)
         -- create file
-        print("  creating file " .. full_file_path)
+        print(bashcolors.green .. "  creating file " .. bashcolors.reset .. full_file_path)
 
         local fw = io.open(full_file_path, "w")
         fw:write(file_content)
