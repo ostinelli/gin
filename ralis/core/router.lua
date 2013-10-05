@@ -27,6 +27,13 @@ function Router.handler(ngx)
         setmetatable(controller_instance, {__index = matched_controller})
         -- call action
         local result = controller_instance[action](controller_instance)
+        -- set status
+        ngx.status = controller_instance.response.status
+        -- set headers
+        for k, v in pairs(controller_instance.response.headers) do
+            ngx.header[k] = v
+        end
+        -- print body
         ngx.print(CJSON.encode(result))
     else
         -- 404

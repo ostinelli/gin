@@ -10,6 +10,7 @@ describe("Router", function()
             HTTP_NOT_FOUND = 404,
             exit = function(code) return end,
             print = function(print) return end,
+            status = 200,
             header = { content_type = '' },
             req = {
                 read_body = function() return end,
@@ -53,6 +54,12 @@ describe("Router", function()
                 TestController = {}
                 function TestController:action()
                     instance = self
+
+                    self.response.status = 400
+
+                    self.response.headers["Cache-Control"] = "max-age=3600"
+                    self.response.headers["Retry-After"] = "120"
+
                     return { name = 'ralis' }
                 end
                 package.loaded['controller_name'] = TestController
@@ -78,14 +85,17 @@ describe("Router", function()
                 TestController.action:revert()
             end)
 
-            it("calls nginx with the serialized json of the controller response", function()
-                spy.on(ngx, 'print')
-
+            it("sets the nginx response status to the controller's response status", function()
                 router.handler(ngx)
 
-                assert.spy(ngx.print).was_called_with('{"name":"ralis"}')
+                assert.are.equal(400, ngx.status)
+            end)
 
-                ngx.print:revert()
+            it("calls nginx with the serialized json of the controller response", function()
+                router.handler(ngx)
+
+                assert.are.equal("max-age=3600", ngx.header["Cache-Control"])
+                assert.are.equal("120", ngx.header["Retry-After"])
             end)
         end)
     end)

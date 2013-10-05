@@ -5,7 +5,7 @@ function Response.new(options)
     options = options or {}
 
     local instance = {
-        status = options.status,
+        status = options.status or 200,
         headers = options.headers or {},
         body = options.body,
     }

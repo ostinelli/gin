@@ -6,7 +6,7 @@ describe("Response", function()
             it("initializes an instance with defaults", function()
                 local response = Response.new()
 
-                assert.are.same(nil, response.status)
+                assert.are.same(200, response.status)
                 assert.are.same({}, response.headers)
                 assert.are.same(nil, response.body)
             end)
