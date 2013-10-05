@@ -16,20 +16,38 @@ end
 function RalisLauncher.start()
     RalisLauncher.create_dirs()
     RalisLauncher.create_nginx_conf()
-    result = os.execute("nginx -p `pwd`/ -c " .. RalisLauncher.nginx_conf_file_path())
-    if result == 0 and Ralis.env ~= 'test' then print("Ralis app was succesfully started on port " .. Ralis.settings.port) end
+
+    RalisLauncher.stop_nginx()
+    result = RalisLauncher.start_nginx()
+
+    if result == 0 and Ralis.env ~= 'test' then
+        print("Ralis app was succesfully started on port " .. Ralis.settings.port .. ' (' .. Ralis.env .. ').')
+    end
 end
 
 function RalisLauncher.stop()
-    result = os.execute("nginx -s stop -p `pwd`/ -c " .. RalisLauncher.nginx_conf_file_path())
+    result = RalisLauncher.stop_nginx()
+
     if Ralis.env ~= 'test' then
         if result == 0 then
             print("Ralis app was succesfully stopped.")
         else
-            print("ERROR: Could not stop Ralis app (maybe not started?)")
+            print("ERROR: Could not stop Ralis app (maybe not started?).")
         end
     end
     RalisLauncher.remove_nginx_conf()
+end
+
+function RalisLauncher.start_nginx()
+    return RalisLauncher.nginx_command('')
+end
+
+function RalisLauncher.stop_nginx()
+    return RalisLauncher.nginx_command('-s stop')
+end
+
+function RalisLauncher.nginx_command(nginx_signal)
+    return os.execute("nginx " .. nginx_signal .. " -p `pwd`/ -c " .. RalisLauncher.nginx_conf_file_path() .. " 2>/dev/null")
 end
 
 function RalisLauncher.create_dirs()
