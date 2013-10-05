@@ -1,24 +1,24 @@
 local lfs = require 'lfs'
 
-local app_config = [[
-local AppConfig = {}
+local settings = [[
+local Settings = {}
 
-AppConfig.development = {
+Settings.development = {
     code_cache = false,
     port = 7200
 }
 
-AppConfig.test = {
+Settings.test = {
     code_cache = false,
     port = 7201
 }
 
-AppConfig.production = {
+Settings.production = {
     code_cache = true,
     port = 80
 }
 
-return AppConfig
+return Settings
 ]]
 
 
@@ -104,7 +104,7 @@ RalisApplication.dirs = {
 }
 
 RalisApplication.files = {
-    ['config/app_config.lua'] = app_config,
+    ['config/settings.lua'] = settings,
     ['config/nginx.conf'] = nginx_config,
     ['config/routes.lua'] = routes,
     ['app/controllers/pages_controller.lua'] = pages_controller,

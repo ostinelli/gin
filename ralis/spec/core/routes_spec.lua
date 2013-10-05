@@ -1,13 +1,13 @@
-require 'ralis.spec.runner'
+require 'ralis.spec.spec_helper'
 
 describe("Routes", function()
 
     before_each(function()
-        routes = require('core/routes')
+        routes = require('ralis.core.routes')
     end)
 
     after_each(function()
-        package.loaded['core/routes'] = nil
+        package.loaded['ralis.core.routes'] = nil
         routes = nil
     end)
 

@@ -1,4 +1,4 @@
-require 'ralis.spec.runner'
+require 'ralis.spec.spec_helper'
 
 describe("Router", function()
     before_each(function()
@@ -55,7 +55,6 @@ describe("Router", function()
                     instance = self
                     return { name = 'ralis' }
                 end
-                -- dinamically load package controller_name (hack to stub a 'require' statement)
                 package.loaded['controller_name'] = TestController
             end)
 

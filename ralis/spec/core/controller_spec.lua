@@ -1,4 +1,5 @@
-require 'ralis.spec.runner'
+require 'ralis.spec.spec_helper'
+
 local c = require 'ralis.core.controller'
 
 describe("Controller", function()
