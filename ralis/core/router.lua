@@ -34,7 +34,7 @@ function Router.handler(ngx)
             ngx.header[k] = v
         end
         -- print body
-        ngx.print(CJSON.encode(result))
+        ngx.print(JSON.encode(result))
     else
         -- 404
         ngx.exit(ngx.HTTP_NOT_FOUND)
