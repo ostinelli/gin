@@ -95,13 +95,6 @@ require 'ralis.spec.runner'
 
 
 local RalisApplication = {}
-RalisApplication.dirs = {
-    'config',
-    'app',
-    'app/controllers',
-    'spec',
-    'spec/controllers',
-}
 
 RalisApplication.files = {
     ['config/settings.lua'] = settings,
@@ -113,24 +106,20 @@ RalisApplication.files = {
 }
 
 function RalisApplication.new(name)
-    RalisApplication.create_dirs(name)
     RalisApplication.create_files(name)
 end
 
-function RalisApplication.create_dirs(parent)
-    print("  creating directory " .. parent)
-    lfs.mkdir(parent)
-
-    for _, dir in pairs(RalisApplication.dirs) do
-        local full_dir = parent .. "/" .. dir
-        print("  creating directory " .. full_dir)
-        lfs.mkdir(full_dir)
-    end
+local function mkdirs(file_path)
+    dir_path = string.match(file_path, "(.*)/.*")
+    os.execute("mkdir -p " .. dir_path)
 end
 
 function RalisApplication.create_files(parent)
     for file_path, file_content in pairs(RalisApplication.files) do
+        -- ensure containing directory exists
         local full_file_path = parent .. "/" .. file_path
+        mkdirs(full_file_path)
+        -- create file
         print("  creating file " .. full_file_path)
 
         local fw = io.open(full_file_path, "w")
