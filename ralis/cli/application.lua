@@ -110,11 +110,6 @@ function RalisApplication.new(name)
     RalisApplication.create_files(name)
 end
 
-local function mkdirs(file_path)
-    dir_path = string.match(file_path, "(.*)/.*")
-    os.execute("mkdir -p " .. dir_path)
-end
-
 function RalisApplication.create_files(parent)
     for file_path, file_content in pairs(RalisApplication.files) do
         -- ensure containing directory exists
