@@ -14,4 +14,8 @@ function Controller.new(ngx, params)
     return instance
 end
 
+function Controller:raise_error(code)
+    error({ code = code })
+end
+
 return Controller

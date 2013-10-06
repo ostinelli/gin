@@ -49,12 +49,64 @@ describe("Router", function()
         describe("when a match is found", function()
             before_each(function()
                 router.match = function(ngx) return "controller_name", "action", "params" end
+            end)
 
-                instance = {} -- we're going to set self to instance so we can assert on it
+            it("calls controller", function()
+                stub(router, "call_controller")
+
+                router.handler(ngx)
+
+                assert.stub(router.call_controller).was.called_with(ngx, "controller_name", "action", "params")
+
+                router.call_controller:revert()
+            end)
+        end)
+    end)
+
+    describe(".call_controller", function()
+        before_each(function()
+            original_errors = Errors
+            Errors = {
+                [1000] = {
+                    status = 500,
+                    headers = { ["X-Info"] = "additional-info"},
+                    message = "Something bad happened here"
+                }
+            }
+
+            instance = {} -- we're going to set self to instance so we can assert on it
+            TestController = {}
+            function TestController:action()
+                instance = self
+            end
+            package.loaded['controller_name'] = TestController
+        end)
+
+        after_each(function()
+            instance = nil
+            TestController = nil
+            package.loaded['controller_name'] = nil
+            Errors = original_errors
+        end)
+
+        it("calls the action of an instance of the matched controller name", function()
+            spy.on(TestController, 'action')
+
+            router.call_controller(ngx, "controller_name", "action", "params")
+
+            assert.spy(TestController.action).was.called()
+
+            -- assert the instance was initialized with the correct arguments
+            assert.are.same(ngx, instance.ngx)
+            assert.are.same("params", instance.params)
+
+            TestController.action:revert()
+        end)
+
+        describe("when the controller successfully returns", function()
+            before_each(function()
                 TestController = {}
                 function TestController:action()
-                    instance = self
-
                     self.response.status = 400
 
                     self.response.headers["Cache-Control"] = "max-age=3600"
@@ -65,37 +117,81 @@ describe("Router", function()
                 package.loaded['controller_name'] = TestController
             end)
 
-            after_each(function()
-                instance = nil
-                TestController = nil
-                package.loaded['controller_name'] = nil
-            end)
-
-            it("calls the action of an instance of the matched controller name", function()
-                spy.on(TestController, 'action')
-
-                router.handler(ngx)
-
-                assert.spy(TestController.action).was.called()
-
-                -- assert the instance was initialized with the correct arguments
-                assert.are.same(ngx, instance.ngx)
-                assert.are.same("params", instance.params)
-
-                TestController.action:revert()
-            end)
-
             it("sets the nginx response status to the controller's response status", function()
-                router.handler(ngx)
+                router.call_controller(ngx, "controller_name", "action", "params")
 
                 assert.are.equal(400, ngx.status)
             end)
 
-            it("calls nginx with the serialized json of the controller response", function()
-                router.handler(ngx)
+            it("sets the nginx response headers", function()
+                router.call_controller(ngx, "controller_name", "action", "params")
 
                 assert.are.equal("max-age=3600", ngx.header["Cache-Control"])
                 assert.are.equal("120", ngx.header["Retry-After"])
+            end)
+
+            it("calls nginx with the serialized json of the controller response", function()
+                stub(ngx, 'print')
+
+                router.call_controller(ngx, "controller_name", "action", "params")
+
+                assert.stub(ngx.print).was.called_with('{"name":"ralis"}')
+
+                ngx.print:revert()
+            end)
+        end)
+
+        describe("when the controller raises an API error", function()
+            before_each(function()
+                TestController = {}
+                function TestController:action()
+                    self:raise_error(1000)
+                    return { name = 'ralis' }
+                end
+                package.loaded['controller_name'] = TestController
+            end)
+
+            it("sets the nginx response status to the controller's error status", function()
+                router.call_controller(ngx, "controller_name", "action", "params")
+
+                assert.are.equal(500, ngx.status)
+            end)
+
+            it("sets the nginx response headers", function()
+                router.call_controller(ngx, "controller_name", "action", "params")
+
+                assert.are.equal("additional-info", ngx.header["X-Info"])
+            end)
+
+            it("calls nginx with the serialized json of the controller response", function()
+                stub(ngx, 'print')
+
+                router.call_controller(ngx, "controller_name", "action", "params")
+
+                assert.stub(ngx.print).was.called_with('{"code":1000,"message":"Something bad happened here"}')
+
+                ngx.print:revert()
+            end)
+        end)
+
+        describe("when the controller raises an API error", function()
+            before_each(function()
+                TestController = {}
+                function TestController:action()
+                    error("blew up!")
+                end
+                package.loaded['controller_name'] = TestController
+            end)
+
+            it("doesn't eat up the error", function()
+                ok, err = pcall(function()
+                    router.call_controller(ngx, "controller_name", "action", "params")
+                end)
+
+                assert.are.equal(false, ok)
+
+                local contains_error = string.match(err, "blew up!") ~= nil
+                assert.are.equal(true, contains_error)
             end)
         end)
     end)

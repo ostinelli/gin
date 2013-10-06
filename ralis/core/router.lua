@@ -20,41 +20,8 @@ function Router.handler(ngx)
     local controller_name, action, params = Router.match(ngx)
 
     if controller_name then
-        -- load matched controller
-        local matched_controller = require(controller_name)
-        -- create instance and set metatable
-        local controller_instance = Controller.new(ngx, params)
-        setmetatable(controller_instance, {__index = matched_controller})
-        -- call action
-        local ok, result = pcall(function() return controller_instance[action](controller_instance) end)
-
-        if ok then
-            -- set status
-            ngx.status = controller_instance.response.status
-            -- set headers
-            for k, v in pairs(controller_instance.response.headers) do
-                ngx.header[k] = v
-            end
-            -- print body
-            ngx.print(JSON.encode(result))
-        else
-            -- an error was raised
-            local err = Errors[result.code]
-            -- set status
-            ngx.status = err.status
-            -- set headers
-            for k, v in pairs(err.headers) do
-                ngx.header[k] = v
-            end
-            -- print body
-            local err_body = {
-                code = result.code,
-                message = err.message
-            }
-            ngx.print(JSON.encode(err_body))
-        end
+        Router.call_controller(ngx, controller_name, action, params)
     else
-        -- 404
         ngx.exit(ngx.HTTP_NOT_FOUND)
     end
 end
@@ -82,6 +49,49 @@ function Router.match(ngx)
             end
         end
     end
+end
+
+-- call the controller
+function Router.call_controller(ngx, controller_name, action, params)
+    -- load matched controller and set metatable
+    local matched_controller = require(controller_name)
+    setmetatable(matched_controller, { __index = Controller })
+    -- create controller instance
+    local controller_instance = Controller.new(ngx, params)
+
+    -- call action
+    local ok, result = pcall(function() return matched_controller[action](controller_instance) end)
+
+    local status, headers, body
+
+    if ok then
+        -- successful
+        status = controller_instance.response.status
+        headers = controller_instance.response.headers
+        body = JSON.encode(result)
+    else
+        -- controller raised an error
+        local ok, err = pcall(function() return Error.new(result.code) end)
+
+        if ok then
+            -- API error
+            status = err.status
+            headers = err.headers
+            body = JSON.encode(err.body)
+        else
+            -- another error, throw
+            error(result)
+        end
+    end
+
+    -- set status
+    ngx.status = status
+    -- set headers
+    for k, v in pairs(headers) do
+        ngx.header[k] = v
+    end
+    -- print body
+    ngx.print(body)
 end
 
 return Router
