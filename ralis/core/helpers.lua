@@ -5,7 +5,7 @@ function folder_exists(folder_path)
     return lfs.attributes(folder_path:gsub("\\$",""), "mode") == "directory"
 end
 
--- split function in
+-- split function
 function split(str, pat)
     local t = {}
     local fpat = "(.-)" .. pat
@@ -28,10 +28,12 @@ function split(str, pat)
     return t
 end
 
+-- split a path in individual parts
 function split_path(str)
    return split(str, '[\\/]+')
 end
 
+-- recursively make directories
 function mkdirs(file_path)
     -- get dir path and parts
     dir_path = string.match(file_path, "(.*)/.*")
