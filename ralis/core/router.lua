@@ -11,11 +11,14 @@ local Controller = require 'ralis.core.controller'
 local Router = {}
 Router.dispatchers = routes.dispatchers
 
+-- version header
+local version_header = 'ralis/'.. Ralis.version
+
 -- main handler function, called from nginx
 function Router.handler(ngx)
     -- add headers
     ngx.header.content_type = 'application/json'
-    ngx.header["X-Server"] = 'ralis/'.. Ralis.version;
+    ngx.header["X-Server"] = version_header;
     -- get routes
     local controller_name, action, params = Router.match(ngx)
 
