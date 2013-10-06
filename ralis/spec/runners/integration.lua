@@ -58,7 +58,7 @@ function IntegrationRunner.hit(request)
 
     if ok == nil then error("An error occurred while connecting to the test server.") end
 
-    -- buidl response object and return
+    -- build response object and return
     local response = ResponseSpec.new({
         status = response_status,
         headers = response_headers,
