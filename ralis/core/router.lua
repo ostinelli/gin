@@ -56,14 +56,13 @@ end
 
 -- call the controller
 function Router.call_controller(ngx, controller_name, action, params)
-    -- load matched controller and set metatable
+    -- load matched controller and set metatable to new instance of controller
     local matched_controller = require(controller_name)
-    setmetatable(matched_controller, { __index = Controller })
-    -- create controller instance
     local controller_instance = Controller.new(ngx, params)
+    setmetatable(matched_controller, { __index = controller_instance })
 
     -- call action
-    local ok, result = pcall(function() return matched_controller[action](controller_instance) end)
+    local ok, result = pcall(function() return matched_controller[action](matched_controller) end)
 
     local status, headers, body
 
