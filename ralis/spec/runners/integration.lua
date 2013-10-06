@@ -34,7 +34,7 @@ function IntegrationRunner.hit(request)
 
     -- ensure content-length is set
     if request.headers == nil then request.headers = {} end
-    if request.headers["content-length"] == nil and request.headers["Content-Length"] then
+    if request.headers["content-length"] == nil and request.headers["Content-Length"] == nil then
         request.headers["content-length"] = request.body:len()
     end
 
