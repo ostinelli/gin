@@ -119,6 +119,12 @@ describe("Router", function()
                     assert.are.equal(403, ngx.status)
                 end)
 
+                it("sets the content-length header", function()
+                    router.call_controller(ngx, "controller_name", "action", "params")
+
+                    assert.are.equal(2, ngx.header["Content-Length"])
+                end)
+
                 it("sets the body to an empty json", function()
                     stub(ngx, 'print')
 
@@ -143,6 +149,12 @@ describe("Router", function()
                     router.call_controller(ngx, "controller_name", "action", "params")
 
                     assert.are.equal(403, ngx.status)
+                end)
+
+                it("sets the content-length header", function()
+                    router.call_controller(ngx, "controller_name", "action", "params")
+
+                    assert.are.equal(16, ngx.header["Content-Length"])
                 end)
 
                 it("calls nginx with the serialized json of the controller response body", function()
@@ -185,6 +197,7 @@ describe("Router", function()
                 it("sets the nginx response headers", function()
                     router.call_controller(ngx, "controller_name", "action", "params")
 
+                    assert.are.equal(16, ngx.header["Content-Length"])
                     assert.are.equal("max-age=3600", ngx.header["Cache-Control"])
                     assert.are.equal("120", ngx.header["Retry-After"])
                 end)

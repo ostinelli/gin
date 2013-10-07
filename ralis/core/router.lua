@@ -88,8 +88,12 @@ function Router.call_controller(ngx, controller_name, action, params)
     for k, v in pairs(response.headers) do
         ngx.header[k] = v
     end
+    -- encode body
+    local json_body = JSON.encode(response.body)
+    -- ensure content-length is set
+    ngx.header["Content-Length"] = ngx.header["Content-Length"] or ngx.header["content-length"] or json_body:len()
     -- print body
-    ngx.print(JSON.encode(response.body))
+    ngx.print(json_body)
 end
 
 return Router
