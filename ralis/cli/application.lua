@@ -32,6 +32,8 @@ events {
 }
 
 http {
+    sendfile on;
+
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
 
     server {
