@@ -8,7 +8,7 @@ describe("Response", function()
 
                 assert.are.same(200, response.status)
                 assert.are.same({}, response.headers)
-                assert.are.same(nil, response.body)
+                assert.are.same({}, response.body)
             end)
         end)
 

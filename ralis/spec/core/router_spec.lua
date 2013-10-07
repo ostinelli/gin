@@ -104,40 +104,90 @@ describe("Router", function()
         end)
 
         describe("when the controller successfully returns", function()
-            before_each(function()
-                TestController = {}
-                function TestController:action()
-                    self.response.status = 400
+            describe("when the controller only returns the status code", function()
+                before_each(function()
+                    TestController = {}
+                    function TestController:action()
+                        return 403
+                    end
+                    package.loaded['controller_name'] = TestController
+                end)
 
-                    self.response.headers["Cache-Control"] = "max-age=3600"
-                    self.response.headers["Retry-After"] = "120"
+                it("sets the nginx response status to the controller's response status", function()
+                    router.call_controller(ngx, "controller_name", "action", "params")
 
-                    return { name = 'ralis' }
-                end
-                package.loaded['controller_name'] = TestController
+                    assert.are.equal(403, ngx.status)
+                end)
+
+                it("sets the body to an empty json", function()
+                    stub(ngx, 'print')
+
+                    router.call_controller(ngx, "controller_name", "action", "params")
+
+                    assert.stub(ngx.print).was.called_with('{}')
+
+                    ngx.print:revert()
+                end)
             end)
 
-            it("sets the nginx response status to the controller's response status", function()
-                router.call_controller(ngx, "controller_name", "action", "params")
+            describe("when the controller returns the status code and the body", function()
+                before_each(function()
+                    TestController = {}
+                    function TestController:action()
+                        return 403, { name = 'ralis' }
+                    end
+                    package.loaded['controller_name'] = TestController
+                end)
 
-                assert.are.equal(400, ngx.status)
+                it("sets the nginx response status to the controller's response status", function()
+                    router.call_controller(ngx, "controller_name", "action", "params")
+
+                    assert.are.equal(403, ngx.status)
+                end)
+
+                it("calls nginx with the serialized json of the controller response body", function()
+                    stub(ngx, 'print')
+
+                    router.call_controller(ngx, "controller_name", "action", "params")
+
+                    assert.stub(ngx.print).was.called_with('{"name":"ralis"}')
+
+                    ngx.print:revert()
+                end)
             end)
 
-            it("sets the nginx response headers", function()
-                router.call_controller(ngx, "controller_name", "action", "params")
+            describe("when the controller returns the status code, the body and headers", function()
+                before_each(function()
+                    TestController = {}
+                    function TestController:action()
+                        local headers = { ["Cache-Control"] = "max-age=3600", ["Retry-After"] = "120" }
+                        return 403, headers, { name = 'ralis' }
+                    end
+                    package.loaded['controller_name'] = TestController
+                end)
 
-                assert.are.equal("max-age=3600", ngx.header["Cache-Control"])
-                assert.are.equal("120", ngx.header["Retry-After"])
-            end)
+                it("sets the nginx response status to the controller's response status", function()
+                    router.call_controller(ngx, "controller_name", "action", "params")
 
-            it("calls nginx with the serialized json of the controller response", function()
-                stub(ngx, 'print')
+                    assert.are.equal(403, ngx.status)
+                end)
 
-                router.call_controller(ngx, "controller_name", "action", "params")
+                it("calls nginx with the serialized json of the controller response body", function()
+                    stub(ngx, 'print')
 
-                assert.stub(ngx.print).was.called_with('{"name":"ralis"}')
+                    router.call_controller(ngx, "controller_name", "action", "params")
 
-                ngx.print:revert()
+                    assert.stub(ngx.print).was.called_with('{"name":"ralis"}')
+
+                    ngx.print:revert()
+                end)
+
+                it("sets the nginx response headers", function()
+                    router.call_controller(ngx, "controller_name", "action", "params")
+
+                    assert.are.equal("max-age=3600", ngx.header["Cache-Control"])
+                    assert.are.equal("120", ngx.header["Retry-After"])
+                end)
             end)
         end)
 

@@ -63,7 +63,7 @@ local pages_controller = [[
 local PagesController = {}
 
 function PagesController:root()
-    return { message = "Hello world from Ralis!" }
+    return 200, { message = "Hello world from Ralis!" }
 end
 
 return PagesController

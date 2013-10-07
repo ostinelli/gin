@@ -7,7 +7,7 @@ function Response.new(options)
     local instance = {
         status = options.status or 200,
         headers = options.headers or {},
-        body = options.body,
+        body = options.body or {},
     }
     setmetatable(instance, Response)
     return instance

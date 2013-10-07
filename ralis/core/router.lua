@@ -62,38 +62,38 @@ function Router.call_controller(ngx, controller_name, action, params)
     setmetatable(matched_controller, { __index = controller_instance })
 
     -- call action
-    local ok, result = pcall(function() return matched_controller[action](matched_controller) end)
+    local ok, status_or_error, headers_or_body, body = pcall(function() return matched_controller[action](matched_controller) end)
 
-    local status, headers, body
+    local response, status
 
     if ok then
         -- successful
-        status = controller_instance.response.status
-        headers = controller_instance.response.headers
-        body = JSON.encode(result)
+        if body == nil then
+            response = Response.new({ status = status_or_error, body = headers_or_body })
+        else
+            response = Response.new({ status = status_or_error, headers = headers, body = body })
+        end
     else
         -- controller raised an error
-        local ok, err = pcall(function() return Error.new(result.code) end)
+        local ok, err = pcall(function() return Error.new(status_or_error.code) end)
 
         if ok then
             -- API error
-            status = err.status
-            headers = err.headers
-            body = JSON.encode(err.body)
+            response = Response.new({ status = err.status, headers = err.headers, body = err.body })
         else
             -- another error, throw
-            error(result)
+            error(status_or_error)
         end
     end
 
     -- set status
-    ngx.status = status
+    ngx.status = response.status
     -- set headers
-    for k, v in pairs(headers) do
+    for k, v in pairs(response.headers) do
         ngx.header[k] = v
     end
     -- print body
-    ngx.print(body)
+    ngx.print(JSON.encode(response.body))
 end
 
 return Router

@@ -27,12 +27,6 @@ describe("Controller", function()
         it("creates and initializes the controller's request object", function()
             assert.are.equals("request-body", controller.request.body)
         end)
-
-        it("creates and initializes the controller's response object", function()
-            assert.are.equals(200, controller.response.status)
-            assert.are.same({}, controller.response.headers)
-            assert.are.equals(nil, controller.response.body)
-        end)
     end)
 
     describe("#raise_error", function()
