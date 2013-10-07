@@ -64,7 +64,7 @@ function Router.call_controller(ngx, controller_name, action, params)
     -- call action
     local ok, status_or_error, headers_or_body, body = pcall(function() return matched_controller[action](matched_controller) end)
 
-    local response, status
+    local response
 
     if ok then
         -- successful
