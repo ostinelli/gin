@@ -71,7 +71,7 @@ function Router.call_controller(ngx, controller_name, action, params)
         if body == nil then
             response = Response.new({ status = status_or_error, body = headers_or_body })
         else
-            response = Response.new({ status = status_or_error, headers = headers, body = body })
+            response = Response.new({ status = status_or_error, headers = headers_or_body, body = body })
         end
     else
         -- controller raised an error
