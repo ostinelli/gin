@@ -161,7 +161,7 @@ describe("Router", function()
                     TestController = {}
                     function TestController:action()
                         local headers = { ["Cache-Control"] = "max-age=3600", ["Retry-After"] = "120" }
-                        return 403, headers, { name = 'ralis' }
+                        return 403, { name = 'ralis' }, headers
                     end
                     package.loaded['controller_name'] = TestController
                 end)

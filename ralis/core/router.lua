@@ -62,17 +62,13 @@ function Router.call_controller(ngx, controller_name, action, params)
     setmetatable(matched_controller, { __index = controller_instance })
 
     -- call action
-    local ok, status_or_error, headers_or_body, body = pcall(function() return matched_controller[action](matched_controller) end)
+    local ok, status_or_error, body, headers = pcall(function() return matched_controller[action](matched_controller) end)
 
     local response
 
     if ok then
         -- successful
-        if body == nil then
-            response = Response.new({ status = status_or_error, body = headers_or_body })
-        else
-            response = Response.new({ status = status_or_error, headers = headers_or_body, body = body })
-        end
+        response = Response.new({ status = status_or_error, headers = headers, body = body })
     else
         -- controller raised an error
         local ok, err = pcall(function() return Error.new(status_or_error.code) end)
