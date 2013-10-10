@@ -85,6 +85,7 @@ describe("PagesController", function()
     describe("#root", function()
         it("responds with a welcome message", function()
             local response = hit({
+                api_version = '1',
                 method = 'GET',
                 url = "/"
             })

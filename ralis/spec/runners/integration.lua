@@ -40,6 +40,14 @@ function IntegrationRunner.hit(request)
         end
     end
 
+    -- set the Accept header
+    -- get application name
+    package.loaded['config.application'] = nil
+    require 'config.application'
+
+    request.headers["accept"] = nil
+    request.headers["Accept"] = "application/vnd." .. Application.name .. ".v" .. request.api_version .. "+json"
+
     -- start nginx
     launcher.start()
 
