@@ -4,17 +4,22 @@ describe("Router", function()
     before_each(function()
         package.loaded['config.routes'] = {}    -- stub the real routes loading
         router = require 'ralis.core.router'
-        routes = require 'ralis.core.routes'
+        require 'ralis.core.routes'
         Controller = require 'ralis.core.controller'
         ngx = {
             HTTP_NOT_FOUND = 404,
             exit = function(code) return end,
             print = function(print) return end,
             status = 200,
-            header = { content_type = '' },
+            header = {},
             req = {
                 read_body = function() return end,
-                get_body_data = function() return end
+                get_body_data = function() return end,
+                get_headers = function() return end,
+            },
+            var = {
+                uri = "/users",
+                request_method = "GET"
             }
         }
     end)
@@ -22,9 +27,9 @@ describe("Router", function()
     after_each(function()
         package.loaded['ralis.core.router'] = nil
         package.loaded['ralis.core.routes'] = nil
+        Routes = nil
         package.loaded['ralis.core.controller'] = nil
         router = nil
-        routes = nil
         Controller = nil
         ngx = nil
     end)
@@ -52,6 +57,7 @@ describe("Router", function()
             end)
 
             it("calls controller", function()
+                stub(router, 'respond') -- stub to avoid calling the function
                 stub(router, "call_controller")
 
                 router.handler(ngx)
@@ -59,6 +65,17 @@ describe("Router", function()
                 assert.stub(router.call_controller).was.called_with(ngx, "controller_name", "action", "params")
 
                 router.call_controller:revert()
+                router.respond:revert()
+            end)
+
+            it("responds with the response", function()
+                router.call_controller = function() return "response" end
+
+                stub(router, 'respond')
+
+                router.handler(ngx)
+
+                assert.stub(router.respond).was.called_with(ngx, "response")
             end)
         end)
     end)
@@ -113,26 +130,16 @@ describe("Router", function()
                     package.loaded['controller_name'] = TestController
                 end)
 
-                it("sets the nginx response status to the controller's response status", function()
-                    router.call_controller(ngx, "controller_name", "action", "params")
+                it("returns a response with the status", function()
+                    local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                    assert.are.equal(403, ngx.status)
+                    assert.are.equal(403, response.status)
                 end)
 
-                it("sets the content-length header", function()
-                    router.call_controller(ngx, "controller_name", "action", "params")
+                it("returns a response with the body to an empty json", function()
+                    local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                    assert.are.equal(2, ngx.header["Content-Length"])
-                end)
-
-                it("sets the body to an empty json", function()
-                    stub(ngx, 'print')
-
-                    router.call_controller(ngx, "controller_name", "action", "params")
-
-                    assert.stub(ngx.print).was.called_with('{}')
-
-                    ngx.print:revert()
+                    assert.are.same({}, response.body)
                 end)
             end)
 
@@ -145,26 +152,16 @@ describe("Router", function()
                     package.loaded['controller_name'] = TestController
                 end)
 
-                it("sets the nginx response status to the controller's response status", function()
-                    router.call_controller(ngx, "controller_name", "action", "params")
+                it("sets the response response status to the controller's response status", function()
+                    local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                    assert.are.equal(403, ngx.status)
-                end)
-
-                it("sets the content-length header", function()
-                    router.call_controller(ngx, "controller_name", "action", "params")
-
-                    assert.are.equal(16, ngx.header["Content-Length"])
+                    assert.are.equal(403, response.status)
                 end)
 
                 it("calls nginx with the serialized json of the controller response body", function()
-                    stub(ngx, 'print')
+                    local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                    router.call_controller(ngx, "controller_name", "action", "params")
-
-                    assert.stub(ngx.print).was.called_with('{"name":"ralis"}')
-
-                    ngx.print:revert()
+                    assert.are.same({ name = 'ralis' }, response.body)
                 end)
             end)
 
@@ -178,28 +175,23 @@ describe("Router", function()
                     package.loaded['controller_name'] = TestController
                 end)
 
-                it("sets the nginx response status to the controller's response status", function()
-                    router.call_controller(ngx, "controller_name", "action", "params")
+                it("sets the response status to the controller's response status", function()
+                    local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                    assert.are.equal(403, ngx.status)
+                    assert.are.equal(403, response.status)
                 end)
 
                 it("calls nginx with the serialized json of the controller response body", function()
-                    stub(ngx, 'print')
+                    local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                    router.call_controller(ngx, "controller_name", "action", "params")
-
-                    assert.stub(ngx.print).was.called_with('{"name":"ralis"}')
-
-                    ngx.print:revert()
+                    assert.are.same({ name = 'ralis' }, response.body)
                 end)
 
                 it("sets the nginx response headers", function()
-                    router.call_controller(ngx, "controller_name", "action", "params")
+                    local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                    assert.are.equal(16, ngx.header["Content-Length"])
-                    assert.are.equal("max-age=3600", ngx.header["Cache-Control"])
-                    assert.are.equal("120", ngx.header["Retry-After"])
+                    assert.are.equal("max-age=3600", response.headers["Cache-Control"])
+                    assert.are.equal("120", response.headers["Retry-After"])
                 end)
             end)
         end)
@@ -214,26 +206,22 @@ describe("Router", function()
                 package.loaded['controller_name'] = TestController
             end)
 
-            it("sets the nginx response status to the controller's error status", function()
-                router.call_controller(ngx, "controller_name", "action", "params")
+            it("sets the response status to the controller's error status", function()
+                local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                assert.are.equal(500, ngx.status)
+                assert.are.equal(500, response.status)
             end)
 
-            it("sets the nginx response headers", function()
-                router.call_controller(ngx, "controller_name", "action", "params")
+            it("sets the response headers", function()
+                local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                assert.are.equal("additional-info", ngx.header["X-Info"])
+                assert.are.equal("additional-info", response.headers["X-Info"])
             end)
 
             it("calls nginx with the serialized json of the controller response", function()
-                stub(ngx, 'print')
+                local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                router.call_controller(ngx, "controller_name", "action", "params")
-
-                assert.stub(ngx.print).was.called_with('{"code":1000,"message":"Something bad happened here"}')
-
-                ngx.print:revert()
+                assert.are.same({ code = 1000, message = "Something bad happened here" }, response.body)
             end)
         end)
 
@@ -262,43 +250,98 @@ describe("Router", function()
     describe(".match", function()
         before_each(function()
             -- set routes
-            routes.POST("/users", { controller = "users", action = "create" })
-            routes.GET("/users", { controller = "users", action = "index" })
-            routes.GET("/users/:id", { controller = "users", action = "show" })
-            routes.PUT("/users/:id", { controller = "users", action = "edit" })
-            routes.DELETE("/users/:user_id/messages/:id", { controller = "messages", action = "destroy" })
+            local v1 = Routes.version(1)
 
-            router.dispatchers = routes.dispatchers
+            v1:POST("/users", { controller = "users", action = "create" })
+            v1:GET("/users", { controller = "users", action = "index" })
+            v1:GET("/users/:id", { controller = "users", action = "show" })
+            v1:PUT("/users/:id", { controller = "users", action = "edit" })
+
+            local v2 = Routes.version(2)
+
+            v2:DELETE("/users/:user_id/messages/:id", { controller = "messages", action = "destroy" })
         end)
 
         it("returns the controller, action and params for a single param", function()
-            ngx = {
-                var = {
-                    uri = "/users/roberto",
-                    request_method = "GET"
-                }
-            }
+            ngx.var.uri = "/users/roberto"
+            ngx.var.request_method = "GET"
+            ngx.req.get_headers = function() return { ['accept'] = "application/vnd.myapp.v1+json" } end
 
-            controller, action, params = router.match(ngx)
+            local request = Request.new(ngx)
 
-            assert.are.same("users_controller", controller)
+            controller, action, params, version = router.match(request)
+
+            assert.are.same("1/users_controller", controller)
             assert.are.same("show", action)
             assert.are.same({ id = "roberto" }, params)
+            assert.are.same('1', version)
         end)
 
         it("returns the controller, action and params for a multiple params", function()
-            ngx = {
-                var = {
-                    uri = "/users/roberto/messages/123",
-                    request_method = "DELETE"
-                }
-            }
+            ngx.var.uri = "/users/roberto/messages/123"
+            ngx.var.request_method = "DELETE"
+            ngx.req.get_headers = function() return { ['accept'] = "application/vnd.myapp.v2.1-p3+json" } end
 
-            controller, action, params = router.match(ngx)
+            local request = Request.new(ngx)
 
-            assert.are.same("messages_controller", controller)
+            controller, action, params, version = router.match(request)
+
+            assert.are.same("2/messages_controller", controller)
             assert.are.same("destroy", action)
             assert.are.same({ user_id = "roberto", id = "123" }, params)
+            assert.are.same('2.1-p3', version)
+        end)
+
+        it("returns a 412 if an Accept header is not set", function()
+                -- PENDING
+
+        end)
+
+        it("returns a 412 if an Accept header set does not match the appropriate vendor format", function()
+                -- PENDING
+
+        end)
+
+        it("returns a 412 if an Accept header corresponds to an unsupported version", function()
+                -- PENDING
+
+        end)
+    end)
+
+    describe(".respond", function()
+        before_each(function()
+            response = Response.new({
+                status = 200,
+                headers = { ['one'] = 'first', ['two'] = 'second' },
+                body = { name = 'ralis'}
+            })
+        end)
+
+        it("sets the ngx status", function()
+            router.respond(ngx, response)
+
+            assert.are.equal(200, ngx.status)
+        end)
+
+        it("sets the ngx headers", function()
+            router.respond(ngx, response)
+
+            assert.are.equal('first', ngx.header['one'])
+            assert.are.equal('second', ngx.header['two'])
+        end)
+
+        it("sets the content length header", function()
+            router.respond(ngx, response)
+
+            assert.are.equal(16, ngx.header['Content-Length'])
+        end)
+
+        it("calls ngx print with the encoded body", function()
+            stub(ngx, 'print')
+
+            router.respond(ngx, response)
+
+            assert.stub(ngx.print).was_called_with('{"name":"ralis"}')
         end)
     end)
 end)

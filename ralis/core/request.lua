@@ -7,6 +7,8 @@ function Request.new(ngx)
 
     local instance = {
         ngx = ngx,
+        uri = ngx.var.uri,
+        method = ngx.var.request_method,
         body = ngx.req.get_body_data() or '',
         __cache = {}
     }

@@ -2,14 +2,13 @@ package.path = './app/controllers/?.lua;' .. package.path
 
 -- init module dependencies
 require 'ralis.core.ralis'
-
--- load modules
-local routes = require 'config.routes'
 local Controller = require 'ralis.core.controller'
+
+-- load application routes
+require 'config.routes'
 
 -- init Router and set routes
 local Router = {}
-Router.dispatchers = routes.dispatchers
 
 -- version header
 local version_header = 'ralis/'.. Ralis.version
@@ -19,22 +18,32 @@ function Router.handler(ngx)
     -- add headers
     ngx.header.content_type = 'application/json'
     ngx.header["X-Server"] = version_header;
+
+    -- create request object
+    local request = Request.new(ngx)
+
     -- get routes
-    local controller_name, action, params = Router.match(ngx)
+    local controller_name, action, params = Router.match(request)
 
     if controller_name then
-        Router.call_controller(ngx, controller_name, action, params)
+        local response = Router.call_controller(ngx, controller_name, action, params)
+        Router.respond(ngx, response)
     else
         ngx.exit(ngx.HTTP_NOT_FOUND)
     end
 end
 
 -- match request to routes
-function Router.match(ngx)
-    local uri = ngx.var.uri
-    local method = ngx.var.request_method
+function Router.match(request)
+    local uri = request.uri
+    local method = request.method
 
-    for _, dispatcher in ipairs(Router.dispatchers) do
+    -- match version based on headers
+    local headers = request.headers
+    local major_version, rest_version = string.match(headers['accept'], "^application/vnd.myapp.v(%d+)(.*)+json")
+
+    -- loop dispatchers to find route
+    for _, dispatcher in ipairs(Routes.dispatchers[tonumber(major_version)]) do
         if dispatcher[method] then -- avoid matching if method is not defined in dispatcher
             local match = { string.match(uri, dispatcher.pattern) }
 
@@ -48,7 +57,9 @@ function Router.match(ngx)
                     end
                 end
 
-                return dispatcher[method].controller, dispatcher[method].action, params
+                local version = major_version .. rest_version
+
+                return major_version .. '/' .. dispatcher[method].controller, dispatcher[method].action, params, version
             end
         end
     end
@@ -82,6 +93,10 @@ function Router.call_controller(ngx, controller_name, action, params)
         end
     end
 
+    return response
+end
+
+function Router.respond(ngx, response)
     -- set status
     ngx.status = response.status
     -- set headers

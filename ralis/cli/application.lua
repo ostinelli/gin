@@ -52,12 +52,11 @@ http {
 
 
 local routes = [[
-local routes = require 'ralis.core.routes'
+-- define version
+local v1 = Routes.version(1)
 
 -- define routes
-routes.GET("/", { controller = "pages", action = "root" })
-
-return routes
+v1:GET("/", { controller = "pages", action = "root" })
 ]]
 
 

@@ -1,7 +1,40 @@
-local Routes = {}
-Routes.dispatchers = {}
+--  versions
+local Version = {}
+Version.__index = Version
 
-Routes.supported_http_methods = {
+function Version.new(number)
+    if type(number) ~= 'number' then error("version is not an integer number (got string).") end
+    if string.match(tostring(number), "%.") ~= nil then error("version is not an integer number (got float).") end
+
+    local instance = {
+        number = number
+    }
+    setmetatable(instance, Version)
+    return instance
+end
+
+
+function Version:add(method, pattern, route_info)
+    local pattern, params = self:build_named_parameters(pattern)
+
+    pattern = "^" .. pattern .. "/???$"
+
+    route_info.controller = route_info.controller .. "_controller"
+    route_info.params = params
+
+    table.insert(Routes.dispatchers[self.number], { pattern = pattern, [method] = route_info })
+end
+
+function Version:build_named_parameters(pattern)
+    local params = {}
+    local new_pattern = string.gsub(pattern, "/:([A-Za-z0-9_]+)", function(m)
+        table.insert(params, m)
+        return "/([A-Za-z0-9_]+)"
+    end)
+    return new_pattern, params
+end
+
+local supported_http_methods = {
     GET = true,
     POST = true,
     HEAD = true,
@@ -13,38 +46,22 @@ Routes.supported_http_methods = {
     CONNECT = true
 }
 
-local meta = {
-    __index = function(_, method)
-        if Routes.supported_http_methods[method] == nil then
-            error("Unsupported HTTP method")
-        end
-
-        return function(pattern, route_info)
-            Routes.add(method, pattern, route_info)
-        end
+for http_method, _ in pairs(supported_http_methods) do
+    Version[http_method] = function(self, pattern, route_info)
+        self:add(http_method, pattern, route_info)
     end
-}
-setmetatable(Routes, meta)
-
-
-function Routes.add(method, pattern, route_info)
-    local pattern, params = Routes.build_named_parameters(pattern)
-
-    pattern = "^" .. pattern .. "/???$"
-
-    route_info.controller = route_info.controller .. "_controller"
-    route_info.params = params
-
-    table.insert(Routes.dispatchers, { pattern = pattern, [method] = route_info })
 end
 
-function Routes.build_named_parameters(pattern)
-    local params = {}
-    local new_pattern = string.gsub(pattern, "/:([A-Za-z0-9_]+)", function(m)
-        table.insert(params, m)
-        return "/([A-Za-z0-9_]+)"
-    end)
-    return new_pattern, params
-end
 
-return Routes
+--  global routes
+Routes = {}
+Routes.dispatchers = {}
+
+function Routes.version(number)
+    local version = Version.new(number)
+
+    if Routes.dispatchers[number] then error("version has already been defined (got " .. number .. ").") end
+    Routes.dispatchers[number] = {}
+
+    return version
+end

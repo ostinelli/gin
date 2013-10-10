@@ -3,6 +3,11 @@ require 'ralis.spec.spec_helper'
 describe("Request", function()
     before_each(function()
         ngx = {
+            var = {
+                uri = "/uri",
+                request_method = 'POST'
+            },
+
             req = {
                 read_body = function() return end,
                 get_body_data = function() return "request-body" end,
@@ -46,6 +51,14 @@ describe("Request", function()
 
         it("returns nil for unset attrs", function()
             assert.are.same(nil, request.unexisting_attr)
+        end)
+
+        it("returns uri", function()
+            assert.are.same('/uri', request.uri)
+        end)
+
+        it("returns method", function()
+            assert.are.same('POST', request.method)
         end)
 
         it("returns uri_params", function()

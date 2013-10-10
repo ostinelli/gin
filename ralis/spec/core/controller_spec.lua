@@ -4,10 +4,16 @@ local c = require 'ralis.core.controller'
 
 describe("Controller", function()
     before_each(function()
-        ngx = { req = {
-            read_body = function() return end,
-            get_body_data = function() return "request-body" end,
-        } }
+        ngx = {
+            req = {
+                read_body = function() return end,
+                get_body_data = function() return "request-body" end,
+            },
+            var = {
+                uri = "/uri",
+                request_method = 'POST'
+            }
+        }
         params = {}
         controller = c.new(ngx, params)
     end)

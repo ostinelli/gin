@@ -3,88 +3,184 @@ require 'ralis.spec.spec_helper'
 describe("Routes", function()
 
     before_each(function()
-        routes = require('ralis.core.routes')
+        require('ralis.core.routes')
     end)
 
     after_each(function()
         package.loaded['ralis.core.routes'] = nil
-        routes = nil
+        Routes = nil
     end)
 
-    describe(".add", function()
-        it("adds a simple route", function()
-            routes.add('GET', "/users", { controller = "users", action = "index" })
+    describe(".version", function()
+        describe("when it's a string", function()
+            it("raises an error", function()
+                local errfn = function()
+                    local version = Routes.version("1")
+                end
 
-            assert.are.same({
-                [1] = {
-                    pattern = "^/users/???$",
-                    GET = { controller = "users_controller", action = "index", params = {} }
-                }
-            }, routes.dispatchers)
+                assert.has_error(errfn, "version is not an integer number (got string).")
+            end)
         end)
 
-        it("adds a named parameter route", function()
-            routes.add('GET', "/users/:id", { controller = "users", action = "show" })
+        describe("when it's a float", function()
+            it("raises an error", function()
+                local errfn = function()
+                    local version = Routes.version(1.2)
+                end
 
-            assert.are.same({
-                [1] = {
-                    pattern = "^/users/([A-Za-z0-9_]+)/???$",
-                    GET = { controller = "users_controller", action = "show", params = { [1] = "id" } }
-                }
-            }, routes.dispatchers)
+                assert.has_error(errfn, "version is not an integer number (got float).")
+            end)
         end)
 
-        it("adds routes with multiple named parameters", function()
-            routes.add('GET', "/users/:user_id/messages/:id", { controller = "messages", action = "show" })
+        describe("when it's an integer", function()
+            it("sets the dispatcher key and returns a version object", function()
+                local version = Routes.version(1)
 
-            assert.are.same({
-                [1] = {
-                    pattern = "^/users/([A-Za-z0-9_]+)/messages/([A-Za-z0-9_]+)/???$",
-                    GET = { controller = "messages_controller", action = "show", params = { [1] = "user_id", [2] = "id" } }
-                }
-            }, routes.dispatchers)
+                assert.are.same({ [1] = {} }, Routes.dispatchers)
+                assert.are.same(1, version.number)
+            end)
         end)
 
-        it("add multiple routes", function()
-            routes.add('GET', "/users", { controller = "users", action = "index" })
-            routes.add('POST', "/users", { controller = "users", action = "create" })
+        describe("when a version has already been created", function()
+            it("returns an error", function()
+                local version = Routes.version(1)
 
-            assert.are.same({
-                [1] = {
-                    pattern = "^/users/???$",
-                    GET = { controller = "users_controller", action = "index", params = {} }
-                },
-                [2] = {
-                    pattern = "^/users/???$",
-                    POST = { controller = "users_controller", action = "create", params = {} }
-                }
-            }, routes.dispatchers)
+                local errfn = function()
+                    version = Routes.version(1)
+                end
+
+                assert.has_error(errfn, "version has already been defined (got 1).")
+            end)
         end)
 
-        it("does not modify entered regexes", function()
-            routes.add('PUT', "/users/:(.*)", { controller = "messages", action = "show" })
-
-            assert.are.same({
-                [1] = {
-                    pattern = "^/users/:(.*)/???$",
-                    PUT = { controller = "messages_controller", action = "show", params = {} }
-                }
-            }, routes.dispatchers)
+        describe("when another version gets created", function()
+            it("sets the dispatcher keys", function()
+                local version_1 = Routes.version(1)
+                local version_2 = Routes.version(2)
+                assert.are.same({ [1] = {}, [2] = {} }, Routes.dispatchers)
+            end)
         end)
     end)
 
-    describe("Helpers", function()
+    describe("Adding routes", function()
+        before_each(function()
+            version = Routes.version(1)
+        end)
+
+        after_each(function()
+            version = nil
+        end)
+
+        describe(".add", function()
+            it("adds a simple route", function()
+                version:add('GET', "/users", { controller = "users", action = "index" })
+
+                assert.are.same({
+                    [1] = {
+                        [1] = {
+                            pattern = "^/users/???$",
+                            GET = { controller = "users_controller", action = "index", params = {} }
+                        }
+                    }
+                }, Routes.dispatchers)
+            end)
+
+            it("adds a named parameter route", function()
+                version:add('GET', "/users/:id", { controller = "users", action = "show" })
+
+                assert.are.same({
+                    [1] = {
+                        [1] = {
+                            pattern = "^/users/([A-Za-z0-9_]+)/???$",
+                            GET = { controller = "users_controller", action = "show", params = { [1] = "id" } }
+                        }
+                    }
+                }, Routes.dispatchers)
+            end)
+
+            it("adds routes with multiple named parameters", function()
+                version:add('GET', "/users/:user_id/messages/:id", { controller = "messages", action = "show" })
+
+                assert.are.same({
+                    [1] = {
+                        [1] = {
+                            pattern = "^/users/([A-Za-z0-9_]+)/messages/([A-Za-z0-9_]+)/???$",
+                            GET = { controller = "messages_controller", action = "show", params = { [1] = "user_id", [2] = "id" } }
+                        }
+                    }
+                }, Routes.dispatchers)
+            end)
+
+            it("add multiple routes", function()
+                version:add('GET', "/users", { controller = "users", action = "index" })
+                version:add('POST', "/users", { controller = "users", action = "create" })
+
+                assert.are.same({
+                    [1] = {
+                        [1] = {
+                            pattern = "^/users/???$",
+                            GET = { controller = "users_controller", action = "index", params = {} }
+                        },
+                        [2] = {
+                            pattern = "^/users/???$",
+                            POST = { controller = "users_controller", action = "create", params = {} }
+                        }
+                    }
+                }, Routes.dispatchers)
+            end)
+
+            it("does not modify entered regexes", function()
+                version:add('PUT', "/users/:(.*)", { controller = "messages", action = "show" })
+
+                assert.are.same({
+                    [1] = {
+                        [1] = {
+                            pattern = "^/users/:(.*)/???$",
+                            PUT = { controller = "messages_controller", action = "show", params = {} }
+                        }
+                    }
+                }, Routes.dispatchers)
+            end)
+
+            it("adds routes to the appropriate version", function()
+                local version_2 = Routes.version(2)
+
+                version:add('GET', "/users", { controller = "users", action = "index" })
+                version_2:add('GET', "/messages", { controller = "messages", action = "index" })
+
+                assert.are.same({
+                    [1] = {
+                        [1] = {
+                            pattern = "^/users/???$",
+                            GET = { controller = "users_controller", action = "index", params = {} }
+                        }
+                    },
+
+                    [2] = {
+                        [1] = {
+                            pattern = "^/messages/???$",
+                            GET = { controller = "messages_controller", action = "index", params = {} }
+                        }
+                    }
+                }, Routes.dispatchers)
+            end)
+        end)
+    end)
+
+    describe("Version Helpers", function()
 
         before_each(function()
-            spy.on(routes, 'add')
+            version = Routes.version(1)
+            -- spy.on(version, 'add')
             t = { controller = "users", action = "index" }
         end)
 
         after_each(function()
-            routes.add:revert()
+            -- version.add:revert()
+            version = nil
         end)
 
-        supported_http_methods = {
+        local supported_http_methods = {
             GET = true,
             POST = true,
             HEAD = true,
@@ -96,12 +192,21 @@ describe("Routes", function()
             CONNECT = true
         }
 
-        for method, _ in pairs(supported_http_methods) do
+        for http_method, _ in pairs(supported_http_methods) do
+            describe("." .. http_method, function()
+                it("calls the .add method with ".. http_method, function()
+                    local self, method, pattern, route_info
 
-            describe("." .. method, function()
-                it("calls the .add method with ".. method, function()
-                    routes[method]("/users", t)
-                    assert.spy(routes.add).was_called_with(method, "/users", t)
+                    version.add = function(arg1, arg2, arg3, arg4)
+                        self, method, pattern, route_info = arg1, arg2, arg3, arg4
+                    end
+
+                    version[http_method](version, "/users", t)
+
+                    assert.are.same(version, self)
+                    assert.are.same(http_method, method)
+                    assert.are.same('/users', pattern)
+                    assert.are.same(t, route_info)
                 end)
             end)
         end
