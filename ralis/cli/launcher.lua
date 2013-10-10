@@ -22,7 +22,7 @@ function RalisLauncher.start()
 
     if result == 0 then
         if Ralis.env ~= 'test' then
-            print("Ralis app was succesfully started on port " .. Ralis.settings.port .. ' (' .. Ralis.env .. ').')
+            print("Ralis app was succesfully started on port " .. Ralis.settings.port .. ' (' .. bashcolors.cyan .. Ralis.env .. bashcolors.reset .. ').')
         end
     else
         print(bashcolors.red .. "ERROR:" .. bashcolors.reset .. " Could not start Ralis app (is it running already?).")
