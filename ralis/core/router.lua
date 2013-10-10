@@ -29,10 +29,6 @@ function Router.handler(ngx)
     -- get routes
     local ok, controller_name_or_error, action, params, version = pcall(function() return Router.match(request) end)
 
-
--- TODO: SET VERSION INSIDE OF CONTROLLER, AND CALL CONTROLLER WITH THE REQUEST OBJECT INSTEAD OF RECREATING IT
-
-
     local response
 
     if ok == false then
@@ -41,7 +37,7 @@ function Router.handler(ngx)
         Router.respond(ngx, response)
 
     elseif controller_name_or_error then
-        response = Router.call_controller(ngx, controller_name_or_error, action, params)
+        response = Router.call_controller(request, controller_name_or_error, action, params)
         Router.respond(ngx, response)
 
     else
@@ -88,10 +84,10 @@ function Router.match(request)
 end
 
 -- call the controller
-function Router.call_controller(ngx, controller_name, action, params)
+function Router.call_controller(request, controller_name, action, params)
     -- load matched controller and set metatable to new instance of controller
     local matched_controller = require(controller_name)
-    local controller_instance = Controller.new(ngx, params)
+    local controller_instance = Controller.new(request, params)
     setmetatable(matched_controller, { __index = controller_instance })
 
     -- call action

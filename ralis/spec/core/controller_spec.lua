@@ -14,19 +14,21 @@ describe("Controller", function()
                 request_method = 'POST'
             }
         }
+        request = Request.new(ngx)
         params = {}
-        controller = c.new(ngx, params)
+        controller = c.new(request, params)
     end)
 
     after_each(function()
         ngx = nil
+        request = nil
         params = nil
         controller = nil
     end)
 
     describe(".new", function()
-        it("creates a new instance of a controller with ngx and params", function()
-            assert.are.equals(ngx, controller.ngx)
+        it("creates a new instance of a controller with request and params", function()
+            assert.are.equals(request, controller.request)
             assert.are.equals(params, controller.params)
         end)
 

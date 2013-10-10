@@ -19,7 +19,7 @@ describe("Router", function()
             },
             var = {
                 uri = "/users",
-                request_method = "GET"
+                request_method = 'GET'
             }
         }
     end)
@@ -42,10 +42,7 @@ describe("Router", function()
 
             it("responds with an error response", function()
                 local arg_ngx, arg_response
-                router.respond = function(arg1, arg2)
-                    arg_ngx = arg1
-                    arg_response = arg2
-                end
+                router.respond = function(...) arg_ngx, arg_response = ... end
 
                 router.handler(ngx)
 
@@ -80,13 +77,20 @@ describe("Router", function()
 
                 it("calls controller", function()
                     stub(router, 'respond') -- stub to avoid calling the function
-                    stub(router, "call_controller")
+
+                    local arg_request, arg_controller_name, arg_action, arg_params
+                    router.call_controller = function(...) arg_request, arg_controller_name, arg_action, arg_params = ... end
 
                     router.handler(ngx)
 
-                    assert.stub(router.call_controller).was.called_with(ngx, "controller_name", "action", "params")
+                    assert.are.same(ngx, arg_request.ngx)
+                    assert.are.same("/users", arg_request.uri)
+                    assert.are.same('GET', arg_request.method)
 
-                    router.call_controller:revert()
+                    assert.are.equal("controller_name", arg_controller_name)
+                    assert.are.equal("action", arg_action)
+                    assert.are.equal("params", arg_params)
+
                     router.respond:revert()
                 end)
 
@@ -132,12 +136,13 @@ describe("Router", function()
         it("calls the action of an instance of the matched controller name", function()
             spy.on(TestController, 'action')
 
-            router.call_controller(ngx, "controller_name", "action", "params")
+            local request = Request.new(ngx)
+            router.call_controller(request, "controller_name", "action", "params")
 
             assert.spy(TestController.action).was.called()
 
             -- assert the instance was initialized with the correct arguments
-            assert.are.same(ngx, instance.ngx)
+            assert.are.same(request, instance.request)
             assert.are.same("params", instance.params)
 
             TestController.action:revert()

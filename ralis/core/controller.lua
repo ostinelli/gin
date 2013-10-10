@@ -1,13 +1,12 @@
 local Controller = {}
 Controller.__index = Controller
 
-function Controller.new(ngx, params)
+function Controller.new(request, params)
     params = params or {}
 
     local instance = {
-        ngx = ngx,
         params = params,
-        request = Request.new(ngx)
+        request = request
     }
     setmetatable(instance, Controller)
     return instance

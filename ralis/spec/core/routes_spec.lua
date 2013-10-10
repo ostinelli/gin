@@ -197,9 +197,7 @@ describe("Routes", function()
                 it("calls the .add method with ".. http_method, function()
                     local self, method, pattern, route_info
 
-                    version.add = function(arg1, arg2, arg3, arg4)
-                        self, method, pattern, route_info = arg1, arg2, arg3, arg4
-                    end
+                    version.add = function(...) self, method, pattern, route_info = ... end
 
                     version[http_method](version, "/users", t)
 
