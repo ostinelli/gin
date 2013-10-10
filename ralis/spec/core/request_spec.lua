@@ -72,5 +72,10 @@ describe("Request", function()
         it("returns body_params", function()
             assert.are.same({ body_param = '2' }, request.body_params)
         end)
+
+        it("sets and returns api_version", function()
+            request.api_version = '1.2'
+            assert.are.same('1.2', request.api_version)
+        end)
     end)
 end)

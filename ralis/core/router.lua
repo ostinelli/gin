@@ -27,20 +27,23 @@ function Router.handler(ngx)
     local request = Request.new(ngx)
 
     -- get routes
-    local ok, controller_name_or_error, action, params, version = pcall(function() return Router.match(request) end)
+    local ok, controller_name_or_error, action, params, request = pcall(function() return Router.match(request) end)
 
     local response
 
     if ok == false then
+        -- match returned an error (for instance a 412 for no header match)
         local err = Error.new(controller_name_or_error.code)
         response = Response.new({ status = err.status, body = err.body })
         Router.respond(ngx, response)
 
     elseif controller_name_or_error then
+        -- matching routes found
         response = Router.call_controller(request, controller_name_or_error, action, params)
         Router.respond(ngx, response)
 
     else
+        -- no matching routes found
         ngx.exit(ngx.HTTP_NOT_FOUND)
     end
 end
@@ -75,9 +78,10 @@ function Router.match(request)
                     end
                 end
 
-                local version = major_version .. rest_version
-
-                return major_version .. '/' .. dispatcher[method].controller, dispatcher[method].action, params, version
+                -- set version on request
+                request.api_version = major_version .. rest_version
+                -- return
+                return major_version .. '/' .. dispatcher[method].controller, dispatcher[method].action, params, request
             end
         end
     end

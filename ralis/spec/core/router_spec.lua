@@ -72,7 +72,12 @@ describe("Router", function()
 
             describe("when a match is found", function()
                 before_each(function()
-                    router.match = function(ngx) return "controller_name", "action", "params" end
+                    request = Request.new(ngx)
+                    router.match = function(ngx) return "controller_name", "action", "params", request end
+                end)
+
+                after_each(function()
+                    request = nil
                 end)
 
                 it("calls controller", function()
@@ -297,12 +302,12 @@ describe("Router", function()
 
             local request = Request.new(ngx)
 
-            controller, action, params, version = router.match(request)
+            controller, action, params, request = router.match(request)
 
             assert.are.same("1/users_controller", controller)
             assert.are.same("show", action)
             assert.are.same({ id = "roberto" }, params)
-            assert.are.same('1', version)
+            assert.are.same('1', request.api_version)
         end)
 
         it("returns the controller, action and params for a multiple params", function()
@@ -317,7 +322,7 @@ describe("Router", function()
             assert.are.same("2/messages_controller", controller)
             assert.are.same("destroy", action)
             assert.are.same({ user_id = "roberto", id = "123" }, params)
-            assert.are.same('2.1-p3', version)
+            assert.are.same('2.1-p3', request.api_version)
         end)
 
         it("raises an error if an Accept header is not set", function()

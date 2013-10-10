@@ -10,6 +10,7 @@ function Request.new(ngx)
         uri = ngx.var.uri,
         method = ngx.var.request_method,
         body = ngx.req.get_body_data() or '',
+        api_version = nil,
         __cache = {}
     }
     setmetatable(instance, Request)
