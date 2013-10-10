@@ -4,30 +4,46 @@ package.path = './app/controllers/?.lua;' .. package.path
 require 'ralis.core.ralis'
 local Controller = require 'ralis.core.controller'
 
--- load application routes
+-- load application and routes
+require 'config.application'
 require 'config.routes'
 
 -- init Router and set routes
 local Router = {}
 
--- version header
-local version_header = 'ralis/'.. Ralis.version
+-- response version header
+local response_version_header = 'ralis/'.. Ralis.version
+
+-- accept header for application
+local accept_header_matcher = "^application/vnd." .. Application.name .. ".v(%d+)(.*)+json$"
 
 -- main handler function, called from nginx
 function Router.handler(ngx)
     -- add headers
     ngx.header.content_type = 'application/json'
-    ngx.header["X-Server"] = version_header;
+    ngx.header["X-Server"] = response_version_header;
 
     -- create request object
     local request = Request.new(ngx)
 
     -- get routes
-    local controller_name, action, params = Router.match(request)
+    local ok, controller_name_or_error, action, params, version = pcall(function() return Router.match(request) end)
 
-    if controller_name then
-        local response = Router.call_controller(ngx, controller_name, action, params)
+
+-- TODO: SET VERSION INSIDE OF CONTROLLER, AND CALL CONTROLLER WITH THE REQUEST OBJECT INSTEAD OF RECREATING IT
+
+
+    local response
+
+    if ok == false then
+        local err = Error.new(controller_name_or_error.code)
+        response = Response.new({ status = err.status, body = err.body })
         Router.respond(ngx, response)
+
+    elseif controller_name_or_error then
+        response = Router.call_controller(ngx, controller_name_or_error, action, params)
+        Router.respond(ngx, response)
+
     else
         ngx.exit(ngx.HTTP_NOT_FOUND)
     end
@@ -40,10 +56,16 @@ function Router.match(request)
 
     -- match version based on headers
     local headers = request.headers
-    local major_version, rest_version = string.match(headers['accept'], "^application/vnd.myapp.v(%d+)(.*)+json")
+    if headers['accept'] == nil then error({ code = 100 }) end
+
+    local major_version, rest_version = string.match(headers['accept'], accept_header_matcher)
+    if major_version == nil then error({ code = 101 }) end
+
+    local routes_dispatchers = Routes.dispatchers[tonumber(major_version)]
+    if routes_dispatchers == nil then error({ code = 102 }) end
 
     -- loop dispatchers to find route
-    for _, dispatcher in ipairs(Routes.dispatchers[tonumber(major_version)]) do
+    for _, dispatcher in ipairs(routes_dispatchers) do
         if dispatcher[method] then -- avoid matching if method is not defined in dispatcher
             local match = { string.match(uri, dispatcher.pattern) }
 

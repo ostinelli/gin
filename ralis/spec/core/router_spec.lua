@@ -35,47 +35,70 @@ describe("Router", function()
     end)
 
     describe(".handler", function()
-        describe("when no match is found", function()
+        describe("when no matching API version is found", function()
             before_each(function()
-                router.match = function(ngx) return end
+                router.match = function(ngx) error({ code = 100 }) end
             end)
 
-            it("raises a 404 error if no match is found", function()
-                stub(ngx, 'exit')
+            it("responds with an error response", function()
+                local arg_ngx, arg_response
+                router.respond = function(arg1, arg2)
+                    arg_ngx = arg1
+                    arg_response = arg2
+                end
 
                 router.handler(ngx)
 
-                assert.stub(ngx.exit).was.called_with(ngx.HTTP_NOT_FOUND)
-
-                ngx.exit:revert()
+                assert.are.same(arg_ngx, ngx)
+                assert.are.same(412, arg_response.status)
+                assert.are.same({ code = 100, message = "Accept header not set." }, arg_response.body)
             end)
         end)
 
-        describe("when a match is found", function()
-            before_each(function()
-                router.match = function(ngx) return "controller_name", "action", "params" end
+        describe("when no matching API version is found", function()
+
+            describe("when no match is found", function()
+                before_each(function()
+                    router.match = function(ngx) return end
+                end)
+
+                it("raises a 404 error if no match is found", function()
+                    stub(ngx, 'exit')
+
+                    router.handler(ngx)
+
+                    assert.stub(ngx.exit).was.called_with(ngx.HTTP_NOT_FOUND)
+
+                    ngx.exit:revert()
+                end)
             end)
 
-            it("calls controller", function()
-                stub(router, 'respond') -- stub to avoid calling the function
-                stub(router, "call_controller")
+            describe("when a match is found", function()
+                before_each(function()
+                    router.match = function(ngx) return "controller_name", "action", "params" end
+                end)
 
-                router.handler(ngx)
+                it("calls controller", function()
+                    stub(router, 'respond') -- stub to avoid calling the function
+                    stub(router, "call_controller")
 
-                assert.stub(router.call_controller).was.called_with(ngx, "controller_name", "action", "params")
+                    router.handler(ngx)
 
-                router.call_controller:revert()
-                router.respond:revert()
-            end)
+                    assert.stub(router.call_controller).was.called_with(ngx, "controller_name", "action", "params")
 
-            it("responds with the response", function()
-                router.call_controller = function() return "response" end
+                    router.call_controller:revert()
+                    router.respond:revert()
+                end)
 
-                stub(router, 'respond')
+                it("responds with the response", function()
+                    router.call_controller = function() return "response" end
 
-                router.handler(ngx)
+                    stub(router, 'respond')
 
-                assert.stub(router.respond).was.called_with(ngx, "response")
+                    router.handler(ngx)
+
+                    assert.stub(router.respond).was.called_with(ngx, "response")
+                end)
             end)
         end)
     end)
@@ -265,7 +288,7 @@ describe("Router", function()
         it("returns the controller, action and params for a single param", function()
             ngx.var.uri = "/users/roberto"
             ngx.var.request_method = "GET"
-            ngx.req.get_headers = function() return { ['accept'] = "application/vnd.myapp.v1+json" } end
+            ngx.req.get_headers = function() return { ['accept'] = "application/vnd." .. Application.name .. ".v1+json" } end
 
             local request = Request.new(ngx)
 
@@ -280,7 +303,7 @@ describe("Router", function()
         it("returns the controller, action and params for a multiple params", function()
             ngx.var.uri = "/users/roberto/messages/123"
             ngx.var.request_method = "DELETE"
-            ngx.req.get_headers = function() return { ['accept'] = "application/vnd.myapp.v2.1-p3+json" } end
+            ngx.req.get_headers = function() return { ['accept'] = "application/vnd." .. Application.name .. ".v2.1-p3+json" } end
 
             local request = Request.new(ngx)
 
@@ -292,19 +315,37 @@ describe("Router", function()
             assert.are.same('2.1-p3', version)
         end)
 
-        it("returns a 412 if an Accept header is not set", function()
-                -- PENDING
+        it("raises an error if an Accept header is not set", function()
+            ngx.req.get_headers = function() return {} end
 
+            local request = Request.new(ngx)
+
+            ok, err = pcall(function() return router.match(request) end)
+
+            assert.are.equal(false, ok)
+            assert.are.equal(100, err.code)
         end)
 
-        it("returns a 412 if an Accept header set does not match the appropriate vendor format", function()
-                -- PENDING
+        it("raises an error if an Accept header set does not match the appropriate vendor format", function()
+            ngx.req.get_headers = function() return { ['accept'] = "application/vnd.other.v1+json" } end
 
+            local request = Request.new(ngx)
+
+            ok, err = pcall(function() return router.match(request) end)
+
+            assert.are.equal(false, ok)
+            assert.are.equal(101, err.code)
         end)
 
-        it("returns a 412 if an Accept header corresponds to an unsupported version", function()
-                -- PENDING
+        it("raises an error if an Accept header corresponds to an unsupported version", function()
+            ngx.req.get_headers = function() return { ['accept'] = "application/vnd." .. Application.name .. ".v3+json" } end
 
+            local request = Request.new(ngx)
+
+            ok, err = pcall(function() return router.match(request) end)
+
+            assert.are.equal(false, ok)
+            assert.are.equal(102, err.code)
         end)
     end)
 

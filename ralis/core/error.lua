@@ -1,6 +1,12 @@
 -- ensure global Errors is defined
 Errors = Errors or {}
 
+-- add system errors
+Errors[100] = { status = 412, message = "Accept header not set." }
+Errors[101] = { status = 412, message = "Invalid Accept header format." }
+Errors[102] = { status = 412, message = "Unsupported version specified in the Accept header." }
+
+-- define error
 Error = {}
 Error.__index = Error
 

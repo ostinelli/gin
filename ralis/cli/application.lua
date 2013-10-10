@@ -1,6 +1,12 @@
 local lfs = require 'lfs'
 local bashcolors = require 'ralis.core.bashcolors'
 
+local application = [[
+Application = {
+    name = "{{APP_NAME}}"
+}
+]]
+
 local settings = [[
 local Settings = {}
 
@@ -99,6 +105,7 @@ require 'ralis.spec.runner'
 local RalisApplication = {}
 
 RalisApplication.files = {
+    ['config/application.lua'] = "",
     ['config/settings.lua'] = settings,
     ['config/nginx.conf'] = nginx_config,
     ['config/routes.lua'] = routes,
@@ -110,6 +117,7 @@ RalisApplication.files = {
 }
 
 function RalisApplication.new(name)
+    RalisApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
     RalisApplication.create_files(name)
 end
 
