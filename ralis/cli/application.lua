@@ -111,8 +111,8 @@ RalisApplication.files = {
     ['config/routes.lua'] = routes,
     ['config/initializers/.gitkeep'] = "",
     ['lib/.gitkeep'] = "",
-    ['app/controllers/pages_controller.lua'] = pages_controller,
-    ['spec/controllers/pages_controller_spec.lua'] = pages_controller_spec,
+    ['app/controllers/1/pages_controller.lua'] = pages_controller,
+    ['spec/controllers/1/pages_controller_spec.lua'] = pages_controller_spec,
     ['spec/spec_helper.lua'] = spec_helper
 }
 
