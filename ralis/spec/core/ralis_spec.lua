@@ -11,6 +11,10 @@ describe("Ralis", function()
     end)
 
     describe(".env", function()
+        before_each(function()
+            -- ralis env gets set in tests, so reset it
+            Ralis.env = nil
+        end)
 
         describe("when the RALIS_ENV value is set", function()
             it("sets it to the RALIS_ENV value", function()

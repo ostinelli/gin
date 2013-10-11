@@ -7,13 +7,14 @@ require 'ralis.core.routes'
 JSON = require 'cjson'
 local lfs = require"lfs"
 
-Ralis = {}
+-- init ralis if necessary
+Ralis = Ralis or {}
 
 -- version
 Ralis.version = '0.1'
 
 -- environment
-Ralis.env = os.getenv("RALIS_ENV") or 'development'
+Ralis.env = Ralis.env or os.getenv("RALIS_ENV") or 'development'
 
 -- settings
 local settings = require 'ralis.core.settings'

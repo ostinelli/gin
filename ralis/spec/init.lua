@@ -1,5 +1,7 @@
 package.path = './?.lua;' .. package.path
 
-require 'ralis.core.ralis'
-
+-- ensure test environment is specified
+Ralis = {}
 Ralis.env = 'test'
+
+require 'ralis.core.ralis'
