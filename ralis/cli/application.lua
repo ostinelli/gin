@@ -118,6 +118,8 @@ RalisApplication.files = {
 }
 
 function RalisApplication.new(name)
+    print("Creating app " .. bashcolors.cyan .. name .. bashcolors.reset .. "...")
+
     RalisApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
     RalisApplication.create_files(name)
 end
@@ -127,12 +129,13 @@ function RalisApplication.create_files(parent)
         -- ensure containing directory exists
         local full_file_path = parent .. "/" .. file_path
         mkdirs(full_file_path)
-        -- create file
-        print(bashcolors.green .. "  creating file " .. bashcolors.reset .. full_file_path)
 
+        -- create file
         local fw = io.open(full_file_path, "w")
         fw:write(file_content)
         fw:close()
+
+        print(bashcolors.green .. "  created file " .. bashcolors.reset .. full_file_path)
     end
 end
 
