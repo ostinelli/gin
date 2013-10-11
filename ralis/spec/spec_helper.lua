@@ -3,4 +3,4 @@ Application = { name = "railsapp" }
 package.loaded['config.application'] = {}
 package.loaded['config.settings'] = {}
 
-require 'ralis.spec.runner'
+require 'ralis.spec.init'

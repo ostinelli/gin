@@ -31,7 +31,7 @@ local function run_initializers(path)
                     -- recursive call for all subdirectories inside of initializers
                     run_initializers(file_path)
                 else
-                    -- run initializers
+                    -- run initializer
                     dofile(file_path)
                 end
             end

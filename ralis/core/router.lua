@@ -54,10 +54,9 @@ function Router.match(request)
     local method = request.method
 
     -- match version based on headers
-    local headers = request.headers
-    if headers['accept'] == nil then error({ code = 100 }) end
+    if request.headers['accept'] == nil then error({ code = 100 }) end
 
-    local major_version, rest_version = string.match(headers['accept'], accept_header_matcher)
+    local major_version, rest_version = string.match(request.headers['accept'], accept_header_matcher)
     if major_version == nil then error({ code = 101 }) end
 
     local routes_dispatchers = Routes.dispatchers[tonumber(major_version)]

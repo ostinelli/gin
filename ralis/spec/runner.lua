@@ -1,8 +1,4 @@
-package.path = './?.lua;' .. package.path
-
-require 'ralis.core.ralis'
-
-Ralis.env = 'test'
+require 'ralis.spec.init'
 
 local IntegrationRunner = require 'ralis.spec.runners.integration'
 

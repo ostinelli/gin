@@ -3,6 +3,9 @@ local url = require 'socket.url'
 local launcher = require 'ralis.cli.launcher'
 local ResponseSpec = require 'ralis.spec.runners.response'
 
+-- get application name
+require 'config.application'
+
 local IntegrationRunner = {}
 
 -- Code portion taken from:
@@ -36,13 +39,9 @@ function IntegrationRunner.hit(request)
     if request.headers == nil then request.headers = {} end
     if request.headers["content-length"] == nil and request.headers["Content-Length"] == nil then
         if request.body ~= nil then
-            request.headers["content-length"] = request.body:len()
+            request.headers["Content-Length"] = request.body:len()
         end
     end
-
-    -- get application name
-    package.loaded['config.application'] = nil
-    require 'config.application'
 
     -- get major version from caller, limit to 10 stacktrace items
     local major_version
