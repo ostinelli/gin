@@ -49,6 +49,10 @@ http {
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
 
     server {
+        ssl on;
+        ssl_certificate ../priv/{{RALIS_ENV}}-server.crt;
+        ssl_certificate_key ../priv/{{RALIS_ENV}}-server.key;
+
         access_log logs/{{RALIS_ENV}}-access.log;
         error_log logs/{{RALIS_ENV}}-error.log;
 
@@ -107,17 +111,57 @@ local spec_helper = [[
 require 'ralis.spec.runner'
 ]]
 
+local server_crt = [[
+-----BEGIN CERTIFICATE-----
+MIICazCCAdQCCQC0AgpnF9XZXjANBgkqhkiG9w0BAQUFADB6MQswCQYDVQQGEwJJ
+VDELMAkGA1UECBMCQ08xEjAQBgNVBAcTCUNlcm5vYmJpbzEOMAwGA1UEChMFUmFs
+aXMxDDAKBgNVBAsTA0RFVjEOMAwGA1UEAxMFUmFsaXMxHDAaBgkqhkiG9w0BCQEW
+DWluZm9AcmFsaXMuaW8wHhcNMTMxMDExMjMwMDU5WhcNMjMxMDA5MjMwMDU5WjB6
+MQswCQYDVQQGEwJJVDELMAkGA1UECBMCQ08xEjAQBgNVBAcTCUNlcm5vYmJpbzEO
+MAwGA1UEChMFUmFsaXMxDDAKBgNVBAsTA0RFVjEOMAwGA1UEAxMFUmFsaXMxHDAa
+BgkqhkiG9w0BCQEWDWluZm9AcmFsaXMuaW8wgZ8wDQYJKoZIhvcNAQEBBQADgY0A
+MIGJAoGBAM8UIiiAok5ECb/9qyfQkDit5bdai5erXXqhwaV+uT8fI7FqLbh0yEAP
+KPaTnxWiy+yD+qVr4hZtZrsB1HwUDhEbXsTrSwSlkXbvKvDV4uL8D8zfRiPwgpfx
+qlonRs4x8n353cgap1BQtOMwGHZLqvl77FQSWJVtJYF8azCdNHX7AgMBAAEwDQYJ
+KoZIhvcNAQEFBQADgYEAof72u5mtYPlBKXPdOXSxLwQyaKeUI0UHIyNiPVgn4djb
+ncgpKSGnXzoIrEMaO0F6JCWo2O/IMJqaXqjXXtJIpMjg222yYIaCln6vkrbnq2XZ
+9j1xBxZ2ACjGNXCAGZZoTlKAz+7T/v4h4hzKmE9fejjKfEZeIqadJ4bieMKBIrU=
+-----END CERTIFICATE-----
+]]
+
+local server_key = [[
+-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQDPFCIogKJORAm//asn0JA4reW3WouXq116ocGlfrk/HyOxai24
+dMhADyj2k58Vosvsg/qla+IWbWa7AdR8FA4RG17E60sEpZF27yrw1eLi/A/M30Yj
+8IKX8apaJ0bOMfJ9+d3IGqdQULTjMBh2S6r5e+xUEliVbSWBfGswnTR1+wIDAQAB
+AoGBAJZYicxaSH0GjQWlyQRpOqzMJQKQbNU7h+0nUA82CI05sJJ5AqTvtQw9dYJA
+/7mXrvMTh4Fe6JFb8MBJvdowPV0Dq3dH121D/JalYoHuaV9/xRPlLj8n+JtdbQZW
+CqavggkHtWir5KNptPLcN4BS25A8AyUItSxY58XLGbytvvehAkEA70SkfFXtEaFn
+KZdfNFg+OYLMYM4UNk1iMSOkCuYgNv/17xtY75ll9NUqO2yLeupNP5ATaFwp6fF1
+CusXMWOhWQJBAN2PPMptcN7frlCzq7WPQqFG0FcIDg7vsNb7I86eLpZdxvLTegS1
+Rnc/ESx70MM8+0MhyS5/tlx54TFWvNS4c3MCQQCaQOu2SQM0iZTjqHY1XeqH0z6F
+7nXzaEI0oeChMil0q+HWzA+zMHcdt8upUdo+XQ1+PBl2/2v6KbOmXVevfKbJAkA4
+QgO8ntd3MDLx+P1Tx8Gyc+m4/6maL1Cm9fQcpdvMgJlg1UP5aBIxe0kgE3xp5tUi
+MbUE4pbqmmQNBCpElWVzAkBlw6A3hBiGcM2dz6xe5+iFTqe90Cd7l+Ctott8LYam
+aq9W3caZkcCxSb72283sMwVnDNb93Z0q1qv6LNuXtftu
+-----END RSA PRIVATE KEY-----
+]]
+
 
 local RalisApplication = {}
 
 RalisApplication.files = {
+    ['app/controllers/1/pages_controller.lua'] = pages_controller,
     ['config/application.lua'] = "",
     ['config/settings.lua'] = settings,
     ['config/nginx.conf'] = nginx_config,
     ['config/routes.lua'] = routes,
     ['config/initializers/.gitkeep'] = "",
     ['lib/.gitkeep'] = "",
-    ['app/controllers/1/pages_controller.lua'] = pages_controller,
+    ['priv/development-server.crt'] = server_crt,
+    ['priv/development-server.key'] = server_key,
+    ['priv/test-server.crt'] = server_crt,
+    ['priv/test-server.key'] = server_key,
     ['spec/controllers/1/pages_controller_spec.lua'] = pages_controller_spec,
     ['spec/spec_helper.lua'] = spec_helper
 }

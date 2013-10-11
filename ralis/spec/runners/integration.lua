@@ -1,4 +1,4 @@
-local http = require 'socket.http'
+local https = require 'ssl.https'
 local url = require 'socket.url'
 local launcher = require 'ralis.cli.launcher'
 local ResponseSpec = require 'ralis.spec.runners.response'
@@ -28,7 +28,7 @@ end
 function IntegrationRunner.hit(request)
     -- build full url
     local full_url = url.build({
-        scheme = 'http',
+        scheme = 'https',
         host = '127.0.0.1',
         port = Ralis.settings.port,
         path = request.url,
@@ -74,7 +74,7 @@ function IntegrationRunner.hit(request)
 
     -- hit server
     local response_body = {}
-    local ok, response_status, response_headers = http.request({
+    local ok, response_status, response_headers = https.request({
         method = request.method,
         url = full_url,
         source = ltn12.source.string(request.body),
