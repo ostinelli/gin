@@ -40,13 +40,35 @@ function IntegrationRunner.hit(request)
         end
     end
 
-    -- set the Accept header
     -- get application name
     package.loaded['config.application'] = nil
     require 'config.application'
 
+    -- get major version from caller, limit to 10 stacktrace items
+    local major_version
+    for i = 1, 10 do
+        local source = debug.getinfo(i).source
+        if source == nil then break end
+
+        major_version = string.match(debug.getinfo(i).source, "controllers/(%d+)/(.*)_spec.lua")
+        if major_version ~= nil then break end
+    end
+    if major_version == nil then error("Could not determine API major version from controller spec file. Ensure to follow naming conventions.") end
+
+    -- check request.api_version
+    local api_version
+    if request.api_version ~= nil and request.api_version ~= major_version then
+        if string.match(request.api_version, major_version .. '%.') == nil then
+            error("Specified API version " .. request.api_version .. " does not match controller spec namespace (" .. major_version .. ")")
+        end
+        api_version = request.api_version
+    else
+        api_version = major_version
+    end
+
+    -- set Accept header
     request.headers["accept"] = nil
-    request.headers["Accept"] = "application/vnd." .. Application.name .. ".v" .. request.api_version .. "+json"
+    request.headers["Accept"] = "application/vnd." .. Application.name .. ".v" .. api_version .. "+json"
 
     -- start nginx
     launcher.start()
