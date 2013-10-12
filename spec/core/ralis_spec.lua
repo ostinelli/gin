@@ -1,5 +1,4 @@
-require 'ralis.spec.spec_helper'
-
+require 'spec.spec_helper'
 
 describe("Ralis", function()
     before_each(function()

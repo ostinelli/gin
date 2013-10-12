@@ -1,4 +1,4 @@
-require 'ralis.spec.spec_helper'
+require 'spec.spec_helper'
 
 describe("Routes", function()
 
