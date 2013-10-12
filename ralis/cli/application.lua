@@ -1,11 +1,13 @@
 local lfs = require 'lfs'
 local bashcolors = require 'ralis.core.bashcolors'
 
+
 local application = [[
 Application = {
     name = "{{APP_NAME}}"
 }
 ]]
+
 
 local settings = [[
 --------------------------------------------------------------------------------------------
@@ -107,9 +109,29 @@ end)
 ]]
 
 
+local errors = [[
+-------------------------------------------------------------------------------------------------------------------
+-- Define all of your application errors in here. They should have the format:
+--
+-- Errors = {
+--     [1000] = { status = 400, message = "My Application error.", headers = { ["X-Header"] = "header" } },
+-- }
+--
+-- where:
+--     '1000'                is the error number that can be raised from controllers with `self:raise_error(1000)
+--     'status'  (required)  is the http status code
+--     'message' (required)  is the error description
+--     'headers' (optional)  are the headers to be returned in the response
+-------------------------------------------------------------------------------------------------------------------
+
+Errors = {}
+]]
+
+
 local spec_helper = [[
 require 'ralis.spec.runner'
 ]]
+
 
 local server_crt = [[
 -----BEGIN CERTIFICATE-----
@@ -156,7 +178,7 @@ RalisApplication.files = {
     ['config/settings.lua'] = settings,
     ['config/nginx.conf'] = nginx_config,
     ['config/routes.lua'] = routes,
-    ['config/initializers/.gitkeep'] = "",
+    ['config/initializers/errors.lua'] = errors,
     ['lib/.gitkeep'] = "",
     ['priv/development-server.crt'] = server_crt,
     ['priv/development-server.key'] = server_key,
