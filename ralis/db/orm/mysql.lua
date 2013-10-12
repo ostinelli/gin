@@ -2,11 +2,11 @@ local function quote(str)
     return ngx.quote_sql_str(str)
 end
 
-local function all(db)
-    return db:query("SELECT * FROM users;")
+local function all(db, table)
+    return db:query("SELECT * FROM " .. table .. ";")
 end
 
-local function create(db, attrs)
+local function create(db, table, attrs)
     local fields = {}
     local values = {}
     for k, v in pairs(attrs) do
@@ -14,7 +14,7 @@ local function create(db, attrs)
         if type(v) ~= 'number' then v = quote(v) end
         table.insert(values, v)
     end
-    local sql = "INSERT INTO users (" .. table.concat(fields, ',') .. ") " ..
+    local sql = "INSERT INTO " .. table .. " (" .. table.concat(fields, ',') .. ") " ..
         "VALUES (" .. table.concat(values, ',') .. ");"
 
     return db:query(sql)
@@ -24,11 +24,11 @@ local MySqlOrm = {}
 
 function MySqlOrm.define_model(db, name, table)
     -- init object
-    _G[name] = { __table = table:lower() }
+    _G[name] = {}
     local klass = _G[name]
     -- add functions
-    klass.all = function() return all(db) end
-    klass.create = function(attrs) return create(db, attrs) end
+    klass.all = function() return all(db, table) end
+    klass.create = function(attrs) return create(db, table, attrs) end
 end
 
 return MySqlOrm

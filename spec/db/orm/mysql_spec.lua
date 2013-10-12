@@ -25,10 +25,6 @@ describe("ORM", function()
             assert.are_not.equals(nil, User)
         end)
 
-        it("sets the table name", function()
-            assert.are.equal('users', User.__table)
-        end)
-
         describe("all", function()
             it("calls the appropriate sql", function()
                 User.all()
