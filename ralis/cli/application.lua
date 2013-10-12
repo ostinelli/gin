@@ -1,6 +1,37 @@
 local lfs = require 'lfs'
 local ansicolors = require 'ansicolors'
 
+
+local pages_controller = [[
+local PagesController = {}
+
+function PagesController:root()
+    return 200, { message = "Hello world from Ralis!" }
+end
+
+return PagesController
+]]
+
+
+local errors = [[
+-------------------------------------------------------------------------------------------------------------------
+-- Define all of your application errors in here. They should have the format:
+--
+-- Errors = {
+--     [1000] = { status = 400, message = "My Application error.", headers = { ["X-Header"] = "header" } },
+-- }
+--
+-- where:
+--     '1000'                is the error number that can be raised from controllers with `self:raise_error(1000)
+--     'status'  (required)  is the http status code
+--     'message' (required)  is the error description
+--     'headers' (optional)  are the headers to be returned in the response
+-------------------------------------------------------------------------------------------------------------------
+
+Errors = {}
+]]
+
+
 local application = [[
 Application = {
     name = "{{APP_NAME}}"
@@ -8,31 +39,46 @@ Application = {
 ]]
 
 
-local settings = [[
---------------------------------------------------------------------------------------------
--- Settings defined here are environment dependent. Inside of your application,           --
--- `Ralis.settings` will return the ones that correspond to the environment               --
--- you are running the server in.                                                         --
---------------------------------------------------------------------------------------------
+database = [[
+-- Here you can setup your databases that will be accessible throughout your application.
+-- First, specify the settings (you may add multiple databases with this pattern):
 
-local Settings = {}
+local DbSettings = {
 
-Settings.development = {
-    code_cache = false,
-    port = 7200
+    development = {
+        adapter = 'mysql',
+        host = "127.0.0.1",
+        port = 3306,
+        database = "ralis_development",
+        user = "root",
+        password = "",
+        pool = 5
+    },
+
+    test = {
+        adapter = 'mysql',
+        host = "127.0.0.1",
+        port = 3306,
+        database = "ralis_test",
+        user = "root",
+        password = "",
+        pool = 5
+    },
+
+    production = {
+        adapter = 'mysql',
+        host = "127.0.0.1",
+        port = 3306,
+        database = "ralis_production",
+        user = "root",
+        password = "",
+        pool = 5
+    }
 }
 
-Settings.test = {
-    code_cache = false,
-    port = 7201
-}
+-- Then initialize your database(s) like this:
 
-Settings.production = {
-    code_cache = true,
-    port = 80
-}
-
-return Settings
+DB = db.new(DbSettings[Ralis.env])
 ]]
 
 
@@ -77,58 +123,31 @@ v1:GET("/", { controller = "pages", action = "root" })
 ]]
 
 
-local pages_controller = [[
-local PagesController = {}
+local settings = [[
+--------------------------------------------------------------------------------------------
+-- Settings defined here are environment dependent. Inside of your application,           --
+-- `Ralis.settings` will return the ones that correspond to the environment               --
+-- you are running the server in.                                                         --
+--------------------------------------------------------------------------------------------
 
-function PagesController:root()
-    return 200, { message = "Hello world from Ralis!" }
-end
+local Settings = {}
 
-return PagesController
-]]
+Settings.development = {
+    code_cache = false,
+    port = 7200
+}
 
+Settings.test = {
+    code_cache = false,
+    port = 7201
+}
 
-local pages_controller_spec = [[
-require 'spec.spec_helper'
+Settings.production = {
+    code_cache = true,
+    port = 80
+}
 
-describe("PagesController", function()
-
-    describe("#root", function()
-        it("responds with a welcome message", function()
-            local response = hit({
-                method = 'GET',
-                url = "/"
-            })
-
-            assert.are.same(200, response.status)
-            assert.are.same({ message = "Hello world from Ralis!" }, JSON.decode(response.body))
-        end)
-    end)
-end)
-]]
-
-
-local errors = [[
--------------------------------------------------------------------------------------------------------------------
--- Define all of your application errors in here. They should have the format:
---
--- Errors = {
---     [1000] = { status = 400, message = "My Application error.", headers = { ["X-Header"] = "header" } },
--- }
---
--- where:
---     '1000'                is the error number that can be raised from controllers with `self:raise_error(1000)
---     'status'  (required)  is the http status code
---     'message' (required)  is the error description
---     'headers' (optional)  are the headers to be returned in the response
--------------------------------------------------------------------------------------------------------------------
-
-Errors = {}
-]]
-
-
-local spec_helper = [[
-require 'ralis.spec.runner'
+return Settings
 ]]
 
 
@@ -169,15 +188,41 @@ aq9W3caZkcCxSb72283sMwVnDNb93Z0q1qv6LNuXtftu
 ]]
 
 
+local pages_controller_spec = [[
+require 'spec.spec_helper'
+
+describe("PagesController", function()
+
+    describe("#root", function()
+        it("responds with a welcome message", function()
+            local response = hit({
+                method = 'GET',
+                url = "/"
+            })
+
+            assert.are.same(200, response.status)
+            assert.are.same({ message = "Hello world from Ralis!" }, JSON.decode(response.body))
+        end)
+    end)
+end)
+]]
+
+
+local spec_helper = [[
+require 'ralis.spec.runner'
+]]
+
+
 local RalisApplication = {}
 
 RalisApplication.files = {
     ['app/controllers/1/pages_controller.lua'] = pages_controller,
+    ['config/initializers/errors.lua'] = errors,
     ['config/application.lua'] = "",
-    ['config/settings.lua'] = settings,
+    ['config/database.lua'] = database,
     ['config/nginx.conf'] = nginx_config,
     ['config/routes.lua'] = routes,
-    ['config/initializers/errors.lua'] = errors,
+    ['config/settings.lua'] = settings,
     ['lib/.gitkeep'] = "",
     ['priv/development-server.crt'] = server_crt,
     ['priv/development-server.key'] = server_key,

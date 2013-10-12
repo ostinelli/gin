@@ -7,9 +7,7 @@ local Controller = require 'ralis.core.controller'
 -- load application and routes
 require 'config.application'
 require 'config.routes'
-
--- load db connection (needs to be done here since this module is loaded by ngx)
-require 'ralis.core.database'
+require 'config.database'
 
 -- init Router and set routes
 local Router = {}

@@ -54,3 +54,19 @@ $ git clone git@github.com:ostinelli/ralis.git
 $ cd ralis
 $ luarocks make
 ```
+
+## Using models
+
+Initialize a DB, let's say that it's called `DB` for the purpose of this example.
+
+Create models like this:
+
+```
+DB:define_model('User', 'users')
+```
+
+Use the model in controllers:
+
+```
+local users = User.all()
+```

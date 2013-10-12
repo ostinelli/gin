@@ -3,7 +3,7 @@ local timeout_subsequent_ops = 1000 -- 1 sec
 local max_idle_timeout = 10000 -- 10 sec
 local max_packet_size = 1024 * 1024 -- 1MB
 
-local MySQL = {}
+local MySql = {}
 
 local function mysql_connect(options)
     -- create sql object
@@ -32,7 +32,8 @@ local function mysql_keepalive(db, options)
     if not ok then error("failed to set mysql keepalive: ", err) end
 end
 
-function MySQL.query(sql, options)
+
+function MySql.query(options, sql)
     -- get db object
     local db = mysql_connect(options)
     -- run query
@@ -44,4 +45,4 @@ function MySQL.query(sql, options)
     return res
 end
 
-return MySQL
+return MySql
