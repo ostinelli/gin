@@ -1,4 +1,3 @@
-require 'ralis.core.error'
 require 'ralis.core.helpers'
 require 'ralis.core.request'
 require 'ralis.core.response'
@@ -23,5 +22,8 @@ Ralis.settings = settings.for_current_environment()
 
 -- load initializers
 dofile_recursive("config/initializers")
+
+-- ensure system errors get defined
+require 'ralis.core.error'
 
 return Ralis
