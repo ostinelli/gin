@@ -4,6 +4,7 @@ require 'ralis.core.request'
 require 'ralis.core.response'
 require 'ralis.core.routes'
 
+-- libraries
 JSON = require 'cjson'
 local lfs = require"lfs"
 
@@ -19,6 +20,17 @@ Ralis.env = Ralis.env or os.getenv("RALIS_ENV") or 'development'
 -- settings
 local settings = require 'ralis.core.settings'
 Ralis.settings = settings.for_current_environment()
+
+-- set ralis database
+Ralis.database = {
+    adapter = 'mysql',
+    host = "127.0.0.1",
+    port = 3306,
+    database = "ralis_development",
+    user = "root",
+    password = "",
+    pool = 5
+}
 
 -- load initializers
 local function run_initializers(path)
