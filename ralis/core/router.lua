@@ -4,10 +4,12 @@ package.path = './app/controllers/?.lua;' .. package.path
 require 'ralis.core.ralis'
 local Controller = require 'ralis.core.controller'
 
--- load application and routes
+-- load application modules
 require 'config.application'
 require 'config.routes'
 require 'config.database'
+-- load application models
+dofile_recursive("app/models")
 
 -- init Router and set routes
 local Router = {}

@@ -49,3 +49,23 @@ function mkdirs(file_path)
         lfs.mkdir(current_dir)
     end
 end
+
+-- dofile recursively in a directory
+function dofile_recursive(path)
+    if folder_exists(path) then
+        for file_name in lfs.dir(path) do
+            if file_name ~= "." and file_name ~= ".." then
+                local file_path = path .. '/' .. file_name
+                local attr = lfs.attributes(file_path)
+                assert(type(attr) == "table")
+                if attr.mode == "directory" then
+                    -- recursive call for all subdirectories inside of initializers
+                    run_initializers(file_path)
+                else
+                    -- run initializer
+                    dofile(file_path)
+                end
+            end
+        end
+    end
+end
