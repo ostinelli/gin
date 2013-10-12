@@ -1,6 +1,5 @@
 local lfs = require 'lfs'
-local bashcolors = require 'ralis.core.bashcolors'
-
+local ansicolors = require 'ansicolors'
 
 local application = [[
 Application = {
@@ -189,7 +188,7 @@ RalisApplication.files = {
 }
 
 function RalisApplication.new(name)
-    print("Creating app " .. bashcolors.cyan .. name .. bashcolors.reset .. "...")
+    print(ansicolors("Creating app %{cyan}name%{reset}..."))
 
     RalisApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
     RalisApplication.create_files(name)
@@ -206,7 +205,7 @@ function RalisApplication.create_files(parent)
         fw:write(file_content)
         fw:close()
 
-        print(bashcolors.green .. "  created file " .. bashcolors.reset .. full_file_path)
+        print(ansicolors("  %{green}created file%{reset} " .. full_file_path))
     end
 end
 

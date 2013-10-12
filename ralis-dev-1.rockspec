@@ -14,6 +14,7 @@ description = {
 
 dependencies = {
     "lua >= 5.1",
+    "ansicolors",
     "busted",
     "lua-cjson",
     "luasocket",
@@ -26,7 +27,6 @@ build = {
     modules = {
         ["ralis.cli.launcher"] = "ralis/cli/launcher.lua",
         ["ralis.cli.application"] = "ralis/cli/application.lua",
-        ["ralis.core.bashcolors"] = "ralis/core/bashcolors.lua",
         ["ralis.core.controller"] = "ralis/core/controller.lua",
         ["ralis.core.database"] = "ralis/core/database.lua",
         ["ralis.core.error"] = "ralis/core/error.lua",
