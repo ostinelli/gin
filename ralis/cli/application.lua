@@ -40,9 +40,10 @@ Application = {
 
 
 database = [[
+local db = require 'ralis.db.db'
+
 -- Here you can setup your databases that will be accessible throughout your application.
 -- First, specify the settings (you may add multiple databases with this pattern):
-
 local DbSettings = {
 
     development = {
@@ -77,7 +78,6 @@ local DbSettings = {
 }
 
 -- Then initialize your database(s) like this:
-
 DB = db.new(DbSettings[Ralis.env])
 ]]
 
@@ -124,12 +124,12 @@ v1:GET("/", { controller = "pages", action = "root" })
 
 
 local settings = [[
---------------------------------------------------------------------------------------------
--- Settings defined here are environment dependent. Inside of your application,           --
--- `Ralis.settings` will return the ones that correspond to the environment               --
--- you are running the server in.                                                         --
---------------------------------------------------------------------------------------------
-
+--------------------------------------------------------------------------------
+-- Settings defined here are environment dependent. Inside of your application,
+-- `Ralis.settings` will return the ones that correspond to the environment
+-- you are running the server in.
+--------------------------------------------------------------------------------
+`
 local Settings = {}
 
 Settings.development = {
@@ -230,6 +230,7 @@ RalisApplication.files = {
     ['priv/test-server.crt'] = server_crt,
     ['priv/test-server.key'] = server_key,
     ['spec/controllers/1/pages_controller_spec.lua'] = pages_controller_spec,
+    ['spec/models/.gitkeep'] = "",
     ['spec/spec_helper.lua'] = spec_helper
 }
 
