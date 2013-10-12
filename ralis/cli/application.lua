@@ -217,6 +217,7 @@ local RalisApplication = {}
 
 RalisApplication.files = {
     ['app/controllers/1/pages_controller.lua'] = pages_controller,
+    ['app/models/.gitkeep'] = "",
     ['config/initializers/errors.lua'] = errors,
     ['config/application.lua'] = "",
     ['config/database.lua'] = database,
