@@ -62,7 +62,7 @@ Initialize a DB, let's say that it's called `DB` for the purpose of this example
 Create models like this:
 
 ```
-DB:define_model('User', 'users')
+User = DB:define_model('users')
 ```
 
 Use the model in controllers:

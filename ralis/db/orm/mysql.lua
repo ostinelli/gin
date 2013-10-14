@@ -72,13 +72,14 @@ end
 
 local MySqlOrm = {}
 
-function MySqlOrm.define_model(db, name, table_name)
+function MySqlOrm.define_model(db, table_name)
     -- init object
-    _G[name] = {}
-    local klass = _G[name]
+    local model = {}
     -- add functions
-    klass.create = function(attrs) return create(db, table_name, attrs) end
-    klass.where = function(attrs, options) return where(db, table_name, attrs, options) end
+    model.create = function(attrs) return create(db, table_name, attrs) end
+    model.where = function(attrs, options) return where(db, table_name, attrs, options) end
+    -- return
+    return model
 end
 
 return MySqlOrm
