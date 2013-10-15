@@ -1,6 +1,6 @@
 require 'spec.spec_helper'
 
-describe("ORM", function()
+describe("MySql ORM", function()
     before_each(function()
         ngx = {
             quote_sql_str = function(str) return "'q-" .. str .. "'" end
@@ -66,6 +66,13 @@ describe("ORM", function()
                         assert.are.equal(query, "SELECT * FROM users WHERE (first_name='q-roberto') OFFSET 10;")
                     end)
                 end)
+
+                describe("when the limit and offset options are specified", function()
+                    it("finds models with offset", function()
+                        model.where({ first_name = 'roberto'}, { limit = 12, offset = 10 })
+                        assert.are.equal(query, "SELECT * FROM users WHERE (first_name='q-roberto') LIMIT 12 OFFSET 10;")
+                    end)
+                end)
             end)
 
             describe("when no attrs are specified", function()
@@ -87,6 +94,13 @@ describe("ORM", function()
                     it("finds models with offset", function()
                         model.where({ first_name = 'roberto'}, { offset = 10 })
                         assert.are.equal(query, "SELECT * FROM users WHERE (first_name='q-roberto') OFFSET 10;")
+                    end)
+                end)
+
+                describe("when the limit and offset options are specified", function()
+                    it("finds models with offset", function()
+                        model.where({ first_name = 'roberto'}, { limit = 12, offset = 10 })
+                        assert.are.equal(query, "SELECT * FROM users WHERE (first_name='q-roberto') LIMIT 12 OFFSET 10;")
                     end)
                 end)
             end)
