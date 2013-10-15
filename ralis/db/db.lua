@@ -45,8 +45,8 @@ function Database:query(sql)
     return self.adapter.query(self.options, sql)
 end
 
-function Database:define_model(name, table)
-    self.orm.define_model(self, name, table)
+function Database:define_model(table_name)
+    return self.orm.define_model(self, table_name)
 end
 
 return Database

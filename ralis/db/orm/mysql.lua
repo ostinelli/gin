@@ -88,7 +88,6 @@ function MySqlOrm.define_model(db, table_name)
     model.create = function(attrs) return create(db, table_name, attrs) end
     model.where = function(attrs, options) return where(db, table_name, attrs, options) end
     -- return
-    _G['User'] = model
     return model
 end
 
