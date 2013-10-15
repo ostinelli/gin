@@ -1,3 +1,7 @@
+-- perf
+local setmetatable = setmetatable
+
+
 Response = {}
 Response.__index = Response
 

@@ -1,3 +1,11 @@
+-- perf
+local pairs = pairs
+local require = require
+local setmetatable = setmetatable
+local table_concat = table.concat
+local table_insert = table.insert
+
+
 local Database = {}
 Database.__index = Database
 
@@ -16,9 +24,9 @@ function Database.new(options)
     local remaining_options = required_options
     for k, _ in pairs(options) do remaining_options[k] = nil end
     local missing_options = {}
-    for k, _ in pairs(remaining_options) do table.insert(missing_options, k) end
+    for k, _ in pairs(remaining_options) do table_insert(missing_options, k) end
 
-    if #missing_options > 0 then error("missing required database options: " .. table.concat(missing_options, ', ')) end
+    if #missing_options > 0 then error("missing required database options: " .. table_concat(missing_options, ', ')) end
 
     -- init instance
     local adapter = require('ralis.db.adapters.' .. options.adapter)

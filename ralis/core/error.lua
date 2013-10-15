@@ -1,3 +1,8 @@
+-- perf
+local error = error
+local setmetatable = setmetatable
+
+
 -- ensure global Errors is defined
 Errors = Errors or {}
 

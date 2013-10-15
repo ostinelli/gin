@@ -1,10 +1,21 @@
+-- perf
+local error = error
+local pairs = pairs
+local setmetatable = setmetatable
+local string_gsub = string.gsub
+local string_match = string.match
+local table_insert = table.insert
+local type = type
+local tostring = tostring
+
+
 --  versions
 local Version = {}
 Version.__index = Version
 
 function Version.new(number)
     if type(number) ~= 'number' then error("version is not an integer number (got string).") end
-    if string.match(tostring(number), "%.") ~= nil then error("version is not an integer number (got float).") end
+    if string_match(tostring(number), "%.") ~= nil then error("version is not an integer number (got float).") end
 
     local instance = {
         number = number
@@ -22,13 +33,13 @@ function Version:add(method, pattern, route_info)
     route_info.controller = route_info.controller .. "_controller"
     route_info.params = params
 
-    table.insert(Routes.dispatchers[self.number], { pattern = pattern, [method] = route_info })
+    table_insert(Routes.dispatchers[self.number], { pattern = pattern, [method] = route_info })
 end
 
 function Version:build_named_parameters(pattern)
     local params = {}
-    local new_pattern = string.gsub(pattern, "/:([A-Za-z0-9_]+)", function(m)
-        table.insert(params, m)
+    local new_pattern = string_gsub(pattern, "/:([A-Za-z0-9_]+)", function(m)
+        table_insert(params, m)
         return "/([A-Za-z0-9_]+)"
     end)
     return new_pattern, params

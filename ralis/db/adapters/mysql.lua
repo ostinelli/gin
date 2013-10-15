@@ -1,3 +1,8 @@
+-- perf
+local error = error
+local require = require
+
+
 local mysql = require "resty.mysql"
 local timeout_subsequent_ops = 1000 -- 1 sec
 local max_idle_timeout = 10000 -- 10 sec

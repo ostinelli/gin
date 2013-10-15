@@ -14,21 +14,19 @@ describe("Routes", function()
     describe(".version", function()
         describe("when it's a string", function()
             it("raises an error", function()
-                local errfn = function()
-                    local version = Routes.version("1")
-                end
+                local ok, err = pcall(function() return Routes.version("1") end)
 
-                assert.has_error(errfn, "version is not an integer number (got string).")
+                assert.are.equal(false, ok)
+                assert.are.same(true, string.find(err, "version is not an integer number %(got string%)") > 0)
             end)
         end)
 
         describe("when it's a float", function()
             it("raises an error", function()
-                local errfn = function()
-                    local version = Routes.version(1.2)
-                end
+                local ok, err = pcall(function() return Routes.version(1.2) end)
 
-                assert.has_error(errfn, "version is not an integer number (got float).")
+                assert.are.equal(false, ok)
+                assert.are.same(true, string.find(err, "version is not an integer number %(got float%).") > 0)
             end)
         end)
 
@@ -45,11 +43,11 @@ describe("Routes", function()
             it("returns an error", function()
                 local version = Routes.version(1)
 
-                local errfn = function()
-                    version = Routes.version(1)
-                end
 
-                assert.has_error(errfn, "version has already been defined (got 1).")
+                local ok, err = pcall(function() return Routes.version(1) end)
+
+                assert.are.equal(false, ok)
+                assert.are.same(true, string.find(err, "version has already been defined %(got 1%).") > 0)
             end)
         end)
 

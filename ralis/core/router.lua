@@ -11,6 +11,18 @@ require 'config.database'
 -- load application models
 dofile_recursive("app/models")
 
+-- perf
+local error = error
+local ipairs = ipairs
+local json_encode = JSON.encode
+local pairs = pairs
+local pcall = pcall
+local require = require
+local setmetatable = setmetatable
+local string_match = string.match
+local table_insert = table.insert
+
+
 -- init Router and set routes
 local Router = {}
 
@@ -59,7 +71,7 @@ function Router.match(request)
     -- match version based on headers
     if request.headers['accept'] == nil then error({ code = 100 }) end
 
-    local major_version, rest_version = string.match(request.headers['accept'], accept_header_matcher)
+    local major_version, rest_version = string_match(request.headers['accept'], accept_header_matcher)
     if major_version == nil then error({ code = 101 }) end
 
     local routes_dispatchers = Routes.dispatchers[tonumber(major_version)]
@@ -68,7 +80,7 @@ function Router.match(request)
     -- loop dispatchers to find route
     for _, dispatcher in ipairs(routes_dispatchers) do
         if dispatcher[method] then -- avoid matching if method is not defined in dispatcher
-            local match = { string.match(uri, dispatcher.pattern) }
+            local match = { string_match(uri, dispatcher.pattern) }
 
             if #match > 0 then
                 local params = {}
@@ -76,7 +88,7 @@ function Router.match(request)
                     if dispatcher[method].params[i] then
                         params[dispatcher[method].params[i]] = match[i]
                     else
-                        table.insert(params, match[i])
+                        table_insert(params, match[i])
                     end
                 end
 
@@ -128,7 +140,7 @@ function Router.respond(ngx, response)
         ngx.header[k] = v
     end
     -- encode body
-    local json_body = JSON.encode(response.body)
+    local json_body = json_encode(response.body)
     -- ensure content-length is set
     ngx.header["Content-Length"] = ngx.header["Content-Length"] or ngx.header["content-length"] or json_body:len()
     -- print body

@@ -1,3 +1,8 @@
+-- perf
+local error = error
+local setmetatable = setmetatable
+
+
 local Controller = {}
 Controller.__index = Controller
 

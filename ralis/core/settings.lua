@@ -1,3 +1,9 @@
+-- perf
+local pairs = pairs
+local pcall = pcall
+local require = require
+
+
 local RalisSettings = {}
 
 RalisSettings.defaults = {

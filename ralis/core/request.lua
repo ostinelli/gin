@@ -1,3 +1,8 @@
+-- perf
+local rawget = rawget
+local setmetatable = setmetatable
+
+
 Request = {}
 Request.__index = Request
 
