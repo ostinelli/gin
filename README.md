@@ -57,7 +57,7 @@ $ luarocks make
 
 ## Using models
 
-Initialize a DB, let's say that it's called `DB` for the purpose of this example.
+Initialize a DB, let's say that it's called `DB` for the purpose of this example. You can see an example in the automatically generated `config/database.lua` file.
 
 Create models like this:
 
@@ -68,5 +68,5 @@ User = DB:define_model('users')
 Use the model in controllers:
 
 ```
-local users = User.all()
+local users = User.where({ first_name = 'ralis' }, { limit = 3 })
 ```
