@@ -83,12 +83,29 @@ local MySqlOrm = {}
 
 function MySqlOrm.define_model(db, table_name)
     -- init object
-    local model = {}
-    -- add functions
-    model.create = function(attrs) return create(db, table_name, attrs) end
-    model.where = function(attrs, options) return where(db, table_name, attrs, options) end
+    local RalisBaseModel = {}
+    RalisBaseModel.__index = RalisBaseModel
+
+    function RalisBaseModel.create(attrs)
+        return create(db, table_name, attrs)
+    end
+
+    function RalisBaseModel.where(attrs, options)
+        return where(db, table_name, attrs, options)
+    end
+
+    function RalisBaseModel.new(attrs)
+        local instance = attrs
+        setmetatable(instance, RalisBaseModel)
+        return instance
+    end
+
+    -- function RalisBaseModel:save()
+    --     return save(db, table_name, self.attrs)
+    -- end
+
     -- return
-    return model
+    return RalisBaseModel
 end
 
 return MySqlOrm
