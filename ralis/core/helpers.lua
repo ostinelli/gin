@@ -5,18 +5,16 @@ local lfs = require 'lfs'
 local assert = assert
 local dofile = dofile
 local ipairs = ipairs
+local lfs = lfs
 local type = type
-local lfs_attributes = lfs.attributes
-local lfs_dir = lfs.dir
-local lfs_mkdir = lfs.mkdir
-local string_find = string.find
-local string_match = string.match
-local table_insert = table.insert
+local strfind = string.find
+local strmatch = string.match
+local tinsert = table.insert
 
 
 -- check if folder exists
 function folder_exists(folder_path)
-    return lfs_attributes(folder_path:gsub("\\$",""), "mode") == "directory"
+    return lfs.attributes(folder_path:gsub("\\$",""), "mode") == "directory"
 end
 
 -- split function
@@ -24,19 +22,19 @@ function split(str, pat)
     local t = {}
     local fpat = "(.-)" .. pat
     local last_end = 1
-    local s, e, cap = string_find(str, fpat, 1)
+    local s, e, cap = strfind(str, fpat, 1)
 
     while s do
         if s ~= 1 or cap ~= "" then
-            table_insert(t,cap)
+            tinsert(t,cap)
         end
         last_end = e+1
-        s, e, cap = string_find(str, fpat, last_end)
+        s, e, cap = strfind(str, fpat, last_end)
     end
 
     if last_end <= #str then
-        cap = string_find(str, last_end)
-        table_insert(t, cap)
+        cap = strfind(str, last_end)
+        tinsert(t, cap)
     end
 
     return t
@@ -50,7 +48,7 @@ end
 -- recursively make directories
 function mkdirs(file_path)
     -- get dir path and parts
-    dir_path = string_match(file_path, "(.*)/.*")
+    dir_path = strmatch(file_path, "(.*)/.*")
     parts = split_path(dir_path)
     -- loop
     local current_dir = nil
@@ -60,7 +58,7 @@ function mkdirs(file_path)
         else
             current_dir = current_dir .. '/' .. part
         end
-        lfs_mkdir(current_dir)
+        lfs.mkdir(current_dir)
     end
 end
 
@@ -70,7 +68,7 @@ function dofile_recursive(path)
         for file_name in lfs.dir(path) do
             if file_name ~= "." and file_name ~= ".." then
                 local file_path = path .. '/' .. file_name
-                local attr = lfs_attributes(file_path)
+                local attr = lfs.attributes(file_path)
                 assert(type(attr) == "table")
                 if attr.mode == "directory" then
                     -- recursive call for all subdirectories inside of initializers

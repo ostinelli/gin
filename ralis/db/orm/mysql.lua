@@ -2,8 +2,8 @@
 local error = error
 local next = next
 local pairs = pairs
-local table_concat = table.concat
-local table_insert = table.insert
+local tconcat = table.concat
+local tinsert = table.insert
 local type = type
 
 
@@ -22,61 +22,61 @@ local function create(db, table_name, attrs)
     local fields = {}
     local values = {}
     for k, v in pairs(attrs) do
-        table_insert(fields, k)
+        tinsert(fields, k)
         if type(v) ~= 'number' then v = quote(v) end
-        table_insert(values, v)
+        tinsert(values, v)
     end
     -- build sql
-    table_insert(sql, "INSERT INTO ")
-    table_insert(sql, table_name)
-    table_insert(sql, " (")
-    table_insert(sql, table_concat(fields, ','))
-    table_insert(sql, ") VALUES (")
-    table_insert(sql, table_concat(values, ','))
-    table_insert(sql, ");")
+    tinsert(sql, "INSERT INTO ")
+    tinsert(sql, table_name)
+    tinsert(sql, " (")
+    tinsert(sql, tconcat(fields, ','))
+    tinsert(sql, ") VALUES (")
+    tinsert(sql, tconcat(values, ','))
+    tinsert(sql, ");")
 
-    return db:query(table_concat(sql))
+    return db:query(tconcat(sql))
 end
 
 local function where(db, table_name, attrs, options)
     -- init sql
     local sql = {}
     -- start select
-    table_insert(sql, "SELECT * FROM ")
-    table_insert(sql, table_name)
+    tinsert(sql, "SELECT * FROM ")
+    tinsert(sql, table_name)
     -- where
     if attrs ~= nil and next(attrs) ~= nil then
-        table_insert(sql, " WHERE (")
+        tinsert(sql, " WHERE (")
         local where = {}
         for k, v in pairs(attrs) do
             local key_pair = {}
-            table_insert(key_pair, k)
+            tinsert(key_pair, k)
             if type(v) ~= 'number' then v = quote(v) end
-            table_insert(key_pair, "=")
-            table_insert(key_pair, v)
+            tinsert(key_pair, "=")
+            tinsert(key_pair, v)
 
-            table_insert(where, table_concat(key_pair))
+            tinsert(where, tconcat(key_pair))
         end
-        table_insert(sql, table_concat(where, ','))
-        table_insert(sql, ")")
+        tinsert(sql, tconcat(where, ','))
+        tinsert(sql, ")")
     end
     -- options
     if options then
         -- limit
         if options.limit ~= nil then
-            table_insert(sql, " LIMIT ")
-            table_insert(sql, options.limit)
+            tinsert(sql, " LIMIT ")
+            tinsert(sql, options.limit)
         end
         -- offset
         if options.offset ~= nil then
-            table_insert(sql, " OFFSET ")
-            table_insert(sql, options.offset)
+            tinsert(sql, " OFFSET ")
+            tinsert(sql, options.offset)
         end
     end
     -- close
-    table_insert(sql, ";")
+    tinsert(sql, ";")
     -- execute
-    return db:query(table_concat(sql))
+    return db:query(tconcat(sql))
 end
 
 local MySqlOrm = {}
