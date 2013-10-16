@@ -51,7 +51,7 @@ describe("MySql ORM", function()
     describe(".where", function()
         it("return models objects", function()
             db = {
-                query = function(self, ...)
+                query = function(...)
                     return { { first_name = 'roberto' }, { first_name = 'hedy' } }
                 end
             }
@@ -125,6 +125,27 @@ describe("MySql ORM", function()
                     assert.are.equal(query, "SELECT * FROM users WHERE (first_name='q-roberto') LIMIT 12 OFFSET 10;")
                 end)
             end)
+        end)
+    end)
+
+    describe(".find_by", function()
+        it("returns the .where first result model", function()
+            db = {
+                query = function(...)
+                    return { { first_name = 'roberto' }, { first_name = 'hedy' } }
+                end
+            }
+            Model = orm.define(db, 'users')
+
+            spy.on(Model, 'where')
+
+            local model = Model.find_by({ id = 15})
+            assert.spy(Model.where).was_called_with({ id = 15}, { limit = 1 })
+
+            Model.where:revert()
+
+            assert.are.equal('roberto', model.first_name)
+            assert.are.equal(Model, model.class())
         end)
     end)
 

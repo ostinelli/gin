@@ -101,6 +101,11 @@ function MySqlOrm.define(db, table_name)
         return models
     end
 
+    function RalisBaseModel.find_by(attrs)
+        local models = RalisBaseModel.where(attrs, { limit = 1 })
+        return models[1]
+    end
+
     function RalisBaseModel.new(attrs)
         local instance = attrs
         setmetatable(instance, RalisBaseModel)
