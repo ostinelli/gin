@@ -83,11 +83,11 @@ describe("Database", function()
 
     end)
 
-    describe(".define_model", function()
+    describe(".define", function()
         before_each(function()
             arg1, arg2, arg3 = nil, nil, nil
             package.loaded['ralis.db.orm.mysql'] = {
-                define_model = function(...) arg1, arg2 = ... end
+                define = function(...) arg1, arg2 = ... end
             }
             DB = db.new(options)
         end)
@@ -100,7 +100,7 @@ describe("Database", function()
         end)
 
         it("calls the query on the adapter", function()
-            DB:define_model('users')
+            DB:define('users')
 
             assert.are.same(DB, arg1)
             assert.are.same('users', arg2)

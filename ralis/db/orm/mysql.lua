@@ -82,7 +82,7 @@ end
 
 local MySqlOrm = {}
 
-function MySqlOrm.define_model(db, table_name)
+function MySqlOrm.define(db, table_name)
     -- init object
     local RalisBaseModel = {}
     RalisBaseModel.__index = RalisBaseModel

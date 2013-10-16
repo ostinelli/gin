@@ -12,7 +12,7 @@ describe("MySql ORM", function()
             end
         }
         orm = require 'ralis.db.orm.mysql'
-        Model = orm.define_model(db, 'users')
+        Model = orm.define(db, 'users')
     end)
 
     after_each(function()
@@ -24,7 +24,7 @@ describe("MySql ORM", function()
         Model = nil
     end)
 
-    describe(".define_model", function()
+    describe(".define", function()
         it("return the model", function()
             assert.are_not.equals(nil, Model)
         end)
@@ -55,7 +55,7 @@ describe("MySql ORM", function()
                     return { { first_name = 'roberto' }, { first_name = 'hedy' } }
                 end
             }
-            Model = orm.define_model(db, 'users')
+            Model = orm.define(db, 'users')
 
             local models = Model.where({ seen_at = '2013-10-12T16:31:21 UTC' })
             local model_1 = models[1]
