@@ -1,5 +1,6 @@
 -- dependencies
 local lfs = require 'lfs'
+local prettyprint = require 'pl.pretty'
 
 -- perf
 local assert = assert
@@ -80,4 +81,9 @@ function dofile_recursive(path)
             end
         end
     end
+end
+
+-- pretty print
+function pp(o)
+    prettyprint.dump(o)
 end
