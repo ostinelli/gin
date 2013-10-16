@@ -6,9 +6,10 @@ describe("MySql ORM", function()
             quote_sql_str = function(str) return "'q-" .. str .. "'" end
         }
         db = {
-            query = function(self, ...)
-                query = ...
-                return { { first_name = 'ralis' }}
+            query = function(self, sql)
+                if sql == "SELECT LAST_INSERT_ID();" then return 10 end
+                query = sql
+                return { { first_name = 'ralis' } }
             end
         }
         orm = require 'ralis.db.orm.mysql'
@@ -33,8 +34,19 @@ describe("MySql ORM", function()
     describe(".create", function()
         describe("when attrs are specified", function()
             it("creates a new entry", function()
-                Model.create({ first_name = 'roberto', last_name = 'ralis', age = 3, seen_at = '2013-10-12T16:31:21 UTC'})
+                Model.create({ first_name = 'roberto', last_name = 'ralis', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
+
                 assert.are.equal("INSERT INTO users (seen_at,last_name,first_name,age) VALUES ('q-2013-10-12T16:31:21 UTC','q-ralis','q-roberto',3);", query)
+            end)
+
+            it("returns a new model", function()
+                local model = Model.create({ first_name = 'roberto', last_name = 'ralis', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
+
+                assert.are.equal(10, model.id)
+                assert.are.equal('roberto', model.first_name)
+                assert.are.equal('ralis', model.last_name)
+                assert.are.equal(3, model.age)
+                assert.are.equal('2013-10-12T16:31:21 UTC', model.seen_at)
             end)
         end)
 
@@ -167,5 +179,14 @@ describe("MySql ORM", function()
                 assert.are.equal("UPDATE users SET last_name='q-ralis',first_name='q-roberto' WHERE id=1;", query)
             end)
         end)
+
+        -- describe("when an id is not specified", function()
+        --     it("create a new model", function()
+        --         local model = Model.new({ first_name = 'roberto', last_name = 'ralis' })
+        --         model:save()
+
+        --         assert.are.equal("UPDATE users SET last_name='q-ralis',first_name='q-roberto' WHERE id=1;", query)
+        --     end)
+        -- end)
     end)
 end)

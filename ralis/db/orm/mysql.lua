@@ -12,6 +12,10 @@ local function quote(str)
     return ngx.quote_sql_str(str)
 end
 
+local function get_last_id(db)
+    return db:query("SELECT LAST_INSERT_ID();")
+end
+
 local function field_and_values_for(attrs)
     local fav = {}
     for k, v in pairs(attrs) do
@@ -49,8 +53,10 @@ local function create(db, table_name, attrs)
     tinsert(sql, ") VALUES (")
     tinsert(sql, tconcat(values, ','))
     tinsert(sql, ");")
-
-    return db:query(tconcat(sql))
+    -- hit server
+    db:query(tconcat(sql))
+    -- get last id
+    return get_last_id(db);
 end
 
 local function where(db, table_name, attrs, options)
@@ -114,7 +120,12 @@ function MySqlOrm.define(db, table_name)
     RalisBaseModel.__index = RalisBaseModel
 
     function RalisBaseModel.create(attrs)
-        return create(db, table_name, attrs)
+        local model = Model.new(attrs)
+
+        local id = create(db, table_name, attrs)
+        model.id = id
+
+        return model
     end
 
     function RalisBaseModel.where(attrs, options)
@@ -133,7 +144,7 @@ function MySqlOrm.define(db, table_name)
     end
 
     function RalisBaseModel.new(attrs)
-        local instance = attrs
+        local instance = attrs or {}
         setmetatable(instance, RalisBaseModel)
         return instance
     end
