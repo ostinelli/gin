@@ -6,7 +6,10 @@ describe("MySql ORM", function()
             quote_sql_str = function(str) return "'q-" .. str .. "'" end
         }
         db = {
-            query = function(self, ...) query = ... end
+            query = function(self, ...)
+                query = ...
+                return { { first_name = 'ralis' }}
+            end
         }
         orm = require 'ralis.db.orm.mysql'
         Model = orm.define_model(db, 'users')
@@ -46,10 +49,28 @@ describe("MySql ORM", function()
     end)
 
     describe(".where", function()
+        it("return models objects", function()
+            db = {
+                query = function(self, ...)
+                    return { { first_name = 'roberto' }, { first_name = 'hedy' } }
+                end
+            }
+            Model = orm.define_model(db, 'users')
+
+            local models = Model.where({ seen_at = '2013-10-12T16:31:21 UTC' })
+            local model_1 = models[1]
+            local model_2 = models[2]
+
+            assert.are.equal('roberto', model_1.first_name)
+            assert.are.equal('hedy', model_2.first_name)
+            assert.are.equal(Model, model_1.class())
+            assert.are.equal(Model, model_2.class())
+        end)
+
         describe("when attrs are specified", function()
             describe("when no option are specified", function()
-                it("returns models", function()
-                    Model.where({ first_name = 'roberto', last_name = 'ralis', age = 3, seen_at = '2013-10-12T16:31:21 UTC'})
+                it("finds and returns models without options", function()
+                    Model.where({ first_name = 'roberto', last_name = 'ralis', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
                     assert.are.equal(query, "SELECT * FROM users WHERE (seen_at='q-2013-10-12T16:31:21 UTC',last_name='q-ralis',first_name='q-roberto',age=3);")
                 end)
             end)
@@ -78,7 +99,7 @@ describe("MySql ORM", function()
 
         describe("when no attrs are specified", function()
             describe("when no option are specified", function()
-                it("returns models", function()
+                it("finds all models", function()
                     Model.where()
                     assert.are.equal(query, "SELECT * FROM users;")
                 end)

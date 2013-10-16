@@ -1,5 +1,6 @@
 -- perf
 local error = error
+local ipairs = ipairs
 local next = next
 local pairs = pairs
 local tconcat = table.concat
@@ -91,13 +92,23 @@ function MySqlOrm.define_model(db, table_name)
     end
 
     function RalisBaseModel.where(attrs, options)
-        return where(db, table_name, attrs, options)
+        local results = where(db, table_name, attrs, options)
+
+        local models = {}
+        for _, v in ipairs(results) do
+            tinsert(models, RalisBaseModel.new(v))
+        end
+        return models
     end
 
     function RalisBaseModel.new(attrs)
         local instance = attrs
         setmetatable(instance, RalisBaseModel)
         return instance
+    end
+
+    function RalisBaseModel:class()
+        return RalisBaseModel
     end
 
     -- function RalisBaseModel:save()
