@@ -12,6 +12,20 @@ local function quote(str)
     return ngx.quote_sql_str(str)
 end
 
+local function field_and_values_for(attrs)
+    local fav = {}
+    for k, v in pairs(attrs) do
+        local key_pair = {}
+        tinsert(key_pair, k)
+        if type(v) ~= 'number' then v = quote(v) end
+        tinsert(key_pair, "=")
+        tinsert(key_pair, v)
+
+        tinsert(fav, tconcat(key_pair))
+    end
+    return tconcat(fav, ',')
+end
+
 local function create(db, table_name, attrs)
     -- health check
     if attrs == nil or next(attrs) == nil then
@@ -48,17 +62,7 @@ local function where(db, table_name, attrs, options)
     -- where
     if attrs ~= nil and next(attrs) ~= nil then
         tinsert(sql, " WHERE (")
-        local where = {}
-        for k, v in pairs(attrs) do
-            local key_pair = {}
-            tinsert(key_pair, k)
-            if type(v) ~= 'number' then v = quote(v) end
-            tinsert(key_pair, "=")
-            tinsert(key_pair, v)
-
-            tinsert(where, tconcat(key_pair))
-        end
-        tinsert(sql, tconcat(where, ','))
+        tinsert(sql, field_and_values_for(attrs))
         tinsert(sql, ")")
     end
     -- options
@@ -79,6 +83,28 @@ local function where(db, table_name, attrs, options)
     -- execute
     return db:query(tconcat(sql))
 end
+
+local function save(db, table_name, attrs)
+    -- init sql
+    local sql = {}
+    -- build sql
+    tinsert(sql, "UPDATE ")
+    tinsert(sql, table_name)
+    tinsert(sql, " SET ")
+    -- remove id
+    local id = attrs.id
+    attrs.id = nil
+    -- fields
+    tinsert(sql, field_and_values_for(attrs))
+    -- where
+    tinsert(sql, " WHERE id=")
+    tinsert(sql, id)
+    -- close
+    tinsert(sql, ";")
+    -- execute
+    return db:query(tconcat(sql))
+end
+
 
 local MySqlOrm = {}
 
@@ -116,9 +142,9 @@ function MySqlOrm.define(db, table_name)
         return RalisBaseModel
     end
 
-    -- function RalisBaseModel:save()
-    --     return save(db, table_name, self.attrs)
-    -- end
+    function RalisBaseModel:save()
+        save(db, table_name, self)
+    end
 
     -- return
     return RalisBaseModel
