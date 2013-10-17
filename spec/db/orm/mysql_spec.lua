@@ -7,7 +7,7 @@ describe("MySql ORM", function()
         }
         db = {
             query = function(self, sql)
-                if sql == "SELECT LAST_INSERT_ID();" then return 10 end
+                if sql == "SELECT LAST_INSERT_ID() AS id;" then return {{ id = "10" }} end
                 query = sql
                 return { { first_name = 'ralis' } }
             end

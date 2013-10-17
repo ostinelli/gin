@@ -6,6 +6,7 @@ local pairs = pairs
 local tconcat = table.concat
 local tinsert = table.insert
 local type = type
+local tonumber = tonumber
 
 
 local function quote(str)
@@ -13,7 +14,8 @@ local function quote(str)
 end
 
 local function get_last_id(db)
-    return db:query("SELECT LAST_INSERT_ID();")
+    local res = db:query("SELECT LAST_INSERT_ID() AS id;")
+    return tonumber(res[1].id)
 end
 
 local function field_and_values_for(attrs)
@@ -120,7 +122,7 @@ function MySqlOrm.define(db, table_name)
     RalisBaseModel.__index = RalisBaseModel
 
     function RalisBaseModel.create(attrs)
-        local model = Model.new(attrs)
+        local model = RalisBaseModel.new(attrs)
 
         local id = create(db, table_name, attrs)
         model.id = id
