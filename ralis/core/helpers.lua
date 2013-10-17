@@ -3,19 +3,19 @@ local lfs = require 'lfs'
 local prettyprint = require 'pl.pretty'
 
 -- perf
-local assert = assert
-local dofile = dofile
-local ipairs = ipairs
-local lfs = lfs
-local type = type
-local strfind = string.find
 local strmatch = string.match
+local strfind = string.find
+local strsub = string.sub
+local strgsub = string.gsub
 local tinsert = table.insert
-
+local ipairs = ipairs
+local assert = assert
+local type = type
+local dofile = dofile
 
 -- check if folder exists
 function folder_exists(folder_path)
-    return lfs.attributes(folder_path:gsub("\\$",""), "mode") == "directory"
+    return lfs.attributes(strgsub(folder_path, "\\$",""), "mode") == "directory"
 end
 
 -- split function
@@ -34,7 +34,7 @@ function split(str, pat)
     end
 
     if last_end <= #str then
-        cap = strfind(str, last_end)
+        cap = strsub(str, last_end)
         tinsert(t, cap)
     end
 
