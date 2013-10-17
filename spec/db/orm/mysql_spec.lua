@@ -140,6 +140,29 @@ describe("MySql ORM", function()
         end)
     end)
 
+    describe(".all", function()
+        it("returns the .where models", function()
+            db = {
+                query = function(...)
+                    return { { first_name = 'roberto' }, { first_name = 'hedy' } }
+                end
+            }
+            Model = orm.define(db, 'users')
+
+            spy.on(Model, 'where')
+
+            local models = Model.all()
+            assert.spy(Model.where).was_called_with()
+
+            Model.where:revert()
+
+            assert.are.equal('roberto', models[1].first_name)
+            assert.are.equal('hedy', models[2].first_name)
+            assert.are.equal(Model, models[1].class())
+            assert.are.equal(Model, models[2].class())
+        end)
+    end)
+
     describe(".find_by", function()
         it("returns the .where first result model", function()
             db = {
@@ -151,8 +174,8 @@ describe("MySql ORM", function()
 
             spy.on(Model, 'where')
 
-            local model = Model.find_by({ id = 15})
-            assert.spy(Model.where).was_called_with({ id = 15}, { limit = 1 })
+            local model = Model.find_by({ id = 15 })
+            assert.spy(Model.where).was_called_with({ id = 15 }, { limit = 1 })
 
             Model.where:revert()
 
