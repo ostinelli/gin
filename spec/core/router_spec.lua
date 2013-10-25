@@ -6,6 +6,7 @@ describe("Router", function()
         router = require 'ralis.core.router'
         require 'ralis.core.routes'
         Controller = require 'ralis.core.controller'
+        Request = require 'ralis.core.request'
         ngx = {
             HTTP_NOT_FOUND = 404,
             exit = function(code) return end,
@@ -29,15 +30,43 @@ describe("Router", function()
         package.loaded['ralis.core.routes'] = nil
         Routes = nil
         package.loaded['ralis.core.controller'] = nil
+        package.loaded['ralis.core.request'] = nil
+        Request = nil
         router = nil
         Controller = nil
         ngx = nil
     end)
 
     describe(".handler", function()
-        describe("when no matching API version is found", function()
+
+        describe("when a request error is raised", function()
             before_each(function()
-                router.match = function(ngx) error({ code = 100 }) end
+                Request.new = function(_) error({ code = 104 }) end
+            end)
+
+            it("responds with an error response", function()
+                local arg_ngx, arg_response
+                router.respond = function(...) arg_ngx, arg_response = ... end
+
+                router.handler(ngx)
+
+                assert.are.same(arg_ngx, ngx)
+                assert.are.same(104, arg_response.body.code)
+            end)
+        end)
+
+        it("calls the router match", function()
+            local arg_request
+            router.match = function(...) arg_request = ... end
+
+            router.handler(ngx)
+
+            assert.are.same(arg_request, Request.new(ngx))
+        end)
+
+        describe("when the accept header is not set", function()
+            before_each(function()
+                router.match = function(req) error({ code = 100 }) end
             end)
 
             it("responds with an error response", function()
@@ -56,7 +85,7 @@ describe("Router", function()
 
             describe("when no match is found", function()
                 before_each(function()
-                    router.match = function(ngx) return end
+                    router.match = function(req) return end
                 end)
 
                 it("raises a 404 error if no match is found", function()
@@ -73,7 +102,7 @@ describe("Router", function()
             describe("when a match is found", function()
                 before_each(function()
                     request = Request.new(ngx)
-                    router.match = function(ngx) return "controller_name", "action", "params", request end
+                    router.match = function(req) return "controller_name", "action", "params", request end
                 end)
 
                 after_each(function()

@@ -10,7 +10,7 @@ describe("Request", function()
 
             req = {
                 read_body = function() return end,
-                get_body_data = function() return "request-body" end,
+                get_body_data = function() return nil end,
                 get_uri_args = function() return { uri_param = '2' } end,
                 get_headers = function() return { ["Content-Type"] = "application/json" } end,
                 get_post_args = function() return { body_param = '2' } end
@@ -32,11 +32,53 @@ describe("Request", function()
             ngx.req.read_body:revert()
         end)
 
-        it("sets body to empty string if no body is returned", function()
-            ngx.req.get_body_data = function() return end
+        it("sets raw body to the returned value", function()
+            ngx.req.get_body_data = function() return '{"param":"value"}' end
             local request = Request.new(ngx)
 
-            assert.are.equal("", request.body)
+            assert.are.equal('{"param":"value"}', request.body_raw)
+        end)
+
+        describe("when body is a valid JSON", function()
+            it("sets request body to a table", function()
+                ngx.req.get_body_data = function() return '{"param":"value"}' end
+
+                local request = Request.new(ngx)
+
+                assert.are.same({ param = "value" }, request.body)
+            end)
+        end)
+
+        describe("when body is nil", function()
+            it("sets request body to nil", function()
+                ngx.req.get_body_data = function() return nil end
+
+                local request = Request.new(ngx)
+
+                assert.are.same(nil, request.body)
+            end)
+        end)
+
+        describe("when body is an invalid JSON", function()
+            it("raises an error", function()
+                ngx.req.get_body_data = function() return "not-json" end
+
+                ok, err = pcall(function() return Request.new(ngx) end)
+
+                assert.are.equal(false, ok)
+                assert.are.equal(103, err.code)
+            end)
+        end)
+
+        describe("when body is not a JSON hash", function()
+            it("raises an error", function()
+                ngx.req.get_body_data = function() return'["one", "two"]' end
+
+                ok, err = pcall(function() return Request.new(ngx) end)
+
+                assert.are.equal(false, ok)
+                assert.are.equal(104, err.code)
+            end)
         end)
     end)
 
@@ -67,10 +109,6 @@ describe("Request", function()
 
         it("returns headers", function()
             assert.are.same({ ["Content-Type"] = "application/json" }, request.headers)
-        end)
-
-        it("returns body_params", function()
-            assert.are.same({ body_param = '2' }, request.body_params)
         end)
 
         it("sets and returns api_version", function()

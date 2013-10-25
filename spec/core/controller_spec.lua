@@ -7,7 +7,8 @@ describe("Controller", function()
         ngx = {
             req = {
                 read_body = function() return end,
-                get_body_data = function() return "request-body" end,
+                get_body_data = function() return '{"param":"value"}' end,
+                get_headers = function() return {} end,
             },
             var = {
                 uri = "/uri",
@@ -28,12 +29,12 @@ describe("Controller", function()
 
     describe(".new", function()
         it("creates a new instance of a controller with request and params", function()
-            assert.are.equals(request, controller.request)
-            assert.are.equals(params, controller.params)
+            assert.are.same(request, controller.request)
+            assert.are.same(params, controller.params)
         end)
 
         it("creates and initializes the controller's request object", function()
-            assert.are.equals("request-body", controller.request.body)
+            assert.are.same({ param = "value" }, controller.request.body)
         end)
     end)
 
