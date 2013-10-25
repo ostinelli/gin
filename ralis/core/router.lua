@@ -38,7 +38,7 @@ local accept_header_matcher = "^application/vnd." .. Application.name .. ".v(%d+
 function Router.handler(ngx)
     -- add headers
     ngx.header.content_type = 'application/json'
-    ngx.header["X-Server"] = response_version_header;
+    ngx.header["X-Framework"] = response_version_header;
 
     -- create request object
     local ok, request_or_error = pcall(function() return Request.new(ngx) end)
