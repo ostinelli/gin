@@ -82,12 +82,14 @@ function IntegrationRunner.hit(request)
         sink = ltn12.sink.table(response_body),
         redirect = false
     })
-    response_body = table.concat(response_body, "")
 
     -- stop nginx
     launcher.stop()
 
     if ok == nil then error("An error occurred while connecting to the test server.") end
+
+    -- get json body
+    response_body = table.concat(response_body, "")
 
     -- build response object and return
     local response = ResponseSpec.new({
