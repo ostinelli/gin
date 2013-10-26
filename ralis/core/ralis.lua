@@ -13,7 +13,7 @@ local lfs = require 'lfs'
 Ralis = Ralis or {}
 
 -- version
-Ralis.version = '0.1'
+Ralis.version = '0.1-rc1'
 
 -- environment
 Ralis.env = Ralis.env or os.getenv("RALIS_ENV") or 'development'
