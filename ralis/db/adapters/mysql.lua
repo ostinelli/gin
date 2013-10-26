@@ -38,11 +38,11 @@ local function mysql_keepalive(db, options)
 end
 
 
-function MySql.query(options, sql)
+function MySql.execute(options, sql)
     -- get db object
     local db = mysql_connect(options)
-    -- run query
-    local res, err, errno, sqlstate = db:query(sql)
+    -- execute query
+    local res, err, errno, sqlstate = db:execute(sql)
     if not res then error("bad mysql result: " .. err .. ": " .. errno .. " " .. sqlstate) end
     -- keepalive
     mysql_keepalive(db, options)

@@ -6,7 +6,7 @@ describe("MySql ORM", function()
             quote_sql_str = function(str) return "'q-" .. str .. "'" end
         }
         db = {
-            query = function(self, sql)
+            execute = function(self, sql)
                 if sql == "SELECT LAST_INSERT_ID() AS id;" then return {{ id = "10" }} end
                 query = sql
                 return { { first_name = 'ralis' } }
@@ -31,9 +31,9 @@ describe("MySql ORM", function()
         end)
     end)
 
-    describe(".query", function()
+    describe(".execute", function()
         it("calls the database", function()
-            Model.query("SELECT 1;")
+            Model.execute("SELECT 1;")
             assert.are.equal("SELECT 1;", query)
         end)
     end)
@@ -70,7 +70,7 @@ describe("MySql ORM", function()
     describe(".where", function()
         it("return models objects", function()
             db = {
-                query = function(...)
+                execute = function(...)
                     return { { first_name = 'roberto' }, { first_name = 'hedy' } }
                 end
             }
@@ -150,7 +150,7 @@ describe("MySql ORM", function()
     describe(".all", function()
         it("returns the .where models", function()
             db = {
-                query = function(...)
+                execute = function(...)
                     return { { first_name = 'roberto' }, { first_name = 'hedy' } }
                 end
             }
@@ -173,7 +173,7 @@ describe("MySql ORM", function()
     describe(".find_by", function()
         it("returns the .where first result model", function()
             db = {
-                query = function(...)
+                execute = function(...)
                     return { { first_name = 'roberto' }, { first_name = 'hedy' } }
                 end
             }

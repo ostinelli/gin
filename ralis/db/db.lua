@@ -41,8 +41,8 @@ function Database.new(options)
     return instance
 end
 
-function Database:query(sql)
-    return self.adapter.query(self.options, sql)
+function Database:execute(sql)
+    return self.adapter.execute(self.options, sql)
 end
 
 function Database:define(table_name)

@@ -57,11 +57,11 @@ describe("Database", function()
         end)
     end)
 
-    describe(".query", function()
+    describe(".execute", function()
         before_each(function()
             arg1, arg2 = nil, nil
             package.loaded['ralis.db.adapters.mysql'] = {
-                query = function(...) arg1, arg2 = ... end
+                execute = function(...) arg1, arg2 = ... end
             }
             DB = db.new(options)
         end)
@@ -72,10 +72,10 @@ describe("Database", function()
             DB = nil
         end)
 
-        it("calls the query on the adapter", function()
+        it("calls execute on the adapter", function()
             local sql = "SELECT 1"
 
-            DB:query(sql)
+            DB:execute(sql)
 
             assert.are.same(options, arg1)
             assert.are.same(sql, arg2)
@@ -99,7 +99,7 @@ describe("Database", function()
             DB = nil
         end)
 
-        it("calls the query on the adapter", function()
+        it("calls execute on the adapter", function()
             DB:define('users')
 
             assert.are.same(DB, arg1)

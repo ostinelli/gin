@@ -14,7 +14,7 @@ local function quote(str)
 end
 
 local function get_last_id(db)
-    local res = db:query("SELECT LAST_INSERT_ID() AS id;")
+    local res = db:execute("SELECT LAST_INSERT_ID() AS id;")
     return tonumber(res[1].id)
 end
 
@@ -56,7 +56,7 @@ local function create(db, table_name, attrs)
     tinsert(sql, tconcat(values, ','))
     tinsert(sql, ");")
     -- hit server
-    db:query(tconcat(sql))
+    db:execute(tconcat(sql))
     -- get last id
     return get_last_id(db);
 end
@@ -89,7 +89,7 @@ local function where(db, table_name, attrs, options)
     -- close
     tinsert(sql, ";")
     -- execute
-    return db:query(tconcat(sql))
+    return db:execute(tconcat(sql))
 end
 
 local function save(db, table_name, attrs)
@@ -110,7 +110,7 @@ local function save(db, table_name, attrs)
     -- close
     tinsert(sql, ";")
     -- execute
-    return db:query(tconcat(sql))
+    return db:execute(tconcat(sql))
 end
 
 
@@ -121,8 +121,8 @@ function MySqlOrm.define(db, table_name)
     local RalisBaseModel = {}
     RalisBaseModel.__index = RalisBaseModel
 
-    function RalisBaseModel.query(query)
-        db:query(query)
+    function RalisBaseModel.execute(sql)
+        db:execute(sql)
     end
 
     function RalisBaseModel.create(attrs)
