@@ -71,6 +71,8 @@ var ralisApiClient = {
             , body = this.$body.val()
             , headers = this.buildHeaders();
 
+        this.clearResponse();
+
         $.ajax({
             dataType: 'json',
             url: url,
@@ -107,6 +109,12 @@ var ralisApiClient = {
         this.$responseStatus.html(status);
         this.$responseHeaders.html(headers);
         this.$responseBody.html(prettyJSON);
+    },
+
+    clearResponse: function() {
+        this.$responseStatus.html('');
+        this.$responseHeaders.html('');
+        this.$responseBody.html('');
     }
 };
 

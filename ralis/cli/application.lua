@@ -239,7 +239,7 @@ RalisApplication.files = {
 }
 
 function RalisApplication.new(name)
-    print(ansicolors("Creating app %{cyan}name%{reset}..."))
+    print(ansicolors("Creating app %{cyan}" .. name .. "%{reset}..."))
 
     RalisApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
     RalisApplication.create_files(name)
