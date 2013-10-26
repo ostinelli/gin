@@ -44,7 +44,7 @@ function Router.handler(ngx)
     local ok, request_or_error = pcall(function() return Request.new(ngx) end)
     if ok == false then
         -- parsing errors
-        local err = Error.new(request_or_error.code)
+        local err = Error.new(request_or_error.code, request_or_error.custom_attrs)
         response = Response.new({ status = err.status, body = err.body })
         Router.respond(ngx, response)
         return
@@ -57,7 +57,7 @@ function Router.handler(ngx)
 
     if ok == false then
         -- match returned an error (for instance a 412 for no header match)
-        local err = Error.new(controller_name_or_error.code)
+        local err = Error.new(controller_name_or_error.code, controller_name_or_error.custom_attrs)
         response = Response.new({ status = err.status, body = err.body })
         Router.respond(ngx, response)
 
@@ -127,7 +127,7 @@ function Router.call_controller(request, controller_name, action, params)
         response = Response.new({ status = status_or_error, headers = headers, body = body })
     else
         -- controller raised an error
-        local ok, err = pcall(function() return Error.new(status_or_error.code) end)
+        local ok, err = pcall(function() return Error.new(status_or_error.code, status_or_error.custom_attrs) end)
 
         if ok then
             -- API error

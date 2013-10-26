@@ -41,7 +41,7 @@ describe("Router", function()
 
         describe("when a request error is raised", function()
             before_each(function()
-                Request.new = function(_) error({ code = 104 }) end
+                Request.new = function(_) error({ code = 104, custom_attrs = { custom_attr = "custom_attr_value" } }) end
             end)
 
             it("responds with an error response", function()
@@ -52,6 +52,7 @@ describe("Router", function()
 
                 assert.are.same(arg_ngx, ngx)
                 assert.are.same(104, arg_response.body.code)
+                assert.are.same("custom_attr_value", arg_response.body.custom_attr)
             end)
         end)
 
@@ -64,9 +65,9 @@ describe("Router", function()
             assert.are.same(arg_request, Request.new(ngx))
         end)
 
-        describe("when the accept header is not set", function()
+        describe("when the router match returns an error", function()
             before_each(function()
-                router.match = function(req) error({ code = 100 }) end
+                router.match = function(req) error({ code = 100, custom_attrs = { custom_attr = "custom_attr_value" } }) end
             end)
 
             it("responds with an error response", function()
@@ -76,67 +77,64 @@ describe("Router", function()
                 router.handler(ngx)
 
                 assert.are.same(arg_ngx, ngx)
-                assert.are.same(412, arg_response.status)
-                assert.are.same({ code = 100, message = "Accept header not set." }, arg_response.body)
+                assert.are.same(100, arg_response.body.code)
+                assert.are.same("custom_attr_value", arg_response.body.custom_attr)
             end)
         end)
 
-        describe("when no matching API version is found", function()
-
-            describe("when no match is found", function()
-                before_each(function()
-                    router.match = function(req) return end
-                end)
-
-                it("raises a 404 error if no match is found", function()
-                    stub(ngx, 'exit')
-
-                    router.handler(ngx)
-
-                    assert.stub(ngx.exit).was.called_with(ngx.HTTP_NOT_FOUND)
-
-                    ngx.exit:revert()
-                end)
+        describe("when a router match does not find a matching API", function()
+            before_each(function()
+                router.match = function(req) return end
             end)
 
-            describe("when a match is found", function()
-                before_each(function()
-                    request = Request.new(ngx)
-                    router.match = function(req) return "controller_name", "action", "params", request end
-                end)
+            it("raises a 404 error if no match is found", function()
+                stub(ngx, 'exit')
 
-                after_each(function()
-                    request = nil
-                end)
+                router.handler(ngx)
 
-                it("calls controller", function()
-                    stub(router, 'respond') -- stub to avoid calling the function
+                assert.stub(ngx.exit).was.called_with(ngx.HTTP_NOT_FOUND)
 
-                    local arg_request, arg_controller_name, arg_action, arg_params
-                    router.call_controller = function(...) arg_request, arg_controller_name, arg_action, arg_params = ... end
+                ngx.exit:revert()
+            end)
+        end)
 
-                    router.handler(ngx)
+        describe("when a router match is found", function()
+            before_each(function()
+                request = Request.new(ngx)
+                router.match = function(req) return "controller_name", "action", "params", request end
+            end)
 
-                    assert.are.same(ngx, arg_request.ngx)
-                    assert.are.same("/users", arg_request.uri)
-                    assert.are.same('GET', arg_request.method)
+            after_each(function()
+                request = nil
+            end)
 
-                    assert.are.equal("controller_name", arg_controller_name)
-                    assert.are.equal("action", arg_action)
-                    assert.are.equal("params", arg_params)
+            it("calls controller", function()
+                stub(router, 'respond') -- stub to avoid calling the function
 
-                    router.respond:revert()
-                end)
+                local arg_request, arg_controller_name, arg_action, arg_params
+                router.call_controller = function(...) arg_request, arg_controller_name, arg_action, arg_params = ... end
 
-                it("responds with the response", function()
-                    router.call_controller = function() return "response" end
+                router.handler(ngx)
 
-                    stub(router, 'respond')
+                assert.are.same(ngx, arg_request.ngx)
+                assert.are.same("/users", arg_request.uri)
+                assert.are.same('GET', arg_request.method)
 
-                    router.handler(ngx)
+                assert.are.equal("controller_name", arg_controller_name)
+                assert.are.equal("action", arg_action)
+                assert.are.equal("params", arg_params)
 
-                    assert.stub(router.respond).was.called_with(ngx, "response")
-                end)
+                router.respond:revert()
+            end)
+
+            it("responds with the response", function()
+                router.call_controller = function() return "response" end
+
+                stub(router, 'respond')
+
+                router.handler(ngx)
+
+                assert.stub(router.respond).was.called_with(ngx, "response")
             end)
         end)
     end)
@@ -262,7 +260,7 @@ describe("Router", function()
             before_each(function()
                 TestController = {}
                 function TestController:action()
-                    self:raise_error(1000)
+                    self:raise_error(1000, { additional_info = "some-info" })
                     return { name = 'ralis' }
                 end
                 package.loaded['controller_name'] = TestController
@@ -283,7 +281,11 @@ describe("Router", function()
             it("calls nginx with the serialized json of the controller response", function()
                 local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                assert.are.same({ code = 1000, message = "Something bad happened here" }, response.body)
+                assert.are.same({
+                    code = 1000,
+                    message = "Something bad happened here",
+                    additional_info = "some-info"
+                }, response.body)
             end)
         end)
 

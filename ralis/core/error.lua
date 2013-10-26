@@ -17,7 +17,7 @@ Errors[104] = { status = 400, message = "Body should be a JSON hash." }
 Error = {}
 Error.__index = Error
 
-function Error.new(code)
+function Error.new(code, custom_attrs)
     local err = Errors[code]
     if err == nil then error("invalid error code") end
 
@@ -25,6 +25,10 @@ function Error.new(code)
         code = code,
         message = err.message
     }
+
+    if custom_attrs ~= nil then
+        for k,v in pairs(custom_attrs) do body[k] = v end
+    end
 
     local instance = {
         status = err.status,
