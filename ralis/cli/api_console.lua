@@ -25,9 +25,10 @@ var ralisApiClient = {
     // elements
     $mainForm: null,
     $version: null,
-    $endpoint: null,
+    $url: null,
     $path: null,
     $method: null,
+    $body: null,
     $responseStatus: null,
     $responseHeaders: null,
     $responseBody: null,
@@ -40,9 +41,9 @@ var ralisApiClient = {
     initElements: function() {
         this.$mainForm = $('#main_form');
         this.$version = $('#version');
-        this.$endpoint = $('#endpoint');
-        this.$path = $('#path');
+        this.$url = $('#url');
         this.$method = $('#method');
+        this.$body = $('#body');
         this.$responseStatus = $('#response_status');
         this.$responseHeaders = $('#response_headers');
         this.$responseBody = $('#response_body');
@@ -59,20 +60,24 @@ var ralisApiClient = {
 
     apiCall: function() {
         var self = this
-            , endpoint = this.$endpoint.val()
-            , path = this.$path.val()
-            , method = this.$method.val();
+            , url = this.$url.val()
+            , method = this.$method.val()
+            , body = this.$body.val();
 
         $.ajax({
-            url: endpoint + path,
+            dataType: 'json',
+            url: url,
             headers: {
                 Accept: self.acceptHeader()
             },
+            data: body,
             method: method
 
-        }).always(function(dataOrjqXHR, textStatus, jqXHROrErrorThrown) {
-            console.log(dataOrjqXHR, textStatus, jqXHROrErrorThrown);
-
+        }).done(function(data, textStatus, jqXHR) {
+        console.log(data, textStatus, jqXHR);
+            self.$responseStatus.html(jqXHR.status);
+            self.$responseHeaders.html(jqXHR.getAllResponseHeaders());
+            self.$responseBody.html(jqXHR.responseText);
         });
     },
 
@@ -94,14 +99,6 @@ $(function() {
 
     <body>
         <form id="main_form">
-            <label for="version">API version</label>
-            <input type="text" name="version" id="version" value="1" />
-
-            <label for="endpoint">API endpoint</label>
-            <input type="text" name="endpoint" id="endpoint" value="https://localhost:7200" />
-
-            <label for="path">Path</label>
-            <input type="text" name="path" id="path" value="/" />
 
             <label for="method">Method</label>
             <select name="method" id="method">
@@ -116,13 +113,27 @@ $(function() {
                 <option value="CONNECT">CONNECT</option>
             </select>
 
+            <label for="url">URL</label>
+            <input type="text" name="url" id="url" value="https://localhost:7200/" />
+
+            <label for="version">API version</label>
+            <input type="text" name="version" id="version" value="1" />
+
+            <label for="body">Body</label>
+            <textarea name="body" id="body" ></textarea>
+
             <input type="submit" value="HIT" name="hit", id="hit" />
 
         </form>
 
-        <div id="response_status"></div>
-        <div id="response_headers"></div>
-        <div id="response_body"></div>
+        <label>Status</label>
+        <pre id="response_status"></pre>
+
+        <label>Headers</label>
+        <pre id="response_headers"></pre>
+
+        <label>Body</label>
+        <pre id="response_body"></pre>
     </body>
 </html>
 
