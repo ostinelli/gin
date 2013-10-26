@@ -28,6 +28,7 @@ var ralisApiClient = {
     $url: null,
     $path: null,
     $method: null,
+    $headers: null,
     $body: null,
     $responseStatus: null,
     $responseHeaders: null,
@@ -43,6 +44,7 @@ var ralisApiClient = {
         this.$version = $('#version');
         this.$url = $('#url');
         this.$method = $('#method');
+        this.$headers = $('#headers');
         this.$body = $('#body');
         this.$responseStatus = $('#response_status');
         this.$responseHeaders = $('#response_headers');
@@ -62,28 +64,45 @@ var ralisApiClient = {
         var self = this
             , url = this.$url.val()
             , method = this.$method.val()
-            , body = this.$body.val();
+            , body = this.$body.val()
+            , headers = this.buildHeaders();
 
         $.ajax({
             dataType: 'json',
             url: url,
-            headers: {
-                Accept: self.acceptHeader()
-            },
+            headers: headers,
             data: body,
             method: method
-
         }).done(function(data, textStatus, jqXHR) {
-        console.log(data, textStatus, jqXHR);
-            self.$responseStatus.html(jqXHR.status);
-            self.$responseHeaders.html(jqXHR.getAllResponseHeaders());
-            self.$responseBody.html(jqXHR.responseText);
+            self.displayResponse(jqXHR.status, jqXHR.getAllResponseHeaders(), jqXHR.responseJSON);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            self.displayResponse(jqXHR.status, jqXHR.getAllResponseHeaders(), jqXHR.responseJSON);
         });
     },
 
     acceptHeader: function() {
         var version = this.$version.val();
         return "application/vnd." + this.applicationName + ".v" + version + "+json";
+    },
+
+    buildHeaders: function() {
+        var headersSplit = this.$headers.val().split("\n")
+            , headers = {};
+
+        $.each(headersSplit, function(index, header) {
+            var headerInfo = header.split(':');
+            headers[headerInfo[0]] = headerInfo[1];
+        });
+
+        headers["Accept"] = this.acceptHeader();
+        return headers;
+    },
+
+    displayResponse: function(status, headers, jsonBody) {
+        var prettyJSON = JSON.stringify(jsonBody, undefined, 2);
+        this.$responseStatus.html(status);
+        this.$responseHeaders.html(headers);
+        this.$responseBody.html(prettyJSON);
     }
 };
 
@@ -118,6 +137,9 @@ $(function() {
 
             <label for="version">API version</label>
             <input type="text" name="version" id="version" value="1" />
+
+            <label for="headers">Headers</label>
+            <textarea name="headers" id="headers" ></textarea>
 
             <label for="body">Body</label>
             <textarea name="body" id="body" ></textarea>
