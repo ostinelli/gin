@@ -210,13 +210,18 @@ describe("MySql ORM", function()
             end)
         end)
 
-        -- describe("when an id is not specified", function()
-        --     it("create a new model", function()
-        --         local model = Model.new({ first_name = 'roberto', last_name = 'ralis' })
-        --         model:save()
+        describe("when an id is not specified", function()
+            it("creates a new model", function()
+                local attrs
+                Model.create = function(...)
+                    attrs = ...
+                end
 
-        --         assert.are.equal("UPDATE users SET last_name='q-ralis',first_name='q-roberto' WHERE id=1;", query)
-        --     end)
-        -- end)
+                local model = Model.new({ first_name = 'roberto', last_name = 'ralis' })
+                model:save()
+
+                assert.are.same(attrs, { first_name = 'roberto', last_name = 'ralis' })
+            end)
+        end)
     end)
 end)

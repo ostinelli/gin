@@ -164,7 +164,11 @@ function MySqlOrm.define(db, table_name)
     end
 
     function RalisBaseModel:save()
-        save(db, table_name, self)
+        if self.id ~= nil then
+            save(db, table_name, self)
+        else
+            RalisBaseModel.create(self)
+        end
     end
 
     -- return
