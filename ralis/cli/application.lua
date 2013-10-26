@@ -205,7 +205,7 @@ describe("PagesController", function()
             })
 
             assert.are.same(200, response.status)
-            assert.are.same({ message = "Hello world from Ralis!" }, JSON.decode(response.body))
+            assert.are.same({ message = "Hello world from Ralis!" }, response.body)
         end)
     end)
 end)
