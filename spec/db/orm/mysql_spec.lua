@@ -31,6 +31,13 @@ describe("MySql ORM", function()
         end)
     end)
 
+    describe(".query", function()
+        it("calls the database", function()
+            Model.query("SELECT 1;")
+            assert.are.equal("SELECT 1;", query)
+        end)
+    end)
+
     describe(".create", function()
         describe("when attrs are specified", function()
             it("creates a new entry", function()

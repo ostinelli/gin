@@ -121,6 +121,10 @@ function MySqlOrm.define(db, table_name)
     local RalisBaseModel = {}
     RalisBaseModel.__index = RalisBaseModel
 
+    function RalisBaseModel.query(query)
+        db:query(query)
+    end
+
     function RalisBaseModel.create(attrs)
         local model = RalisBaseModel.new(attrs)
 
