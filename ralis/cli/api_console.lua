@@ -1,3 +1,7 @@
+-- init module dependencies
+require 'ralis.core.ralis'
+
+
 local RalisApiConsole = {}
 
 RalisApiConsole.html = [====[
@@ -133,7 +137,7 @@ $(function() {
             </select>
 
             <label for="url">URL</label>
-            <input type="text" name="url" id="url" value="https://localhost:7200/" />
+            <input type="text" name="url" id="url" value="https://localhost:]====] .. Ralis.settings.port .. [====[/" />
 
             <label for="version">API version</label>
             <input type="text" name="version" id="version" value="1" />
