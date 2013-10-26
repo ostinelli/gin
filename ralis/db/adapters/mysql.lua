@@ -40,12 +40,12 @@ end
 
 function MySql.execute(options, sql)
     -- get db object
-    local db = mysql_connect(options)
+    local db_conn = mysql_connect(options)
     -- execute query
-    local res, err, errno, sqlstate = db:execute(sql)
+    local res, err, errno, sqlstate = db_conn:query(sql)
     if not res then error("bad mysql result: " .. err .. ": " .. errno .. " " .. sqlstate) end
     -- keepalive
-    mysql_keepalive(db, options)
+    mysql_keepalive(db_conn, options)
     -- return
     return res
 end
