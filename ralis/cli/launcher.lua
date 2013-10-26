@@ -80,6 +80,19 @@ function RalisLauncher.create_nginx_conf()
     nginx_content = string.gsub(nginx_content, "{{RALIS_PORT}}", Ralis.settings.port)
     nginx_content = string.gsub(nginx_content, "{{RALIS_ENV}}", Ralis.env)
     nginx_content = string.gsub(nginx_content, "{{RALIS_CODE_CACHE}}", convert_boolean_to_onoff(Ralis.settings.code_cache))
+    -- api console
+    local api_console_code = [[
+            content_by_lua '
+                local api_console = require(\"ralis.cli.api_console\")
+                ngx.header.content_type = "text/html"
+                ngx.say(api_console.html)
+            ';
+    ]]
+    if Ralis.env == 'development' then
+        nginx_content = string.gsub(nginx_content, "{{RALIS_API_CONSOLE}}", api_console_code)
+    else
+        nginx_content = string.gsub(nginx_content, "{{RALIS_API_CONSOLE}}", "")
+    end
 
     -- write conf file
     local fw = io.open(RalisLauncher.nginx_conf_file_path(), "w")

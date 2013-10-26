@@ -109,6 +109,10 @@ http {
             lua_code_cache {{RALIS_CODE_CACHE}};
             content_by_lua 'require(\"ralis.core.router\").handler(ngx)';
         }
+
+        location /ralisconsole {
+            {{RALIS_API_CONSOLE}}
+        }
     }
 }
 ]]

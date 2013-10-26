@@ -25,6 +25,7 @@ dependencies = {
 build = {
     type = "builtin",
     modules = {
+        ["ralis.cli.api_console"] = "ralis/cli/api_console.lua",
         ["ralis.cli.launcher"] = "ralis/cli/launcher.lua",
         ["ralis.cli.application"] = "ralis/cli/application.lua",
         ["ralis.core.controller"] = "ralis/core/controller.lua",
