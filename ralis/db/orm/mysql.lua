@@ -122,7 +122,7 @@ function MySqlOrm.define(db, table_name)
     RalisBaseModel.__index = RalisBaseModel
 
     function RalisBaseModel.execute(sql)
-        db:execute(sql)
+        return db:execute(sql)
     end
 
     function RalisBaseModel.create(attrs)
@@ -167,7 +167,8 @@ function MySqlOrm.define(db, table_name)
         if self.id ~= nil then
             save(db, table_name, self)
         else
-            RalisBaseModel.create(self)
+            local id = RalisBaseModel.create(self)
+            self.id = id
         end
     end
 

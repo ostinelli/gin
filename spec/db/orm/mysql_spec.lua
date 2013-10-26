@@ -211,16 +211,15 @@ describe("MySql ORM", function()
         end)
 
         describe("when an id is not specified", function()
-            it("creates a new model", function()
-                local attrs
+            it("creates a new model and sets the id", function()
                 Model.create = function(...)
-                    attrs = ...
+                    return 123
                 end
 
                 local model = Model.new({ first_name = 'roberto', last_name = 'ralis' })
                 model:save()
 
-                assert.are.same(attrs, { first_name = 'roberto', last_name = 'ralis' })
+                assert.are.same({ id = 123, first_name = 'roberto', last_name = 'ralis' }, model)
             end)
         end)
     end)
