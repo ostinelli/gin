@@ -63,6 +63,11 @@ function mkdirs(file_path)
     end
 end
 
+-- is the file lua?
+function get_lua_file(file_path)
+    return string.match(file_path, "(.*)%.lua")
+end
+
 -- dofile recursively in a directory
 function dofile_recursive(path)
     if folder_exists(path) then
@@ -75,8 +80,11 @@ function dofile_recursive(path)
                     -- recursive call for all subdirectories inside of initializers
                     run_initializers(file_path)
                 else
+                    local module_name = get_lua_file(file_path)
                     -- run initializer
-                    dofile(file_path)
+                    if module_name ~= nil then
+                        require(module_name)
+                    end
                 end
             end
         end
