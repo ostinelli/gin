@@ -9,8 +9,8 @@ RalisApiConsole.html = [====[
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <title>Ralis Client</title>
+  <head>
+    <title>Ralis API Console</title>
 
 <script>
 
@@ -124,49 +124,205 @@ $(function() {
 
 </script>
 
-    </head>
 
-    <body>
-        <form id="main_form">
+<style type="text/css">
+.clearfix:after, .row:after {content:"."; display:block; height:0; clear:both; visibility:hidden;}.clearfix, .row {display:inline-block;} .clearfix, .row {display:block;}.row {position:relative; margin-left:-24px;}.gu1 .row {width: 88px;}.gu2 .row {width: 176px;}.gu3 .row {width: 264px;}.gu4 .row {width: 352px;}.gu5 .row {width: 440px;}.gu6 .row {width: 528px;}.gu7 .row {width: 616px;}.gu8 .row {width: 704px;}.gu9 .row {width: 792px;}.gu10 .row {width: 880px;}.gu11 .row {width: 968px;}.gu12 .row {width: 1056px;}.col {padding-left:24px; float:left; position:relative;}.gu1{width: 64px;}.gu2{width: 152px;}.gu3{width: 240px;}.gu4{width: 328px;}.gu5{width: 416px;}.gu6{width: 504px;}.gu7{width: 592px;}.gu8{width: 680px;}.gu9{width: 768px;}.gu10{width: 856px;}.gu11{width: 944px;}.gu12{width: 1032px;}
 
+body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  font-family: 'Helvetica';
+  font-weight: 300;
+  font-size: 14px;
+  margin-top: 100px;
+}
+
+.canvas {
+  margin: 0 auto;
+}
+
+#header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 999;
+
+  height: 70px;
+  background: #2c3e50;
+  color: #fff;
+}
+
+.title {
+  height: 56px;
+  padding-top: 14px;
+  background-color: #e54d42;
+  font-size: 35px;
+  text-align: center;
+}
+
+.subtitle {
+  padding-top: 26px;
+  font-size: 20px;
+}
+
+label {
+  display: block;
+}
+
+input[type=text],
+textarea {
+  padding: 8px;
+  font-size: 14px;
+}
+
+.gu2 input, .gu2 select {
+  width: 136px;
+}
+
+.gu6 input, .gu6 select, .gu6 textarea {
+  width: 488px;
+}
+
+.gu8 input, .gu8 select {
+  width: 664px;
+}
+
+select {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+textarea {
+  height: 200px;
+}
+
+.submit {
+  text-align: right;
+}
+
+input[type="submit"] {
+  padding: 8px 16px;
+  border: none;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: #1abc9c;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+#request .row {
+  margin-top: 14px;
+}
+
+label {
+  margin-bottom: 4px;
+}
+
+pre {
+  min-height: 16px;
+}
+
+</style>
+
+  </head>
+
+  <body>
+    <div class="container" id="header">
+      <div class="canvas gu12">
+        <div class="row">
+          <div class="col gu2">
+            <div class="title">
+              RALIS.IO
+            </div>
+          </div>
+          <div class="col gu2">
+            <div class="subtitle">
+              Api Console
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas gu12" id="request">
+      <h1>Request</h1>
+
+      <form id="main_form">
+        <div class="row">
+
+          <div class="col gu2">
             <label for="method">Method</label>
             <select name="method" id="method">
-                <option value="GET">GET</option>
-                <option value="POST">POST</option>
-                <option value="HEAD">HEAD</option>
-                <option value="OPTIONS">OPTIONS</option>
-                <option value="PUT">PUT</option>
-                <option value="PATCH">PATCH</option>
-                <option value="DELETE">DELETE</option>
-                <option value="TRACE">TRACE</option>
-                <option value="CONNECT">CONNECT</option>
+              <option value="GET">GET</option>
+              <option value="POST">POST</option>
+              <option value="HEAD">HEAD</option>
+              <option value="OPTIONS">OPTIONS</option>
+              <option value="PUT">PUT</option>
+              <option value="PATCH">PATCH</option>
+              <option value="DELETE">DELETE</option>
+              <option value="TRACE">TRACE</option>
+              <option value="CONNECT">CONNECT</option>
             </select>
+          </div>
 
-            <label for="url">URL</label>
-            <input type="text" name="url" id="url" value="http://localhost:]====] .. Ralis.settings.port .. [====[/" />
+          <div class="col gu8">
+            <label for="method">URL</label>
+            <input type="text" name="url" id="url" class="gu8" value="http://localhost:7200/" />
+          </div>
 
-            <label for="version">API version</label>
+
+          <div class="col gu2">
+            <label for="method">Api Version</label>
             <input type="text" name="version" id="version" value="1" />
+          </div>
+        </div>
 
+        <div class="row">
+
+          <div class="col gu6">
             <label for="headers">Headers</label>
-            <textarea name="headers" id="headers" ></textarea>
+            <textarea name="headers" id="headers"></textarea>
+          </div>
 
+          <div class="col gu6">
             <label for="body">Body</label>
-            <textarea name="body" id="body" ></textarea>
+            <textarea name="body" id="body"></textarea>
+          </div>
 
+          <div class="col gu12 submit">
             <input type="submit" value="HIT" name="hit", id="hit" />
+          </div>
+        </div>
+      </form>
+    </div>
 
-        </form>
+    <div class="canvas gu12" id="request">
+      <h1>Response</h1>
 
-        <label>Status</label>
-        <pre id="response_status"></pre>
+      <div class="row">
+        <div class="col gu12">
+          <label>Status</label>
+          <pre id="response_status"></pre>
+        </div>
+      </div>
 
-        <label>Headers</label>
-        <pre id="response_headers"></pre>
+      <div class="row">
+        <div class="col gu6">
+          <label>Headers</label>
+          <pre id="response_headers"></pre>
+        </div>
 
-        <label>Body</label>
-        <pre id="response_body"></pre>
-    </body>
+        <div class="col gu6">
+          <label>Body</label>
+          <pre id="response_body"></pre>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
 
 ]====]
