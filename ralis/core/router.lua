@@ -1,15 +1,5 @@
 package.path = './app/controllers/?.lua;' .. package.path
-
--- init module dependencies
-require 'ralis.core.ralis'
 local Controller = require 'ralis.core.controller'
-
--- load application modules
-require 'config.application'
-require 'config.routes'
-require 'config.database'
--- load application models
-dofile_recursive("app/models")
 
 -- perf
 local error = error
@@ -31,7 +21,6 @@ local response_version_header = 'ralis/'.. Ralis.version
 
 -- accept header for application
 local accept_header_matcher = "^application/vnd." .. Application.name .. ".v(%d+)(.*)+json$"
-
 
 
 -- main handler function, called from nginx

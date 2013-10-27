@@ -4,7 +4,6 @@ require 'ralis.core.request'
 require 'ralis.core.response'
 require 'ralis.core.routes'
 
-
 -- libraries
 JSON = require 'cjson'
 local lfs = require 'lfs'

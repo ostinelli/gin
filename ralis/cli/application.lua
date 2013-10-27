@@ -95,6 +95,7 @@ http {
 
     lua_code_cache {{RALIS_CODE_CACHE}};
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
+    init_by_lua 'require(\"ralis.core.init\")';
 
     server {
         ssl on;
