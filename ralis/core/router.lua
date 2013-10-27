@@ -1,3 +1,8 @@
+-- ensure to reload init code when code cache is false
+if Rails == nil or Ralis.settings.code_cache == false then
+    require 'ralis.core.init'
+end
+
 package.path = './app/controllers/?.lua;' .. package.path
 local Controller = require 'ralis.core.controller'
 
