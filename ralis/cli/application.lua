@@ -93,6 +93,7 @@ events {
 http {
     sendfile on;
 
+    lua_code_cache {{RALIS_CODE_CACHE}};
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
 
     server {

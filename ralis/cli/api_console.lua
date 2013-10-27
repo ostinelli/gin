@@ -1,5 +1,6 @@
 -- init module dependencies
-local Ralis = require 'ralis.core.ralis'
+require 'ralis.core.ralis'
+require 'config.application'
 
 local RalisApiConsole = {}
 
@@ -22,7 +23,7 @@ u[o]&&(delete u[o],c?delete n[l]:typeof n.removeAttribute!==i?n.removeAttribute(
 
 var ralisApiClient = {
     // variables
-    applicationName: "test",
+    applicationName: "]====] .. Application.name .. [====[",
 
     // elements
     $mainForm: null,
