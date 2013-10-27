@@ -18,7 +18,6 @@ dependencies = {
     "busted",
     "lua-cjson",
     "luasocket",
-    "luasec",
     "luafilesystem"
 }
 

@@ -143,7 +143,7 @@ $(function() {
             </select>
 
             <label for="url">URL</label>
-            <input type="text" name="url" id="url" value="https://localhost:]====] .. Ralis.settings.port .. [====[/" />
+            <input type="text" name="url" id="url" value="http://localhost:]====] .. Ralis.settings.port .. [====[/" />
 
             <label for="version">API version</label>
             <input type="text" name="version" id="version" value="1" />
