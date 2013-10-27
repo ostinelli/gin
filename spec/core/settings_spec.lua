@@ -4,11 +4,10 @@ describe("Settings", function()
 
     before_each(function()
         settings = require('ralis.core.settings')
-        package.loaded['config.settings'] = {}
     end)
 
     after_each(function()
-        package.loaded['config.settings'] = nil
+        package.loaded['config.settings'] = {}  -- reset to mock
         package.loaded['ralis.core.settings'] = nil
         settings = nil
         Ralis.env = 'test'
