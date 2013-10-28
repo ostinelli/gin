@@ -138,7 +138,7 @@ Settings.development = {
 }
 
 Settings.test = {
-    code_cache = false,
+    code_cache = true,
     port = 7201
 }
 
