@@ -3,10 +3,10 @@ local ansicolors = require 'ansicolors'
 
 local RalisLauncher = {}
 RalisLauncher.nginx_conf_source = 'config/nginx.conf'
-RalisLauncher.nginx_conf_tmp_dir = 'tmp'
-RalisLauncher.dirs = {
-    'logs',
-    'tmp'
+RalisLauncher.nginx_conf_tmp_dir = Ralis.dirs.temp
+RalisLauncher.necessary_dirs = {
+    Ralis.dirs.logs,
+    Ralis.dirs.temp
 }
 
 local function convert_boolean_to_onoff(value)
@@ -55,7 +55,7 @@ function RalisLauncher.nginx_command(nginx_signal)
 end
 
 function RalisLauncher.create_dirs()
-    for _, dir in pairs(RalisLauncher.dirs) do
+    for _, dir in pairs(RalisLauncher.necessary_dirs) do
         lfs.mkdir(dir)
     end
 end

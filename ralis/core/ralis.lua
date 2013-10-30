@@ -17,6 +17,12 @@ Ralis.version = '0.1-rc1'
 -- environment
 Ralis.env = Ralis.env or os.getenv("RALIS_ENV") or 'development'
 
+-- directories
+Ralis.dirs = {
+    temp = './tmp',
+    logs = './logs'
+}
+
 -- settings
 local settings = require 'ralis.core.settings'
 Ralis.settings = settings.for_current_environment()
