@@ -113,6 +113,21 @@ local function save(db, table_name, attrs)
     return db:execute(tconcat(sql))
 end
 
+local function delete(db, table_name, attrs)
+    -- init sql
+    local sql = {}
+    -- build sql
+    tinsert(sql, "DELETE FROM ")
+    tinsert(sql, table_name)
+    -- where
+    tinsert(sql, " WHERE id=")
+    tinsert(sql, attrs.id)
+    -- close
+    tinsert(sql, ";")
+    -- execute
+    return db:execute(tconcat(sql))
+end
+
 
 local MySqlOrm = {}
 
@@ -169,6 +184,14 @@ function MySqlOrm.define(db, table_name)
         else
             local id = RalisBaseModel.create(self)
             self.id = id
+        end
+    end
+
+    function RalisBaseModel:delete()
+        if self.id ~= nil then
+            delete(db, table_name, self)
+        else
+            error("cannot delete a model without an id")
         end
     end
 
