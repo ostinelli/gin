@@ -34,7 +34,8 @@ Errors = {}
 
 local application = [[
 Application = {
-    name = "{{APP_NAME}}"
+    name = "{{APP_NAME}}",
+    version = '0.0.1'
 }
 ]]
 
