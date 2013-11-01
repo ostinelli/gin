@@ -156,6 +156,7 @@ describe("MySql ORM", function()
 
     describe(".all", function()
         it("returns the .where models", function()
+            local options = { offset = 10 }
             db = {
                 execute = function(...)
                     return { { first_name = 'roberto' }, { first_name = 'hedy' } }
@@ -165,8 +166,8 @@ describe("MySql ORM", function()
 
             spy.on(Model, 'where')
 
-            local models = Model.all()
-            assert.spy(Model.where).was_called_with()
+            local models = Model.all(options)
+            assert.spy(Model.where).was_called_with({}, options)
 
             Model.where:revert()
 

@@ -160,8 +160,8 @@ function MySqlOrm.define(db, table_name)
         return models
     end
 
-    function RalisBaseModel.all()
-        return RalisBaseModel.where()
+    function RalisBaseModel.all(options)
+        return RalisBaseModel.where({}, options)
     end
 
     function RalisBaseModel.find_by(attrs)
