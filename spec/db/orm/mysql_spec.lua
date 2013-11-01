@@ -212,6 +212,18 @@ describe("MySql ORM", function()
         end)
     end)
 
+    describe(".delete_all", function()
+        it("deletes the .delete_where models", function()
+            local options = { limit = 10 }
+            spy.on(Model, 'delete_where')
+
+            local models = Model.delete_all(options)
+            assert.spy(Model.delete_where).was_called_with({}, options)
+
+            Model.delete_where:revert()
+        end)
+    end)
+
     describe(".find_by", function()
         it("returns the .where first result model", function()
             db = {

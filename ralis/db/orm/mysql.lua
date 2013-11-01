@@ -194,6 +194,10 @@ function MySqlOrm.define(db, table_name)
         return RalisBaseModel.where({}, options)
     end
 
+    function RalisBaseModel.delete_all(options)
+        RalisBaseModel.delete_where({}, options)
+    end
+
     function RalisBaseModel.find_by(attrs)
         local models = RalisBaseModel.where(attrs, { limit = 1 })
         return models[1]
