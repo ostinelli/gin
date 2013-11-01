@@ -97,6 +97,32 @@ local function where(db, table_name, attrs, options)
     return db:execute(tconcat(sql))
 end
 
+local function delete_where(db, table_name, attrs, options)
+    -- init sql
+    local sql = {}
+    -- start select
+    tinsert(sql, "DELETE FROM ")
+    tinsert(sql, table_name)
+    -- where
+    if attrs ~= nil and next(attrs) ~= nil then
+        tinsert(sql, " WHERE (")
+        tinsert(sql, field_and_values_for(attrs))
+        tinsert(sql, ")")
+    end
+    -- options
+    if options then
+        -- limit
+        if options.limit ~= nil then
+            tinsert(sql, " LIMIT ")
+            tinsert(sql, options.limit)
+        end
+    end
+    -- close
+    tinsert(sql, ";")
+    -- execute
+    return db:execute(tconcat(sql))
+end
+
 local function save(db, table_name, attrs)
     -- init sql
     local sql = {}
@@ -158,6 +184,10 @@ function MySqlOrm.define(db, table_name)
             tinsert(models, RalisBaseModel.new(v))
         end
         return models
+    end
+
+    function RalisBaseModel.delete_where(attrs, options)
+        delete_where(db, table_name, attrs, options)
     end
 
     function RalisBaseModel.all(options)
