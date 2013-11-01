@@ -75,6 +75,11 @@ local function where(db, table_name, attrs, options)
     end
     -- options
     if options then
+        -- order
+        if options.order ~= nil then
+            tinsert(sql, " ORDER BY ")
+            tinsert(sql, options.order)
+        end
         -- limit
         if options.limit ~= nil then
             tinsert(sql, " LIMIT ")
