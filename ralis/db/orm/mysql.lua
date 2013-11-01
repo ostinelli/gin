@@ -198,8 +198,12 @@ function MySqlOrm.define(db, table_name)
         RalisBaseModel.delete_where({}, options)
     end
 
-    function RalisBaseModel.find_by(attrs)
-        local models = RalisBaseModel.where(attrs, { limit = 1 })
+    function RalisBaseModel.find_by(attrs, options)
+        local merged_options = { limit = 1 }
+        if options and options.order then
+            merged_options.order = options.order
+        end
+        local models = RalisBaseModel.where(attrs, merged_options)
         return models[1]
     end
 

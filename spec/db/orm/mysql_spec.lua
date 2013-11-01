@@ -225,23 +225,47 @@ describe("MySql ORM", function()
     end)
 
     describe(".find_by", function()
-        it("returns the .where first result model", function()
-            db = {
-                execute = function(...)
-                    return { { first_name = 'roberto' }, { first_name = 'hedy' } }
-                end
-            }
-            Model = orm.define(db, 'users')
+        describe("when called without options", function()
+            it("returns the .where first result model", function()
+                db = {
+                    execute = function(...)
+                        return { { first_name = 'roberto' }, { first_name = 'hedy' } }
+                    end
+                }
+                Model = orm.define(db, 'users')
 
-            spy.on(Model, 'where')
+                spy.on(Model, 'where')
 
-            local model = Model.find_by({ id = 15 })
-            assert.spy(Model.where).was_called_with({ id = 15 }, { limit = 1 })
+                local model = Model.find_by({ id = 15 })
+                assert.spy(Model.where).was_called_with({ id = 15 }, { limit = 1 })
 
-            Model.where:revert()
+                Model.where:revert()
 
-            assert.are.equal('roberto', model.first_name)
-            assert.are.equal(Model, model.class())
+                assert.are.equal('roberto', model.first_name)
+                assert.are.equal(Model, model.class())
+            end)
+        end)
+
+        describe("when called with options", function()
+            it("returns the .where first result model keeping only the where option", function()
+                local options = { limit = 10, offset = 5, order = "first_name DESC" }
+                db = {
+                    execute = function(...)
+                        return { { first_name = 'roberto' }, { first_name = 'hedy' } }
+                    end
+                }
+                Model = orm.define(db, 'users')
+
+                spy.on(Model, 'where')
+
+                local model = Model.find_by({ id = 15 }, options)
+                assert.spy(Model.where).was_called_with({ id = 15 }, { limit = 1, order = "first_name DESC" })
+
+                Model.where:revert()
+
+                assert.are.equal('roberto', model.first_name)
+                assert.are.equal(Model, model.class())
+            end)
         end)
     end)
 
