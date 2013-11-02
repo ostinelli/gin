@@ -1,68 +1,21 @@
-require 'ralis.core.ralis'
+-- dependencies
 local ansicolors = require 'ansicolors'
 
-local RalisLauncher = {}
-RalisLauncher.nginx_conf_source = 'config/nginx.conf'
-RalisLauncher.nginx_conf_tmp_dir = Ralis.dirs.temp
-RalisLauncher.necessary_dirs = {
-    Ralis.dirs.logs,
-    Ralis.dirs.temp
-}
+require 'ralis.core.ralis'
+local BaseLauncher = require 'ralis.cli.base_launcher'
+
+-- settings
+local nginx_conf_source = 'config/nginx.conf'
+
 
 local function convert_boolean_to_onoff(value)
     if value == true then value = 'on' else value = 'off' end
     return value
 end
 
-function RalisLauncher.start()
-    RalisLauncher.create_dirs()
-    RalisLauncher.create_nginx_conf()
-
-    result = RalisLauncher.start_nginx()
-
-    if result == 0 then
-        if Ralis.env ~= 'test' then
-            print(ansicolors("Ralis app in %{cyan}" .. Ralis.env .. "%{reset} was succesfully started on port " .. Ralis.settings.port .. "."))
-        end
-    else
-        print(ansicolors("%{red}ERROR:%{reset} Could not start Ralis app on port " .. Ralis.settings.port .. " (is it running already?)."))
-    end
-end
-
-function RalisLauncher.stop()
-    result = RalisLauncher.stop_nginx()
-
-    if Ralis.env ~= 'test' then
-        if result == 0 then
-            print(ansicolors("Ralis app in %{cyan}" .. Ralis.env .. "%{reset} was succesfully stopped."))
-        else
-            print(ansicolors("%{red}ERROR:%{reset} Could not stop Ralis app (are you sure it is running?)."))
-        end
-    end
-    RalisLauncher.remove_nginx_conf()
-end
-
-function RalisLauncher.start_nginx()
-    return RalisLauncher.nginx_command('')
-end
-
-function RalisLauncher.stop_nginx()
-    return RalisLauncher.nginx_command('-s stop')
-end
-
-function RalisLauncher.nginx_command(nginx_signal)
-    return os.execute("nginx " .. nginx_signal .. " -p `pwd`/ -c " .. RalisLauncher.nginx_conf_file_path() .. " 2>/dev/null")
-end
-
-function RalisLauncher.create_dirs()
-    for _, dir in pairs(RalisLauncher.necessary_dirs) do
-        lfs.mkdir(dir)
-    end
-end
-
-function RalisLauncher.create_nginx_conf()
+local function nginx_conf_content()
     -- read nginx.conf file
-    local f = io.open(RalisLauncher.nginx_conf_source, "rb")
+    local f = io.open(nginx_conf_source, "rb")
     local nginx_conf_template = f:read("*all")
     f:close()
 
@@ -89,18 +42,41 @@ function RalisLauncher.create_nginx_conf()
         nginx_content = string.gsub(nginx_content, "{{RALIS_API_CONSOLE}}", "")
     end
 
-    -- write conf file
-    local fw = io.open(RalisLauncher.nginx_conf_file_path(), "w")
-    fw:write(nginx_content)
-    fw:close()
+    return nginx_content
 end
 
-function RalisLauncher.remove_nginx_conf()
-    os.remove(RalisLauncher.nginx_conf_file_path())
+function nginx_conf_file_path()
+    return Ralis.dirs.tmp .. "/" .. Ralis.env .. "-nginx.conf"
 end
 
-function RalisLauncher.nginx_conf_file_path()
-    return RalisLauncher.nginx_conf_tmp_dir .. "/" .. Ralis.env .. "-nginx.conf"
+-- init base launcher
+local launcher = BaseLauncher.new(nginx_conf_content(), nginx_conf_file_path())
+
+
+local RalisLauncher = {}
+
+function RalisLauncher.start()
+    result = launcher:start()
+
+    if result == 0 then
+        if Ralis.env ~= 'test' then
+            print(ansicolors("Ralis app in %{cyan}" .. Ralis.env .. "%{reset} was succesfully started on port " .. Ralis.settings.port .. "."))
+        end
+    else
+        print(ansicolors("%{red}ERROR:%{reset} Could not start Ralis app on port " .. Ralis.settings.port .. " (is it running already?)."))
+    end
+end
+
+function RalisLauncher.stop()
+    result = launcher:stop()
+
+    if Ralis.env ~= 'test' then
+        if result == 0 then
+            print(ansicolors("Ralis app in %{cyan}" .. Ralis.env .. "%{reset} was succesfully stopped."))
+        else
+            print(ansicolors("%{red}ERROR:%{reset} Could not stop Ralis app (are you sure it is running?)."))
+        end
+    end
 end
 
 return RalisLauncher

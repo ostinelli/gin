@@ -27,6 +27,7 @@ build = {
         ["ralis.cli.api_console"] = "ralis/cli/api_console.lua",
         ["ralis.cli.launcher"] = "ralis/cli/launcher.lua",
         ["ralis.cli.application"] = "ralis/cli/application.lua",
+        ["ralis.cli.base_launcher"] = "ralis/cli/base_launcher.lua",
         ["ralis.core.controller"] = "ralis/core/controller.lua",
         ["ralis.core.error"] = "ralis/core/error.lua",
         ["ralis.core.helpers"] = "ralis/core/helpers.lua",
