@@ -19,8 +19,9 @@ Ralis.env = Ralis.env or os.getenv("RALIS_ENV") or 'development'
 
 -- directories
 Ralis.dirs = {
-    temp = './tmp',
-    logs = './logs'
+    tmp = 'tmp',
+    logs = 'logs',
+    migrations = 'db/migrations'
 }
 
 -- settings
@@ -28,7 +29,7 @@ local settings = require 'ralis.core.settings'
 Ralis.settings = settings.for_current_environment()
 
 -- load initializers
-dofile_recursive("config/initializers")
+require_recursive("config/initializers")
 
 -- ensure system errors get defined
 require 'ralis.core.error'

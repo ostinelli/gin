@@ -13,11 +13,6 @@ local function quote(str)
     return ngx.quote_sql_str(str)
 end
 
-local function get_last_id(db)
-    local res = db:execute("SELECT LAST_INSERT_ID() AS id;")
-    return tonumber(res[1].id)
-end
-
 local function field_and_values_for(attrs)
     local fav = {}
     for k, v in pairs(attrs) do
@@ -58,7 +53,7 @@ local function create(db, table_name, attrs)
     -- hit server
     db:execute(tconcat(sql))
     -- get last id
-    return get_last_id(db);
+    return db:get_last_id();
 end
 
 local function where(db, table_name, attrs, options)

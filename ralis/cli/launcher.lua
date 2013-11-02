@@ -15,9 +15,7 @@ end
 
 local function nginx_conf_content()
     -- read nginx.conf file
-    local f = io.open(nginx_conf_source, "rb")
-    local nginx_conf_template = f:read("*all")
-    f:close()
+    local nginx_conf_template = read_file(nginx_conf_source)
 
     -- append notice
     nginx_conf_template = [[
@@ -49,14 +47,14 @@ function nginx_conf_file_path()
     return Ralis.dirs.tmp .. "/" .. Ralis.env .. "-nginx.conf"
 end
 
--- init base launcher
-local launcher = BaseLauncher.new(nginx_conf_content(), nginx_conf_file_path())
+-- init base_launcher
+local base_launcher = BaseLauncher.new(nginx_conf_content(), nginx_conf_file_path())
 
 
 local RalisLauncher = {}
 
 function RalisLauncher.start()
-    result = launcher:start()
+    result = base_launcher:start()
 
     if result == 0 then
         if Ralis.env ~= 'test' then
@@ -68,7 +66,7 @@ function RalisLauncher.start()
 end
 
 function RalisLauncher.stop()
-    result = launcher:stop()
+    result = base_launcher:stop()
 
     if Ralis.env ~= 'test' then
         if result == 0 then

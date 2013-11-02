@@ -1,7 +1,6 @@
+-- dependencies
 local http = require 'socket.http'
 local url = require 'socket.url'
-local launcher = require 'ralis.cli.launcher'
-local ResponseSpec = require 'ralis.spec.runners.response'
 
 -- get application name
 require 'config.application'
@@ -26,6 +25,9 @@ function IntegrationRunner.encode_table(args)
 end
 
 function IntegrationRunner.hit(request)
+    local launcher = require 'ralis.cli.launcher'
+    local ResponseSpec = require 'ralis.spec.runners.response'
+
     -- build full url
     local full_url = url.build({
         scheme = 'http',
@@ -40,6 +42,8 @@ function IntegrationRunner.hit(request)
     if request.headers["content-length"] == nil and request.headers["Content-Length"] == nil then
         if request.body ~= nil then
             request.headers["Content-Length"] = request.body:len()
+        else
+            request.headers["Content-Length"] = 0
         end
     end
 

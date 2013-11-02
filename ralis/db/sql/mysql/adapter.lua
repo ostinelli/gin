@@ -1,7 +1,7 @@
 -- perf
 local error = error
 local require = require
-
+local tinsert = table.insert
 
 local mysql = require "resty.mysql"
 local timeout_subsequent_ops = 1000 -- 1 sec
@@ -37,7 +37,27 @@ local function mysql_keepalive(db, options)
     if not ok then error("failed to set mysql keepalive: ", err) end
 end
 
+-- return list of tables
+function MySql.tables(options)
+    local res = MySql.execute(options, "SHOW TABLES IN " .. options.database .. ";")
+    local tables = {}
 
+    for _, v in pairs(res) do
+        for _, table_name in pairs(v) do
+            tinsert(tables, table_name)
+        end
+    end
+
+    return tables
+end
+
+-- return last inserted if
+function MySql.get_last_id(options)
+    local res = MySql.execute(options, "SELECT LAST_INSERT_ID() AS id;")
+    return tonumber(res[1].id)
+end
+
+-- execute a query
 function MySql.execute(options, sql)
     -- get db object
     local db_conn = mysql_connect(options)

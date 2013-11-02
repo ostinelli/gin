@@ -6,16 +6,23 @@ local help_description = "RALIS v" .. Ralis.version ..", a RESTful API web frame
 Usage: ralis COMMAND [ARGS]
 
 The available ralis commands are:
- new [name]      Create a new Ralis application
- start           Starts the Ralis server
- stop            Stops the Ralis server
+ new [name]             Create a new Ralis application
+ start                  Starts the Ralis server
+ stop                   Stops the Ralis server
+ generate migration     Create a new SQL migration
+ migrate                Run all SQL migrations that have not been run
+ migrate rollback       Rollback one SQL migration
 ]]
 
 local launcher = require 'ralis.cli.launcher'
 local application = require 'ralis.cli.application'
+local sql_migrations = require 'ralis.cli.sql_migrations'
 
 if arg[1] == 'new' and arg[2] then application.new(arg[2])
 elseif arg[1] == 'start' then launcher.start()
 elseif arg[1] == 'stop' then launcher.stop()
+elseif arg[1] == 'generate' and arg[2] == 'migration' then sql_migrations.new()
+elseif arg[1] == 'migrate' and arg[2] == nil then sql_migrations.migrate()
+elseif arg[1] == 'migrate' and arg[2] == "rollback" then sql_migrations.rollback()
 else print(help_description)
 end

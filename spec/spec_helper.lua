@@ -2,7 +2,7 @@
 Application = { name = "railsapp" }
 package.loaded['config.application'] = {}
 package.loaded['config.settings'] = {}
-package.loaded['config.database'] = {}
+package.loaded['db.db'] = {}
 
 -- init
 require 'ralis.spec.init'

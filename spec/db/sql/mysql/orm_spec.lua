@@ -7,10 +7,10 @@ describe("MySql ORM", function()
         }
         db = {
             execute = function(self, sql)
-                if sql == "SELECT LAST_INSERT_ID() AS id;" then return {{ id = "10" }} end
                 query = sql
                 return { { first_name = 'ralis' } }
-            end
+            end,
+            get_last_id = function() return 10 end
         }
         orm = require 'ralis.db.sql.mysql.orm'
         Model = orm.define(db, 'users')

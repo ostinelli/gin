@@ -83,6 +83,46 @@ describe("Database SQL", function()
 
     end)
 
+    describe(".tables", function()
+        before_each(function()
+            arg1 = nil
+            package.loaded['ralis.db.sql.mysql.adapter'] = {
+                tables = function(...) arg1 = ... end
+            }
+            DB = db.new(options)
+        end)
+
+        after_each(function()
+            arg1 = nil
+            DB = nil
+        end)
+
+        it("calls tables on the adapter", function()
+            DB:tables()
+            assert.are.same(options, arg1)
+        end)
+    end)
+
+    describe(".get_last_id", function()
+        before_each(function()
+            arg1 = nil
+            package.loaded['ralis.db.sql.mysql.adapter'] = {
+                get_last_id = function(...) arg1 = ... end
+            }
+            DB = db.new(options)
+        end)
+
+        after_each(function()
+            arg1 = nil
+            DB = nil
+        end)
+
+        it("calls get_last_id on the adapter", function()
+            DB:get_last_id()
+            assert.are.same(options, arg1)
+        end)
+    end)
+
     describe(".define", function()
         before_each(function()
             arg1, arg2, arg3 = nil, nil, nil

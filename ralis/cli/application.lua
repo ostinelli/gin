@@ -1,4 +1,3 @@
-local lfs = require 'lfs'
 local ansicolors = require 'ansicolors'
 
 
@@ -85,7 +84,7 @@ DB = dbsql.new(DbSettings[Ralis.env])
 
 local nginx_config = [[
 worker_processes 1;
-pid tmp/{{RALIS_ENV}}-nginx.pid;
+pid ]] .. Ralis.dirs.tmp .. [[/{{RALIS_ENV}}-nginx.pid;
 
 events {
     worker_connections 1024;
@@ -98,8 +97,8 @@ http {
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
 
     server {
-        access_log logs/{{RALIS_ENV}}-access.log;
-        error_log logs/{{RALIS_ENV}}-error.log;
+        access_log ]] .. Ralis.dirs.logs .. [[/{{RALIS_ENV}}-access.log;
+        error_log ]] .. Ralis.dirs.logs .. [[/{{RALIS_ENV}}-error.log;
 
         listen {{RALIS_PORT}};
 
@@ -184,7 +183,8 @@ RalisApplication.files = {
     ['app/models/.gitkeep'] = "",
     ['config/initializers/errors.lua'] = errors,
     ['config/application.lua'] = "",
-    ['config/database.lua'] = database,
+    ['config/database/migrations/.gitkeep'] = "",
+    ['config/database/database.lua'] = database,
     ['config/nginx.conf'] = nginx_config,
     ['config/routes.lua'] = routes,
     ['config/settings.lua'] = settings,

@@ -11,7 +11,15 @@ local tinsert = table.insert
 local ipairs = ipairs
 local assert = assert
 local type = type
-local dofile = dofile
+local require = require
+
+-- read file
+function read_file(file_path)
+    local f = io.open(file_path, "rb")
+    local content = f:read("*all")
+    f:close()
+    return content
+end
 
 -- check if folder exists
 function folder_exists(folder_path)
@@ -63,13 +71,13 @@ function mkdirs(file_path)
     end
 end
 
--- is the file lua?
-function get_lua_file(file_path)
+-- get the lua module name?
+function get_lua_module_name(file_path)
     return string.match(file_path, "(.*)%.lua")
 end
 
--- dofile recursively in a directory
-function dofile_recursive(path)
+-- require recursively in a directory
+function require_recursive(path)
     if folder_exists(path) then
         for file_name in lfs.dir(path) do
             if file_name ~= "." and file_name ~= ".." then
@@ -77,11 +85,11 @@ function dofile_recursive(path)
                 local attr = lfs.attributes(file_path)
                 assert(type(attr) == "table")
                 if attr.mode == "directory" then
-                    -- recursive call for all subdirectories inside of initializers
-                    run_initializers(file_path)
+                    -- recursive call for all subdirectories inside of directory
+                    require_recursive(file_path)
                 else
-                    local module_name = get_lua_file(file_path)
-                    -- run initializer
+                    local module_name = get_lua_module_name(file_path)
+                    -- require initializer
                     if module_name ~= nil then
                         require(module_name)
                     end
@@ -89,6 +97,16 @@ function dofile_recursive(path)
             end
         end
     end
+end
+
+-- reverse indexed table
+function table.reverse(tab)
+    local size = #tab + 1
+    local reversed = {}
+    for i, v in ipairs(tab) do
+        reversed[size - i] = v
+    end
+    return reversed
 end
 
 -- pretty print

@@ -41,10 +41,22 @@ function Database.new(options)
     return instance
 end
 
+-- execute db query
 function Database:execute(sql)
     return self.adapter.execute(self.options, sql)
 end
 
+-- function to get tables' list
+function Database:tables()
+    return self.adapter.tables(self.options)
+end
+
+-- function to get last id
+function Database:get_last_id()
+    return self.adapter.get_last_id(self.options)
+end
+
+-- define models
 function Database:define(table_name)
     return self.orm.define(self, table_name)
 end

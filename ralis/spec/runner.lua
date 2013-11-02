@@ -1,8 +1,8 @@
 require 'ralis.spec.init'
 
 -- mock dbs
-package.loaded['ralis.db.sql.mysq.adapter'] = {}
-require 'config.database'
+package.loaded['ralis.db.sql.mysql.adapter'] = {}
+require 'db.db'
 
 -- add integration runner
 local IntegrationRunner = require 'ralis.spec.runners.integration'
