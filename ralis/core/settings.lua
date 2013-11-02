@@ -23,13 +23,20 @@ RalisSettings.defaults = {
     }
 }
 
+local function require_app_settings()
+    local ok, settings = pcall(function() return require('config.settings') end)
+    if ok == true then
+        return settings
+    end
+end
+
 function RalisSettings.for_current_environment()
     -- load defaults
     local settings = RalisSettings.defaults[Ralis.env]
     if settings == nil then settings = RalisSettings.defaults.other end
 
     -- override defaults from app settings
-    local app_settings = require('config.settings')
+    local app_settings = require_app_settings()
 
     if app_settings ~= nil then
         local app_settings_env = app_settings[Ralis.env]
