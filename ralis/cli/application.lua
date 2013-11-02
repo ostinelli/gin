@@ -41,7 +41,7 @@ Application = {
 
 
 database = [[
-local db = require 'ralis.db.db'
+local dbsql = require 'ralis.db.sql'
 
 -- Here you can setup your databases that will be accessible throughout your application.
 -- First, specify the settings (you may add multiple databases with this pattern):
@@ -79,7 +79,7 @@ local DbSettings = {
 }
 
 -- Then initialize your database(s) like this:
-DB = db.new(DbSettings[Ralis.env])
+DB = dbsql.new(DbSettings[Ralis.env])
 ]]
 
 

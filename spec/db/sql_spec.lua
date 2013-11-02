@@ -1,8 +1,8 @@
 require 'spec.spec_helper'
 
-describe("Database", function()
+describe("Database SQL", function()
     before_each(function()
-        db = require 'ralis.db.db'
+        db = require 'ralis.db.sql'
         options = {
             adapter = 'mysql',
             host = "127.0.0.1",
@@ -12,22 +12,22 @@ describe("Database", function()
             password = "",
             pool = 5
         }
-        package.loaded['ralis.db.adapters.mysql'] = {}
-        package.loaded['ralis.db.orm.mysql'] = {}
+        package.loaded['ralis.db.sql.mysql.adapter'] = {}
+        package.loaded['ralis.db.sql.mysql.orm'] = {}
     end)
 
     after_each(function()
         db = nil
         options = nil
-        package.loaded['ralis.db.adapters.mysql'] = nil
-        package.loaded['ralis.db.orm.mysql'] = nil
-        package.loaded['ralis.db.db'] = nil
+        package.loaded['ralis.db.sql.mysql.adapter'] = nil
+        package.loaded['ralis.db.sql.mysql.orm'] = nil
+        package.loaded['ralis.db.sql'] = nil
     end)
 
     describe(".new", function()
         before_each(function()
-            package.loaded['ralis.db.adapters.mysql'] = { name = 'adapter' }
-            package.loaded['ralis.db.orm.mysql'] = { name = 'orm' }
+            package.loaded['ralis.db.sql.mysql.adapter'] = { name = 'adapter' }
+            package.loaded['ralis.db.sql.mysql.orm'] = { name = 'orm' }
         end)
 
         describe("when all the required options are passed", function()
@@ -60,7 +60,7 @@ describe("Database", function()
     describe(".execute", function()
         before_each(function()
             arg1, arg2 = nil, nil
-            package.loaded['ralis.db.adapters.mysql'] = {
+            package.loaded['ralis.db.sql.mysql.adapter'] = {
                 execute = function(...) arg1, arg2 = ... end
             }
             DB = db.new(options)
@@ -86,7 +86,7 @@ describe("Database", function()
     describe(".define", function()
         before_each(function()
             arg1, arg2, arg3 = nil, nil, nil
-            package.loaded['ralis.db.orm.mysql'] = {
+            package.loaded['ralis.db.sql.mysql.orm'] = {
                 define = function(...) arg1, arg2 = ... end
             }
             DB = db.new(options)

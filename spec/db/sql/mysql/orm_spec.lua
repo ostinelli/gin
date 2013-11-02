@@ -12,7 +12,7 @@ describe("MySql ORM", function()
                 return { { first_name = 'ralis' } }
             end
         }
-        orm = require 'ralis.db.orm.mysql'
+        orm = require 'ralis.db.sql.mysql.orm'
         Model = orm.define(db, 'users')
     end)
 

@@ -29,8 +29,8 @@ function Database.new(options)
     if #missing_options > 0 then error("missing required database options: " .. tconcat(missing_options, ', ')) end
 
     -- init instance
-    local adapter = require('ralis.db.adapters.' .. options.adapter)
-    local orm = require('ralis.db.orm.' .. options.adapter)
+    local adapter = require('ralis.db.sql.' .. options.adapter .. '.adapter')
+    local orm = require('ralis.db.sql.' .. options.adapter .. '.orm')
 
     local instance = {
         options = options,
