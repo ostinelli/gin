@@ -39,46 +39,46 @@ Application = {
 ]]
 
 
-database = [[
-local dbsql = require 'ralis.db.sql'
+db = [[
+local sqldb = require 'ralis.db.sql'
 
 -- Here you can setup your databases that will be accessible throughout your application.
--- First, specify the settings (you may add multiple databases with this pattern):
-local DbSettings = {
-
-    development = {
-        adapter = 'mysql',
-        host = "127.0.0.1",
-        port = 3306,
-        database = "ralis_development",
-        user = "root",
-        password = "",
-        pool = 5
-    },
-
-    test = {
-        adapter = 'mysql',
-        host = "127.0.0.1",
-        port = 3306,
-        database = "ralis_test",
-        user = "root",
-        password = "",
-        pool = 5
-    },
-
-    production = {
-        adapter = 'mysql',
-        host = "127.0.0.1",
-        port = 3306,
-        database = "ralis_production",
-        user = "root",
-        password = "",
-        pool = 5
-    }
-}
-
--- Then initialize your database(s) like this:
-DB = dbsql.new(DbSettings[Ralis.env])
+-- First, specify the settings (you may add multiple databases with this pattern), for instance:
+-- local DbSettings = {
+--
+--     development = {
+--         adapter = 'mysql',
+--         host = "127.0.0.1",
+--         port = 3306,
+--         database = "ralis_development",
+--         user = "root",
+--         password = "",
+--         pool = 5
+--     },
+--
+--     test = {
+--         adapter = 'mysql',
+--         host = "127.0.0.1",
+--         port = 3306,
+--         database = "ralis_test",
+--         user = "root",
+--         password = "",
+--         pool = 5
+--     },
+--
+--     production = {
+--         adapter = 'mysql',
+--         host = "127.0.0.1",
+--         port = 3306,
+--         database = "ralis_production",
+--         user = "root",
+--         password = "",
+--         pool = 5
+--     }
+-- }
+--
+-- Then initialize your database(s), for instance:
+-- MYSQLDB = sqldb.new(DbSettings[Ralis.env])
 ]]
 
 
@@ -183,8 +183,8 @@ RalisApplication.files = {
     ['app/models/.gitkeep'] = "",
     ['config/initializers/errors.lua'] = errors,
     ['config/application.lua'] = "",
-    ['config/database/migrations/.gitkeep'] = "",
-    ['config/database/database.lua'] = database,
+    ['config/db/migrations/.gitkeep'] = "",
+    ['config/db/db.lua'] = db,
     ['config/nginx.conf'] = nginx_config,
     ['config/routes.lua'] = routes,
     ['config/settings.lua'] = settings,

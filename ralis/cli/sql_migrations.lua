@@ -20,7 +20,7 @@ local migrations_new = [====[
 local SqlMigration = {}
 
 -- specify the database used in this migration (needed by the Ralis migration engine)
-SqlMigration.db = DB
+SqlMigration.db = MYSQLDB
 
 function SqlMigration.up()
     -- Run your migration, for instance:
