@@ -149,7 +149,7 @@ local function hit_migration_server(direction, module_name)
     return ok, response_status, read_error_log_file()
 end
 
-function run_migration(direction, module_name)
+local function run_migration(direction, module_name)
     -- run migration for module
     local ok, response_status, error_log = hit_migration_server(direction, module_name)
     if ok == nil then error("An error occurred while connecting to the migration server while running module: " .. module_name) end
@@ -211,6 +211,5 @@ function SqlMigrations.rollback()
         if applied == true then return end
     end
 end
-
 
 return SqlMigrations
