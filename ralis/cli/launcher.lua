@@ -47,13 +47,17 @@ function nginx_conf_file_path()
     return Ralis.app_dirs.tmp .. "/" .. Ralis.env .. "-nginx.conf"
 end
 
--- init base_launcher
-local base_launcher = BaseLauncher.new(nginx_conf_content(), nginx_conf_file_path())
+function base_launcher()
+    return BaseLauncher.new(nginx_conf_content(), nginx_conf_file_path())
+end
 
 
 local RalisLauncher = {}
 
 function RalisLauncher.start()
+    -- init base_launcher
+    local base_launcher = base_launcher()
+
     result = base_launcher:start()
 
     if result == 0 then
@@ -66,6 +70,9 @@ function RalisLauncher.start()
 end
 
 function RalisLauncher.stop()
+    -- init base_launcher
+    local base_launcher = base_launcher()
+
     result = base_launcher:stop()
 
     if Ralis.env ~= 'test' then
