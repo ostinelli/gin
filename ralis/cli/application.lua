@@ -84,7 +84,7 @@ DB = dbsql.new(DbSettings[Ralis.env])
 
 local nginx_config = [[
 worker_processes 1;
-pid ]] .. Ralis.dirs.tmp .. [[/{{RALIS_ENV}}-nginx.pid;
+pid ]] .. Ralis.app_dirs.tmp .. [[/{{RALIS_ENV}}-nginx.pid;
 
 events {
     worker_connections 1024;
@@ -97,8 +97,8 @@ http {
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
 
     server {
-        access_log ]] .. Ralis.dirs.logs .. [[/{{RALIS_ENV}}-access.log;
-        error_log ]] .. Ralis.dirs.logs .. [[/{{RALIS_ENV}}-error.log;
+        access_log ]] .. Ralis.app_dirs.logs .. [[/{{RALIS_ENV}}-access.log;
+        error_log ]] .. Ralis.app_dirs.logs .. [[/{{RALIS_ENV}}-error.log;
 
         listen {{RALIS_PORT}};
 

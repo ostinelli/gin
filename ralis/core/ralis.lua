@@ -18,9 +18,10 @@ Ralis.version = '0.1-rc1'
 Ralis.env = Ralis.env or os.getenv("RALIS_ENV") or 'development'
 
 -- directories
-Ralis.dirs = {
+Ralis.app_dirs = {
     tmp = 'tmp',
     logs = 'logs',
+    schemas = 'db/schemas',
     migrations = 'db/migrations'
 }
 

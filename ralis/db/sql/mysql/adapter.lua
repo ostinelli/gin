@@ -57,6 +57,22 @@ function MySql.get_last_id(options)
     return tonumber(res[1].id)
 end
 
+-- return schema as a table
+function MySql.schema(options)
+    local Migration = require 'ralis.db.sql.migration'
+    local schema = {}
+
+    local tables = MySql.tables(options)
+    for i, table_name in ipairs(tables) do
+        if table_name ~= Migration.migrations_table_name then
+            local table_info = MySql.execute(options, "SHOW COLUMNS IN " .. table_name .. ";")
+            tinsert(schema, { [table_name] = table_info })
+        end
+    end
+
+    return schema
+end
+
 -- execute a query
 function MySql.execute(options, sql)
     -- get db object

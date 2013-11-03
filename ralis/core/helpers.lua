@@ -110,6 +110,6 @@ function table.reverse(tab)
 end
 
 -- pretty print
-function pp(o)
-    prettyprint.dump(o)
+function pp(o, file_path)
+    prettyprint.dump(o, file_path)
 end

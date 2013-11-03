@@ -1,7 +1,7 @@
 -- settings
 local migrations_port = 42579
-local nginx_conf_file_path = Ralis.dirs.tmp .. '/nginx.conf'
-local error_log_file_path = Ralis.dirs.logs .. '/ralis-migrations-error.log'
+local nginx_conf_file_path = Ralis.app_dirs.tmp .. '/nginx.conf'
+local error_log_file_path = Ralis.app_dirs.logs .. '/ralis-migrations-error.log'
 
 -- dependencies
 local http = require 'socket.http'
@@ -47,7 +47,7 @@ return SqlMigration
 
 local migrations_nginx_conf_template = [[
 worker_processes 1;
-pid ]] .. Ralis.dirs.tmp .. [[/ralis-migrations-nginx.pid;
+pid ]] .. Ralis.app_dirs.tmp .. [[/ralis-migrations-nginx.pid;
 
 events {
     worker_connections 1024;
@@ -84,7 +84,7 @@ end
 local function migration_modules()
     local modules = {}
 
-    local path = Ralis.dirs.migrations
+    local path = Ralis.app_dirs.migrations
     if folder_exists(path) then
         for file_name in lfs.dir(path) do
             if file_name ~= "." and file_name ~= ".." then
@@ -180,7 +180,7 @@ local SqlMigrations = {}
 function SqlMigrations.new(name)
     -- define file path
     local timestamp = os.date("%Y%m%d%H%M%S")
-    local full_file_path = Ralis.dirs.migrations .. '/' .. timestamp .. '.lua'
+    local full_file_path = Ralis.app_dirs.migrations .. '/' .. timestamp .. '.lua'
 
     -- create file
     local fw = io.open(full_file_path, "w")

@@ -46,14 +46,19 @@ function Database:execute(sql)
     return self.adapter.execute(self.options, sql)
 end
 
--- function to get tables' list
+-- get tables' list
 function Database:tables()
     return self.adapter.tables(self.options)
 end
 
--- function to get last id
+-- get last id
 function Database:get_last_id()
     return self.adapter.get_last_id(self.options)
+end
+
+-- schema dump table
+function Database:schema()
+    return self.adapter.schema(self.options)
 end
 
 -- define models

@@ -44,7 +44,7 @@ local function nginx_conf_content()
 end
 
 function nginx_conf_file_path()
-    return Ralis.dirs.tmp .. "/" .. Ralis.env .. "-nginx.conf"
+    return Ralis.app_dirs.tmp .. "/" .. Ralis.env .. "-nginx.conf"
 end
 
 -- init base_launcher

@@ -1,21 +1,24 @@
 -- init and get db
 require 'ralis.core.init'
 
--- settings
-local migrations_table_name = 'schema_migrations'
+
+local Migration = {}
+Migration.migrations_table_name = 'schema_migrations'
+
 
 local migrations_table_sql = [[
-CREATE TABLE ]] .. migrations_table_name .. [[ (
+CREATE TABLE ]] .. Migration.migrations_table_name .. [[ (
     version varchar(14) NOT NULL,
     PRIMARY KEY (version)
 );
 ]]
 
+
 local function ensure_schema_migrations_exists(db)
     local tables = db:tables()
     -- chech if exists
     for _, table_name in pairs(tables) do
-        if table_name == migrations_table_name then
+        if table_name == Migration.migrations_table_name then
             -- table found, exit
             return
         end
@@ -25,24 +28,28 @@ local function ensure_schema_migrations_exists(db)
 end
 
 local function version_already_run(db, version)
-    local res = db:execute("SELECT version FROM " .. migrations_table_name .. " WHERE version = '" .. version .. "';")
+    local res = db:execute("SELECT version FROM " .. Migration.migrations_table_name .. " WHERE version = '" .. version .. "';")
     return #res > 0
 end
 
 local function add_version(db, version)
-    db:execute("INSERT INTO " .. migrations_table_name .. " (version) VALUES ('" .. version .. "');")
+    db:execute("INSERT INTO " .. Migration.migrations_table_name .. " (version) VALUES ('" .. version .. "');")
 end
 
 local function remove_version(db, version)
-    db:execute("DELETE FROM " .. migrations_table_name .. " WHERE version = '" .. version .. "';")
+    db:execute("DELETE FROM " .. Migration.migrations_table_name .. " WHERE version = '" .. version .. "';")
 end
 
 local function version_from(module_name)
     return string.match(module_name, ".*/(.*)")
 end
 
+local function dump_schema_for(db)
+    local schema_dump_file_path = Ralis.app_dirs.schemas .. '/' .. db.options.adapter .. '-' .. db.options.database .. '.lua'
+    local schema = db:schema()
+    pp(schema, schema_dump_file_path)
+end
 
-local Migration = {}
 
 function Migration.run(ngx, direction, module_name)
     -- load migration module
@@ -62,6 +69,9 @@ function Migration.run(ngx, direction, module_name)
         -- add migration
         add_version(db, version)
 
+        -- dump schema
+        dump_schema_for(db)
+
         return ngx.exit(ngx.HTTP_CREATED)
 
     elseif direction == "down" then
@@ -73,6 +83,9 @@ function Migration.run(ngx, direction, module_name)
 
         -- remove migration
         remove_version(db, version)
+
+        -- dump schema
+        dump_schema_for(db)
 
         return ngx.exit(ngx.HTTP_OK)
     end

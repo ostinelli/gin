@@ -7,10 +7,7 @@ local BaseLauncher = {}
 BaseLauncher.__index = BaseLauncher
 
 function BaseLauncher.new(nginx_conf_content, nginx_conf_file_path)
-    local necessary_dirs = {
-        Ralis.dirs.logs,
-        Ralis.dirs.tmp
-    }
+    local necessary_dirs = Ralis.app_dirs
 
     local instance = {
         nginx_conf_content = nginx_conf_content,
