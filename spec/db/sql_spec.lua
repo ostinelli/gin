@@ -19,6 +19,7 @@ describe("Database SQL", function()
     after_each(function()
         db = nil
         options = nil
+        RALIS_APP_SQLDB = {}
         package.loaded['ralis.db.sql.mysql.adapter'] = nil
         package.loaded['ralis.db.sql.mysql.orm'] = nil
         package.loaded['ralis.db.sql'] = nil
@@ -37,6 +38,12 @@ describe("Database SQL", function()
                 assert.are.equal(options, DB.options)
                 assert.are.equal('adapter', DB.adapter.name)
                 assert.are.equal('orm', DB.orm.name)
+            end)
+
+            it("adds a reference to all the sql databases used in the application", function()
+                local DB = db.new(options)
+
+                assert.are.same(DB, RALIS_APP_SQLDB[1])
             end)
         end)
 
