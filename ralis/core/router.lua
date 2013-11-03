@@ -28,6 +28,18 @@ local response_version_header = 'ralis/'.. Ralis.version
 local accept_header_matcher = "^application/vnd." .. Application.name .. ".v(%d+)(.*)+json$"
 
 
+local function create_request(ngx)
+    local ok, request_or_error = pcall(function() return Request.new(ngx) end)
+    if ok == false then
+        -- parsing errors
+        local err = Error.new(request_or_error.code, request_or_error.custom_attrs)
+        response = Response.new({ status = err.status, body = err.body })
+        Router.respond(ngx, response)
+        return false
+    end
+    return request_or_error
+end
+
 -- main handler function, called from nginx
 function Router.handler(ngx)
     -- add headers
@@ -35,17 +47,11 @@ function Router.handler(ngx)
     ngx.header["X-Framework"] = response_version_header;
 
     -- create request object
-    local ok, request_or_error = pcall(function() return Request.new(ngx) end)
-    if ok == false then
-        -- parsing errors
-        local err = Error.new(request_or_error.code, request_or_error.custom_attrs)
-        response = Response.new({ status = err.status, body = err.body })
-        Router.respond(ngx, response)
-        return
-    end
+    local request = create_request(ngx)
+    if request == false then return end
 
     -- get routes
-    local ok, controller_name_or_error, action, params, request = pcall(function() return Router.match(request_or_error) end)
+    local ok, controller_name_or_error, action, params, request = pcall(function() return Router.match(request) end)
 
     local response
 
