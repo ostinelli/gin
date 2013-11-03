@@ -5,6 +5,7 @@ local url = require 'socket.url'
 -- get application name
 require 'config.application'
 
+
 local IntegrationRunner = {}
 
 -- Code portion taken from:
@@ -24,20 +25,7 @@ function IntegrationRunner.encode_table(args)
     return string.sub(strp, 2)
 end
 
-function IntegrationRunner.hit(request)
-    local launcher = require 'ralis.cli.launcher'
-    local ResponseSpec = require 'ralis.spec.runners.response'
-
-    -- build full url
-    local full_url = url.build({
-        scheme = 'http',
-        host = '127.0.0.1',
-        port = Ralis.settings.port,
-        path = request.url,
-        query = IntegrationRunner.encode_table(request.uri_params)
-    })
-
-    -- ensure content-length is set
+local function ensure_content_length(request)
     if request.headers == nil then request.headers = {} end
     if request.headers["content-length"] == nil and request.headers["Content-Length"] == nil then
         if request.body ~= nil then
@@ -46,9 +34,12 @@ function IntegrationRunner.hit(request)
             request.headers["Content-Length"] = 0
         end
     end
+    return request
+end
 
-    -- get major version from caller, limit to 10 stacktrace items
+local function major_version_for_caller()
     local major_version
+    -- limit to 10 stacktrace items
     for i = 1, 10 do
         local source = debug.getinfo(i).source
         if source == nil then break end
@@ -58,7 +49,10 @@ function IntegrationRunner.hit(request)
     end
     if major_version == nil then error("Could not determine API major version from controller spec file. Ensure to follow naming conventions.") end
 
-    -- check request.api_version
+    return major_version
+end
+
+local function check_and_get_request_api_version(request, major_version)
     local api_version
     if request.api_version ~= nil and request.api_version ~= major_version then
         if string.match(request.api_version, major_version .. '%.') == nil then
@@ -69,14 +63,25 @@ function IntegrationRunner.hit(request)
         api_version = major_version
     end
 
-    -- set Accept header
+    return api_version
+end
+
+local function set_accept_header(request, api_version)
     request.headers["accept"] = nil
     request.headers["Accept"] = "application/vnd." .. Application.name .. ".v" .. api_version .. "+json"
 
-    -- start nginx
-    launcher.start()
+    return request
+end
 
-    -- hit server
+local function hit_server(request)
+    local full_url = url.build({
+        scheme = 'http',
+        host = '127.0.0.1',
+        port = Ralis.settings.port,
+        path = request.url,
+        query = IntegrationRunner.encode_table(request.uri_params)
+    })
+
     local response_body = {}
     local ok, response_status, response_headers = http.request({
         method = request.method,
@@ -87,13 +92,37 @@ function IntegrationRunner.hit(request)
         redirect = false
     })
 
+    response_body = table.concat(response_body, "")
+
+    return ok, response_status, response_headers, response_body
+end
+
+function IntegrationRunner.hit(request)
+    local launcher = require 'ralis.cli.launcher'
+    local ResponseSpec = require 'ralis.spec.runners.response'
+
+    -- ensure content-length is set
+    request = ensure_content_length(request)
+
+    -- get major version for caller
+    local major_version = major_version_for_caller()
+
+    -- check request.api_version
+    local api_version = check_and_get_request_api_version(request, major_version)
+
+    -- set Accept header
+    request = set_accept_header(request, api_version)
+
+    -- start nginx
+    launcher.start()
+
+    -- hit server
+    local ok, response_status, response_headers, response_body = hit_server(request)
+
     -- stop nginx
     launcher.stop()
 
     if ok == nil then error("An error occurred while connecting to the test server.") end
-
-    -- get json body
-    response_body = table.concat(response_body, "")
 
     -- build response object and return
     local response = ResponseSpec.new({
