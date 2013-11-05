@@ -2,7 +2,7 @@
 
 require 'carb.core.carb'
 
-local help_description = "CARB v" .. Carb.version ..", a RESTful API web framework. " .. [[
+local help_description = "CARB v" .. Carb.version ..", a JSON-API web framework. " .. [[
 Usage: carb COMMAND [ARGS]
 
 The available carb commands are:
