@@ -1,10 +1,10 @@
 -- ensure to reload init code when code cache is false
-if Rails == nil or Ralis.settings.code_cache == false then
-    require 'ralis.core.init'
+if Rails == nil or Carb.settings.code_cache == false then
+    require 'carb.core.init'
 end
 
 package.path = './app/controllers/?.lua;' .. package.path
-local Controller = require 'ralis.core.controller'
+local Controller = require 'carb.core.controller'
 
 -- perf
 local error = error
@@ -22,7 +22,7 @@ local tinsert = table.insert
 local Router = {}
 
 -- response version header
-local response_version_header = 'ralis/'.. Ralis.version
+local response_version_header = 'carb/'.. Carb.version
 
 -- accept header for application
 local accept_header_matcher = "^application/vnd." .. Application.name .. ".v(%d+)(.*)+json$"

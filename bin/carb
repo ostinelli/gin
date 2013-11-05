@@ -1,22 +1,22 @@
 #!/usr/bin/env lua
 
-require 'ralis.core.ralis'
+require 'carb.core.carb'
 
-local help_description = "RALIS v" .. Ralis.version ..", a RESTful API web framework. " .. [[
-Usage: ralis COMMAND [ARGS]
+local help_description = "CARB v" .. Carb.version ..", a RESTful API web framework. " .. [[
+Usage: carb COMMAND [ARGS]
 
-The available ralis commands are:
- new [name]             Create a new Ralis application
- start                  Starts the Ralis server
- stop                   Stops the Ralis server
+The available carb commands are:
+ new [name]             Create a new Carb application
+ start                  Starts the Carb server
+ stop                   Stops the Carb server
  generate migration     Create a new SQL migration
  migrate                Run all SQL migrations that have not been run
  migrate rollback       Rollback one SQL migration
 ]]
 
-local launcher = require 'ralis.cli.launcher'
-local application = require 'ralis.cli.application'
-local sql_migrations = require 'ralis.cli.sql_migrations'
+local launcher = require 'carb.cli.launcher'
+local application = require 'carb.cli.application'
+local sql_migrations = require 'carb.cli.sql_migrations'
 
 if arg[1] == 'new' and arg[2] then application.new(arg[2])
 elseif arg[1] == 'start' then launcher.start()

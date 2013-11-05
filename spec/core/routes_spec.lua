@@ -3,11 +3,11 @@ require 'spec.spec_helper'
 describe("Routes", function()
 
     before_each(function()
-        require('ralis.core.routes')
+        require('carb.core.routes')
     end)
 
     after_each(function()
-        package.loaded['ralis.core.routes'] = nil
+        package.loaded['carb.core.routes'] = nil
         Routes = nil
     end)
 

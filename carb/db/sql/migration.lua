@@ -1,5 +1,5 @@
 -- init and get db
-require 'ralis.core.init'
+require 'carb.core.init'
 
 
 local Migration = {}
@@ -45,7 +45,7 @@ local function version_from(module_name)
 end
 
 local function dump_schema_for(db)
-    local schema_dump_file_path = Ralis.app_dirs.schemas .. '/' .. db.options.adapter .. '-' .. db.options.database .. '.lua'
+    local schema_dump_file_path = Carb.app_dirs.schemas .. '/' .. db.options.adapter .. '-' .. db.options.database .. '.lua'
     local schema = db:schema()
     pp(schema, schema_dump_file_path)
 end

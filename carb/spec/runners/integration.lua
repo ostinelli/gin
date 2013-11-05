@@ -77,7 +77,7 @@ local function hit_server(request)
     local full_url = url.build({
         scheme = 'http',
         host = '127.0.0.1',
-        port = Ralis.settings.port,
+        port = Carb.settings.port,
         path = request.url,
         query = IntegrationRunner.encode_table(request.uri_params)
     })
@@ -98,8 +98,8 @@ local function hit_server(request)
 end
 
 function IntegrationRunner.hit(request)
-    local launcher = require 'ralis.cli.launcher'
-    local ResponseSpec = require 'ralis.spec.runners.response'
+    local launcher = require 'carb.cli.launcher'
+    local ResponseSpec = require 'carb.spec.runners.response'
 
     -- ensure content-length is set
     request = ensure_content_length(request)

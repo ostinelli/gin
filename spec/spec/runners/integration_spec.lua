@@ -2,11 +2,11 @@ require 'spec.spec_helper'
 
 describe("Integration", function()
     before_each(function()
-        IntegrationRunner = require 'ralis.spec.runners.integration'
+        IntegrationRunner = require 'carb.spec.runners.integration'
     end)
 
     after_each(function()
-        package.loaded['ralis.spec.runners.integration'] = nil
+        package.loaded['carb.spec.runners.integration'] = nil
         IntegrationRunner = nil
     end)
 

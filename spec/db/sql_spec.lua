@@ -2,33 +2,33 @@ require 'spec.spec_helper'
 
 describe("Database SQL", function()
     before_each(function()
-        db = require 'ralis.db.sql'
+        db = require 'carb.db.sql'
         options = {
             adapter = 'mysql',
             host = "127.0.0.1",
             port = 3306,
-            database = "ralis_development",
+            database = "carb_development",
             user = "root",
             password = "",
             pool = 5
         }
-        package.loaded['ralis.db.sql.mysql.adapter'] = {}
-        package.loaded['ralis.db.sql.mysql.orm'] = {}
+        package.loaded['carb.db.sql.mysql.adapter'] = {}
+        package.loaded['carb.db.sql.mysql.orm'] = {}
     end)
 
     after_each(function()
         db = nil
         options = nil
-        RALIS_APP_SQLDB = {}
-        package.loaded['ralis.db.sql.mysql.adapter'] = nil
-        package.loaded['ralis.db.sql.mysql.orm'] = nil
-        package.loaded['ralis.db.sql'] = nil
+        CARB_APP_SQLDB = {}
+        package.loaded['carb.db.sql.mysql.adapter'] = nil
+        package.loaded['carb.db.sql.mysql.orm'] = nil
+        package.loaded['carb.db.sql'] = nil
     end)
 
     describe(".new", function()
         before_each(function()
-            package.loaded['ralis.db.sql.mysql.adapter'] = { name = 'adapter' }
-            package.loaded['ralis.db.sql.mysql.orm'] = { name = 'orm' }
+            package.loaded['carb.db.sql.mysql.adapter'] = { name = 'adapter' }
+            package.loaded['carb.db.sql.mysql.orm'] = { name = 'orm' }
         end)
 
         describe("when all the required options are passed", function()
@@ -43,7 +43,7 @@ describe("Database SQL", function()
             it("adds a reference to all the sql databases used in the application", function()
                 local DB = db.new(options)
 
-                assert.are.same(DB, RALIS_APP_SQLDB[1])
+                assert.are.same(DB, CARB_APP_SQLDB[1])
             end)
         end)
 
@@ -67,7 +67,7 @@ describe("Database SQL", function()
     describe(".execute", function()
         before_each(function()
             arg1, arg2 = nil, nil
-            package.loaded['ralis.db.sql.mysql.adapter'] = {
+            package.loaded['carb.db.sql.mysql.adapter'] = {
                 execute = function(...) arg1, arg2 = ... end
             }
             DB = db.new(options)
@@ -93,7 +93,7 @@ describe("Database SQL", function()
     describe(".tables", function()
         before_each(function()
             arg1 = nil
-            package.loaded['ralis.db.sql.mysql.adapter'] = {
+            package.loaded['carb.db.sql.mysql.adapter'] = {
                 tables = function(...) arg1 = ... end
             }
             DB = db.new(options)
@@ -113,7 +113,7 @@ describe("Database SQL", function()
     describe(".get_last_id", function()
         before_each(function()
             arg1 = nil
-            package.loaded['ralis.db.sql.mysql.adapter'] = {
+            package.loaded['carb.db.sql.mysql.adapter'] = {
                 get_last_id = function(...) arg1 = ... end
             }
             DB = db.new(options)
@@ -133,7 +133,7 @@ describe("Database SQL", function()
     describe(".schema", function()
         before_each(function()
             arg1 = nil
-            package.loaded['ralis.db.sql.mysql.adapter'] = {
+            package.loaded['carb.db.sql.mysql.adapter'] = {
                 schema = function(...) arg1 = ... end
             }
             DB = db.new(options)
@@ -153,7 +153,7 @@ describe("Database SQL", function()
     describe(".define", function()
         before_each(function()
             arg1, arg2, arg3 = nil, nil, nil
-            package.loaded['ralis.db.sql.mysql.orm'] = {
+            package.loaded['carb.db.sql.mysql.orm'] = {
                 define = function(...) arg1, arg2 = ... end
             }
             DB = db.new(options)

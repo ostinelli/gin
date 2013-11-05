@@ -6,7 +6,7 @@ local tconcat = table.concat
 local tinsert = table.insert
 
 -- reference to all the sql DB in the application
-RALIS_APP_SQLDB = {}
+CARB_APP_SQLDB = {}
 
 
 local Database = {}
@@ -32,8 +32,8 @@ function Database.new(options)
     if #missing_options > 0 then error("missing required database options: " .. tconcat(missing_options, ', ')) end
 
     -- init instance
-    local adapter = require('ralis.db.sql.' .. options.adapter .. '.adapter')
-    local orm = require('ralis.db.sql.' .. options.adapter .. '.orm')
+    local adapter = require('carb.db.sql.' .. options.adapter .. '.adapter')
+    local orm = require('carb.db.sql.' .. options.adapter .. '.orm')
 
     local instance = {
         options = options,
@@ -43,7 +43,7 @@ function Database.new(options)
     setmetatable(instance, Database)
 
     -- add to reference
-    tinsert(RALIS_APP_SQLDB, instance)
+    tinsert(CARB_APP_SQLDB, instance)
 
     return instance
 end

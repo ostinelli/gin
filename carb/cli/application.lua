@@ -5,7 +5,7 @@ local pages_controller = [[
 local PagesController = {}
 
 function PagesController:root()
-    return 200, { message = "Hello world from Ralis!" }
+    return 200, { message = "Hello world from Carb!" }
 end
 
 return PagesController
@@ -40,7 +40,7 @@ Application = {
 
 
 db = [[
-local sqldb = require 'ralis.db.sql'
+local sqldb = require 'carb.db.sql'
 
 -- Here you can setup your databases that will be accessible throughout your application.
 -- First, specify the settings (you may add multiple databases with this pattern), for instance:
@@ -50,7 +50,7 @@ local sqldb = require 'ralis.db.sql'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "ralis_development",
+--         database = "carb_development",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -60,7 +60,7 @@ local sqldb = require 'ralis.db.sql'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "ralis_test",
+--         database = "carb_test",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -70,7 +70,7 @@ local sqldb = require 'ralis.db.sql'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "ralis_production",
+--         database = "carb_production",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -78,13 +78,13 @@ local sqldb = require 'ralis.db.sql'
 -- }
 --
 -- Then initialize your database(s), for instance:
--- MYSQLDB = sqldb.new(DbSettings[Ralis.env])
+-- MYSQLDB = sqldb.new(DbSettings[Carb.env])
 ]]
 
 
 local nginx_config = [[
 worker_processes 1;
-pid ]] .. Ralis.app_dirs.tmp .. [[/{{RALIS_ENV}}-nginx.pid;
+pid ]] .. Carb.app_dirs.tmp .. [[/{{CARB_ENV}}-nginx.pid;
 
 events {
     worker_connections 1024;
@@ -93,21 +93,21 @@ events {
 http {
     sendfile on;
 
-    lua_code_cache {{RALIS_CODE_CACHE}};
+    lua_code_cache {{CARB_CODE_CACHE}};
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
 
     server {
-        access_log ]] .. Ralis.app_dirs.logs .. [[/{{RALIS_ENV}}-access.log;
-        error_log ]] .. Ralis.app_dirs.logs .. [[/{{RALIS_ENV}}-error.log;
+        access_log ]] .. Carb.app_dirs.logs .. [[/{{CARB_ENV}}-access.log;
+        error_log ]] .. Carb.app_dirs.logs .. [[/{{CARB_ENV}}-error.log;
 
-        listen {{RALIS_PORT}};
+        listen {{CARB_PORT}};
 
         location / {
-            content_by_lua 'require(\"ralis.core.router\").handler(ngx)';
+            content_by_lua 'require(\"carb.core.router\").handler(ngx)';
         }
 
-        location /ralisconsole {
-            {{RALIS_API_CONSOLE}}
+        location /carbconsole {
+            {{CARB_API_CONSOLE}}
         }
     }
 }
@@ -126,7 +126,7 @@ v1:GET("/", { controller = "pages", action = "root" })
 local settings = [[
 --------------------------------------------------------------------------------
 -- Settings defined here are environment dependent. Inside of your application,
--- `Ralis.settings` will return the ones that correspond to the environment
+-- `Carb.settings` will return the ones that correspond to the environment
 -- you are running the server in.
 --------------------------------------------------------------------------------
 `
@@ -164,7 +164,7 @@ describe("PagesController", function()
             })
 
             assert.are.same(200, response.status)
-            assert.are.same({ message = "Hello world from Ralis!" }, response.body)
+            assert.are.same({ message = "Hello world from Carb!" }, response.body)
         end)
     end)
 end)
@@ -172,13 +172,13 @@ end)
 
 
 local spec_helper = [[
-require 'ralis.spec.runner'
+require 'carb.spec.runner'
 ]]
 
 
-local RalisApplication = {}
+local CarbApplication = {}
 
-RalisApplication.files = {
+CarbApplication.files = {
     ['app/controllers/1/pages_controller.lua'] = pages_controller,
     ['app/models/.gitkeep'] = "",
     ['config/initializers/errors.lua'] = errors,
@@ -194,15 +194,15 @@ RalisApplication.files = {
     ['spec/spec_helper.lua'] = spec_helper
 }
 
-function RalisApplication.new(name)
+function CarbApplication.new(name)
     print(ansicolors("Creating app %{cyan}" .. name .. "%{reset}..."))
 
-    RalisApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
-    RalisApplication.create_files(name)
+    CarbApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
+    CarbApplication.create_files(name)
 end
 
-function RalisApplication.create_files(parent)
-    for file_path, file_content in pairs(RalisApplication.files) do
+function CarbApplication.create_files(parent)
+    for file_path, file_content in pairs(CarbApplication.files) do
         -- ensure containing directory exists
         local full_file_path = parent .. "/" .. file_path
         mkdirs(full_file_path)
@@ -216,4 +216,4 @@ function RalisApplication.create_files(parent)
     end
 end
 
-return RalisApplication
+return CarbApplication

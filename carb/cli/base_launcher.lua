@@ -1,7 +1,7 @@
 -- dependencies
 local lfs = require 'lfs'
 
-require 'ralis.core.ralis'
+require 'carb.core.carb'
 
 
 local function create_dirs(necessary_dirs)
@@ -37,7 +37,7 @@ local BaseLauncher = {}
 BaseLauncher.__index = BaseLauncher
 
 function BaseLauncher.new(nginx_conf_content, nginx_conf_file_path)
-    local necessary_dirs = Ralis.app_dirs
+    local necessary_dirs = Carb.app_dirs
 
     local instance = {
         nginx_conf_content = nginx_conf_content,

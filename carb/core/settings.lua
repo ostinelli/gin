@@ -4,9 +4,9 @@ local pcall = pcall
 local require = require
 
 
-local RalisSettings = {}
+local CarbSettings = {}
 
-RalisSettings.defaults = {
+CarbSettings.defaults = {
     test = {
         code_cache = false,
         port = 7201
@@ -30,16 +30,16 @@ local function require_app_settings()
     end
 end
 
-function RalisSettings.for_current_environment()
+function CarbSettings.for_current_environment()
     -- load defaults
-    local settings = RalisSettings.defaults[Ralis.env]
-    if settings == nil then settings = RalisSettings.defaults.other end
+    local settings = CarbSettings.defaults[Carb.env]
+    if settings == nil then settings = CarbSettings.defaults.other end
 
     -- override defaults from app settings
     local app_settings = require_app_settings()
 
     if app_settings ~= nil then
-        local app_settings_env = app_settings[Ralis.env]
+        local app_settings_env = app_settings[Carb.env]
         if app_settings_env ~= nil then
             for k, v in pairs(app_settings_env) do
                 settings[k] = v
@@ -50,4 +50,4 @@ function RalisSettings.for_current_environment()
     return settings
 end
 
-return RalisSettings
+return CarbSettings

@@ -5,4 +5,4 @@ package.loaded['config.settings'] = {}
 package.loaded['db.db'] = {}
 
 -- init
-require 'ralis.spec.init'
+require 'carb.spec.init'

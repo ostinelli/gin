@@ -8,11 +8,11 @@ describe("MySql ORM", function()
         db = {
             execute = function(self, sql)
                 query = sql
-                return { { first_name = 'ralis' } }
+                return { { first_name = 'carb' } }
             end,
             get_last_id = function() return 10 end
         }
-        orm = require 'ralis.db.sql.mysql.orm'
+        orm = require 'carb.db.sql.mysql.orm'
         Model = orm.define(db, 'users')
     end)
 
@@ -34,17 +34,17 @@ describe("MySql ORM", function()
     describe(".create", function()
         describe("when attrs are specified", function()
             it("creates a new entry", function()
-                Model.create({ first_name = 'roberto', last_name = 'ralis', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
+                Model.create({ first_name = 'roberto', last_name = 'carb', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
 
-                assert.are.equal("INSERT INTO users (seen_at,last_name,first_name,age) VALUES ('q-2013-10-12T16:31:21 UTC','q-ralis','q-roberto',3);", query)
+                assert.are.equal("INSERT INTO users (seen_at,last_name,first_name,age) VALUES ('q-2013-10-12T16:31:21 UTC','q-carb','q-roberto',3);", query)
             end)
 
             it("returns a new model", function()
-                local model = Model.create({ first_name = 'roberto', last_name = 'ralis', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
+                local model = Model.create({ first_name = 'roberto', last_name = 'carb', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
 
                 assert.are.equal(10, model.id)
                 assert.are.equal('roberto', model.first_name)
-                assert.are.equal('ralis', model.last_name)
+                assert.are.equal('carb', model.last_name)
                 assert.are.equal(3, model.age)
                 assert.are.equal('2013-10-12T16:31:21 UTC', model.seen_at)
             end)
@@ -82,8 +82,8 @@ describe("MySql ORM", function()
         describe("when attrs are specified", function()
             describe("when no options are specified", function()
                 it("finds and returns models without options", function()
-                    Model.where({ first_name = 'roberto', last_name = 'ralis', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
-                    assert.are.equal("SELECT * FROM users WHERE (seen_at='q-2013-10-12T16:31:21 UTC',last_name='q-ralis',first_name='q-roberto',age=3);", query)
+                    Model.where({ first_name = 'roberto', last_name = 'carb', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
+                    assert.are.equal("SELECT * FROM users WHERE (seen_at='q-2013-10-12T16:31:21 UTC',last_name='q-carb',first_name='q-roberto',age=3);", query)
                 end)
             end)
 
@@ -158,8 +158,8 @@ describe("MySql ORM", function()
         describe("when attrs are specified", function()
             describe("when no options are specified", function()
                 it("deletes the models", function()
-                    Model.delete_where({ first_name = 'roberto', last_name = 'ralis', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
-                    assert.are.equal("DELETE FROM users WHERE (seen_at='q-2013-10-12T16:31:21 UTC',last_name='q-ralis',first_name='q-roberto',age=3);", query)
+                    Model.delete_where({ first_name = 'roberto', last_name = 'carb', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
+                    assert.are.equal("DELETE FROM users WHERE (seen_at='q-2013-10-12T16:31:21 UTC',last_name='q-carb',first_name='q-roberto',age=3);", query)
                 end)
             end)
 
@@ -271,20 +271,20 @@ describe("MySql ORM", function()
 
     describe(".new", function()
         it("returns a new instance of a model", function()
-            local model = Model.new({ first_name = 'roberto', last_name = 'ralis' })
+            local model = Model.new({ first_name = 'roberto', last_name = 'carb' })
 
             assert.are.equal('roberto', model.first_name)
-            assert.are.equal('ralis', model.last_name)
+            assert.are.equal('carb', model.last_name)
         end)
     end)
 
     describe("#save", function()
         describe("when an id is specified", function()
             it("saves the model", function()
-                local model = Model.new({ id = 1, first_name = 'roberto', last_name = 'ralis' })
+                local model = Model.new({ id = 1, first_name = 'roberto', last_name = 'carb' })
                 model:save()
 
-                assert.are.equal("UPDATE users SET last_name='q-ralis',first_name='q-roberto' WHERE id=1;", query)
+                assert.are.equal("UPDATE users SET last_name='q-carb',first_name='q-roberto' WHERE id=1;", query)
             end)
         end)
 
@@ -294,10 +294,10 @@ describe("MySql ORM", function()
                     return 123
                 end
 
-                local model = Model.new({ first_name = 'roberto', last_name = 'ralis' })
+                local model = Model.new({ first_name = 'roberto', last_name = 'carb' })
                 model:save()
 
-                assert.are.same({ id = 123, first_name = 'roberto', last_name = 'ralis' }, model)
+                assert.are.same({ id = 123, first_name = 'roberto', last_name = 'carb' }, model)
             end)
         end)
     end)
@@ -305,7 +305,7 @@ describe("MySql ORM", function()
     describe("#delete", function()
         describe("when an id is specified", function()
             it("deletes the model", function()
-                local model = Model.new({ id = 1, first_name = 'roberto', last_name = 'ralis' })
+                local model = Model.new({ id = 1, first_name = 'roberto', last_name = 'carb' })
                 model:delete()
 
                 assert.are.equal("DELETE FROM users WHERE id=1;", query)
@@ -314,7 +314,7 @@ describe("MySql ORM", function()
 
         describe("when an id is not specified", function()
             it("raises an error", function()
-                local model = Model.new({ first_name = 'roberto', last_name = 'ralis' })
+                local model = Model.new({ first_name = 'roberto', last_name = 'carb' })
                 ok, err = pcall(function() return model:delete() end)
 
                 assert.are.equal(false, ok)

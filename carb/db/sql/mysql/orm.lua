@@ -159,11 +159,11 @@ local MySqlOrm = {}
 
 function MySqlOrm.define(db, table_name)
     -- init object
-    local RalisBaseModel = {}
-    RalisBaseModel.__index = RalisBaseModel
+    local CarbBaseModel = {}
+    CarbBaseModel.__index = CarbBaseModel
 
-    function RalisBaseModel.create(attrs)
-        local model = RalisBaseModel.new(attrs)
+    function CarbBaseModel.create(attrs)
+        local model = CarbBaseModel.new(attrs)
 
         local id = create(db, table_name, attrs)
         model.id = id
@@ -171,57 +171,57 @@ function MySqlOrm.define(db, table_name)
         return model
     end
 
-    function RalisBaseModel.where(attrs, options)
+    function CarbBaseModel.where(attrs, options)
         local results = where(db, table_name, attrs, options)
 
         local models = {}
         for _, v in ipairs(results) do
-            tinsert(models, RalisBaseModel.new(v))
+            tinsert(models, CarbBaseModel.new(v))
         end
         return models
     end
 
-    function RalisBaseModel.delete_where(attrs, options)
+    function CarbBaseModel.delete_where(attrs, options)
         delete_where(db, table_name, attrs, options)
     end
 
-    function RalisBaseModel.all(options)
-        return RalisBaseModel.where({}, options)
+    function CarbBaseModel.all(options)
+        return CarbBaseModel.where({}, options)
     end
 
-    function RalisBaseModel.delete_all(options)
-        RalisBaseModel.delete_where({}, options)
+    function CarbBaseModel.delete_all(options)
+        CarbBaseModel.delete_where({}, options)
     end
 
-    function RalisBaseModel.find_by(attrs, options)
+    function CarbBaseModel.find_by(attrs, options)
         local merged_options = { limit = 1 }
         if options and options.order then
             merged_options.order = options.order
         end
-        local models = RalisBaseModel.where(attrs, merged_options)
+        local models = CarbBaseModel.where(attrs, merged_options)
         return models[1]
     end
 
-    function RalisBaseModel.new(attrs)
+    function CarbBaseModel.new(attrs)
         local instance = attrs or {}
-        setmetatable(instance, RalisBaseModel)
+        setmetatable(instance, CarbBaseModel)
         return instance
     end
 
-    function RalisBaseModel:class()
-        return RalisBaseModel
+    function CarbBaseModel:class()
+        return CarbBaseModel
     end
 
-    function RalisBaseModel:save()
+    function CarbBaseModel:save()
         if self.id ~= nil then
             save(db, table_name, self)
         else
-            local id = RalisBaseModel.create(self)
+            local id = CarbBaseModel.create(self)
             self.id = id
         end
     end
 
-    function RalisBaseModel:delete()
+    function CarbBaseModel:delete()
         if self.id ~= nil then
             delete(db, table_name, self)
         else
@@ -230,7 +230,7 @@ function MySqlOrm.define(db, table_name)
     end
 
     -- return
-    return RalisBaseModel
+    return CarbBaseModel
 end
 
 return MySqlOrm

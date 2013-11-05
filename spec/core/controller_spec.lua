@@ -1,6 +1,6 @@
 require 'spec.spec_helper'
 
-local c = require 'ralis.core.controller'
+local c = require 'carb.core.controller'
 
 describe("Controller", function()
     before_each(function()

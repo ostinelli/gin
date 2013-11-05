@@ -1,5 +1,5 @@
 -- init module dependencies
-require 'ralis.core.ralis'
+require 'carb.core.carb'
 -- load application modules
 require 'config.application'
 require 'config.routes'

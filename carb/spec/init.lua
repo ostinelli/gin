@@ -1,7 +1,7 @@
 package.path = './?.lua;' .. package.path
 
 -- ensure test environment is specified
-Ralis = {}
-Ralis.env = 'test'
+Carb = {}
+Carb.env = 'test'
 
-require 'ralis.core.ralis'
+require 'carb.core.carb'
