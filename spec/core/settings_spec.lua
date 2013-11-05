@@ -3,21 +3,21 @@ require 'spec.spec_helper'
 describe("Settings", function()
 
     before_each(function()
-        settings = require('carb.core.settings')
+        settings = require('zebra.core.settings')
     end)
 
     after_each(function()
         package.loaded['config.settings'] = {}  -- reset to mock
-        package.loaded['carb.core.settings'] = nil
+        package.loaded['zebra.core.settings'] = nil
         settings = nil
-        Carb.env = 'test'
+        Zebra.env = 'test'
     end)
 
     describe(".for_current_environment", function()
         describe("the defaults", function()
             describe("when in test environment", function()
                 before_each(function()
-                    Carb.env = 'test'
+                    Zebra.env = 'test'
                 end)
 
                 it("returns the defaults", function()
@@ -34,7 +34,7 @@ describe("Settings", function()
 
             describe("when in production environment", function()
                 before_each(function()
-                    Carb.env = 'production'
+                    Zebra.env = 'production'
                 end)
 
                 it("returns the defaults", function()
@@ -49,7 +49,7 @@ describe("Settings", function()
 
             describe("when in any other environments", function()
                 before_each(function()
-                    Carb.env = 'development'
+                    Zebra.env = 'development'
                 end)
 
                 it("returns the defaults", function()
@@ -76,7 +76,7 @@ describe("Settings", function()
                 }
                 package.loaded['config.settings'] = app_settings
 
-                Carb.env = 'development'
+                Zebra.env = 'development'
             end)
 
             after_each(function()

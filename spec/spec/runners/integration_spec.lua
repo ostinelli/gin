@@ -2,11 +2,11 @@ require 'spec.spec_helper'
 
 describe("Integration", function()
     before_each(function()
-        IntegrationRunner = require 'carb.spec.runners.integration'
+        IntegrationRunner = require 'zebra.spec.runners.integration'
     end)
 
     after_each(function()
-        package.loaded['carb.spec.runners.integration'] = nil
+        package.loaded['zebra.spec.runners.integration'] = nil
         IntegrationRunner = nil
     end)
 

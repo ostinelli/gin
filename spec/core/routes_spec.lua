@@ -3,11 +3,11 @@ require 'spec.spec_helper'
 describe("Routes", function()
 
     before_each(function()
-        require('carb.core.routes')
+        require('zebra.core.routes')
     end)
 
     after_each(function()
-        package.loaded['carb.core.routes'] = nil
+        package.loaded['zebra.core.routes'] = nil
         Routes = nil
     end)
 

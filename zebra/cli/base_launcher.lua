@@ -1,7 +1,7 @@
 -- dependencies
 local lfs = require 'lfs'
 
-require 'carb.core.carb'
+require 'zebra.core.zebra'
 
 
 local function create_dirs(necessary_dirs)
@@ -37,7 +37,7 @@ local BaseLauncher = {}
 BaseLauncher.__index = BaseLauncher
 
 function BaseLauncher.new(nginx_conf_content, nginx_conf_file_path)
-    local necessary_dirs = Carb.app_dirs
+    local necessary_dirs = Zebra.app_dirs
 
     local instance = {
         nginx_conf_content = nginx_conf_content,

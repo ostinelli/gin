@@ -1,5 +1,5 @@
 -- init and get db
-require 'carb.core.init'
+require 'zebra.core.init'
 
 
 local Migration = {}
@@ -45,7 +45,7 @@ local function version_from(module_name)
 end
 
 local function dump_schema_for(db)
-    local schema_dump_file_path = Carb.app_dirs.schemas .. '/' .. db.options.adapter .. '-' .. db.options.database .. '.lua'
+    local schema_dump_file_path = Zebra.app_dirs.schemas .. '/' .. db.options.adapter .. '-' .. db.options.database .. '.lua'
     local schema = db:schema()
     pp(schema, schema_dump_file_path)
 end

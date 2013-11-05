@@ -159,11 +159,11 @@ local MySqlOrm = {}
 
 function MySqlOrm.define(db, table_name)
     -- init object
-    local CarbBaseModel = {}
-    CarbBaseModel.__index = CarbBaseModel
+    local ZebraBaseModel = {}
+    ZebraBaseModel.__index = ZebraBaseModel
 
-    function CarbBaseModel.create(attrs)
-        local model = CarbBaseModel.new(attrs)
+    function ZebraBaseModel.create(attrs)
+        local model = ZebraBaseModel.new(attrs)
 
         local id = create(db, table_name, attrs)
         model.id = id
@@ -171,57 +171,57 @@ function MySqlOrm.define(db, table_name)
         return model
     end
 
-    function CarbBaseModel.where(attrs, options)
+    function ZebraBaseModel.where(attrs, options)
         local results = where(db, table_name, attrs, options)
 
         local models = {}
         for _, v in ipairs(results) do
-            tinsert(models, CarbBaseModel.new(v))
+            tinsert(models, ZebraBaseModel.new(v))
         end
         return models
     end
 
-    function CarbBaseModel.delete_where(attrs, options)
+    function ZebraBaseModel.delete_where(attrs, options)
         delete_where(db, table_name, attrs, options)
     end
 
-    function CarbBaseModel.all(options)
-        return CarbBaseModel.where({}, options)
+    function ZebraBaseModel.all(options)
+        return ZebraBaseModel.where({}, options)
     end
 
-    function CarbBaseModel.delete_all(options)
-        CarbBaseModel.delete_where({}, options)
+    function ZebraBaseModel.delete_all(options)
+        ZebraBaseModel.delete_where({}, options)
     end
 
-    function CarbBaseModel.find_by(attrs, options)
+    function ZebraBaseModel.find_by(attrs, options)
         local merged_options = { limit = 1 }
         if options and options.order then
             merged_options.order = options.order
         end
-        local models = CarbBaseModel.where(attrs, merged_options)
+        local models = ZebraBaseModel.where(attrs, merged_options)
         return models[1]
     end
 
-    function CarbBaseModel.new(attrs)
+    function ZebraBaseModel.new(attrs)
         local instance = attrs or {}
-        setmetatable(instance, CarbBaseModel)
+        setmetatable(instance, ZebraBaseModel)
         return instance
     end
 
-    function CarbBaseModel:class()
-        return CarbBaseModel
+    function ZebraBaseModel:class()
+        return ZebraBaseModel
     end
 
-    function CarbBaseModel:save()
+    function ZebraBaseModel:save()
         if self.id ~= nil then
             save(db, table_name, self)
         else
-            local id = CarbBaseModel.create(self)
+            local id = ZebraBaseModel.create(self)
             self.id = id
         end
     end
 
-    function CarbBaseModel:delete()
+    function ZebraBaseModel:delete()
         if self.id ~= nil then
             delete(db, table_name, self)
         else
@@ -230,7 +230,7 @@ function MySqlOrm.define(db, table_name)
     end
 
     -- return
-    return CarbBaseModel
+    return ZebraBaseModel
 end
 
 return MySqlOrm

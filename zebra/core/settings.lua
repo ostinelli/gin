@@ -4,9 +4,9 @@ local pcall = pcall
 local require = require
 
 
-local CarbSettings = {}
+local ZebraSettings = {}
 
-CarbSettings.defaults = {
+ZebraSettings.defaults = {
     test = {
         code_cache = false,
         port = 7201
@@ -30,16 +30,16 @@ local function require_app_settings()
     end
 end
 
-function CarbSettings.for_current_environment()
+function ZebraSettings.for_current_environment()
     -- load defaults
-    local settings = CarbSettings.defaults[Carb.env]
-    if settings == nil then settings = CarbSettings.defaults.other end
+    local settings = ZebraSettings.defaults[Zebra.env]
+    if settings == nil then settings = ZebraSettings.defaults.other end
 
     -- override defaults from app settings
     local app_settings = require_app_settings()
 
     if app_settings ~= nil then
-        local app_settings_env = app_settings[Carb.env]
+        local app_settings_env = app_settings[Zebra.env]
         if app_settings_env ~= nil then
             for k, v in pairs(app_settings_env) do
                 settings[k] = v
@@ -50,4 +50,4 @@ function CarbSettings.for_current_environment()
     return settings
 end
 
-return CarbSettings
+return ZebraSettings

@@ -5,7 +5,7 @@ local pages_controller = [[
 local PagesController = {}
 
 function PagesController:root()
-    return 200, { message = "Hello world from Carb!" }
+    return 200, { message = "Hello world from Zebra!" }
 end
 
 return PagesController
@@ -40,7 +40,7 @@ Application = {
 
 
 db = [[
-local sqldb = require 'carb.db.sql'
+local sqldb = require 'zebra.db.sql'
 
 -- Here you can setup your databases that will be accessible throughout your application.
 -- First, specify the settings (you may add multiple databases with this pattern), for instance:
@@ -50,7 +50,7 @@ local sqldb = require 'carb.db.sql'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "carb_development",
+--         database = "zebra_development",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -60,7 +60,7 @@ local sqldb = require 'carb.db.sql'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "carb_test",
+--         database = "zebra_test",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -70,7 +70,7 @@ local sqldb = require 'carb.db.sql'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "carb_production",
+--         database = "zebra_production",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -78,13 +78,13 @@ local sqldb = require 'carb.db.sql'
 -- }
 --
 -- Then initialize your database(s), for instance:
--- MYSQLDB = sqldb.new(DbSettings[Carb.env])
+-- MYSQLDB = sqldb.new(DbSettings[Zebra.env])
 ]]
 
 
 local nginx_config = [[
 worker_processes 1;
-pid ]] .. Carb.app_dirs.tmp .. [[/{{CARB_ENV}}-nginx.pid;
+pid ]] .. Zebra.app_dirs.tmp .. [[/{{ZEBRA_ENV}}-nginx.pid;
 
 events {
     worker_connections 1024;
@@ -93,21 +93,21 @@ events {
 http {
     sendfile on;
 
-    lua_code_cache {{CARB_CODE_CACHE}};
+    lua_code_cache {{ZEBRA_CODE_CACHE}};
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
 
     server {
-        access_log ]] .. Carb.app_dirs.logs .. [[/{{CARB_ENV}}-access.log;
-        error_log ]] .. Carb.app_dirs.logs .. [[/{{CARB_ENV}}-error.log;
+        access_log ]] .. Zebra.app_dirs.logs .. [[/{{ZEBRA_ENV}}-access.log;
+        error_log ]] .. Zebra.app_dirs.logs .. [[/{{ZEBRA_ENV}}-error.log;
 
-        listen {{CARB_PORT}};
+        listen {{ZEBRA_PORT}};
 
         location / {
-            content_by_lua 'require(\"carb.core.router\").handler(ngx)';
+            content_by_lua 'require(\"zebra.core.router\").handler(ngx)';
         }
 
-        location /carbconsole {
-            {{CARB_API_CONSOLE}}
+        location /zebraconsole {
+            {{ZEBRA_API_CONSOLE}}
         }
     }
 }
@@ -126,7 +126,7 @@ v1:GET("/", { controller = "pages", action = "root" })
 local settings = [[
 --------------------------------------------------------------------------------
 -- Settings defined here are environment dependent. Inside of your application,
--- `Carb.settings` will return the ones that correspond to the environment
+-- `Zebra.settings` will return the ones that correspond to the environment
 -- you are running the server in.
 --------------------------------------------------------------------------------
 `
@@ -164,7 +164,7 @@ describe("PagesController", function()
             })
 
             assert.are.same(200, response.status)
-            assert.are.same({ message = "Hello world from Carb!" }, response.body)
+            assert.are.same({ message = "Hello world from Zebra!" }, response.body)
         end)
     end)
 end)
@@ -172,13 +172,13 @@ end)
 
 
 local spec_helper = [[
-require 'carb.spec.runner'
+require 'zebra.spec.runner'
 ]]
 
 
-local CarbApplication = {}
+local ZebraApplication = {}
 
-CarbApplication.files = {
+ZebraApplication.files = {
     ['app/controllers/1/pages_controller.lua'] = pages_controller,
     ['app/models/.gitkeep'] = "",
     ['config/initializers/errors.lua'] = errors,
@@ -195,15 +195,15 @@ CarbApplication.files = {
     ['spec/spec_helper.lua'] = spec_helper
 }
 
-function CarbApplication.new(name)
+function ZebraApplication.new(name)
     print(ansicolors("Creating app %{cyan}" .. name .. "%{reset}..."))
 
-    CarbApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
-    CarbApplication.create_files(name)
+    ZebraApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
+    ZebraApplication.create_files(name)
 end
 
-function CarbApplication.create_files(parent)
-    for file_path, file_content in pairs(CarbApplication.files) do
+function ZebraApplication.create_files(parent)
+    for file_path, file_content in pairs(ZebraApplication.files) do
         -- ensure containing directory exists
         local full_file_path = parent .. "/" .. file_path
         mkdirs(full_file_path)
@@ -217,4 +217,4 @@ function CarbApplication.create_files(parent)
     end
 end
 
-return CarbApplication
+return ZebraApplication

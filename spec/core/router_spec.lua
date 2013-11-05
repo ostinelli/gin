@@ -3,10 +3,10 @@ require 'spec.spec_helper'
 describe("Router", function()
     before_each(function()
         package.loaded['config.routes'] = {}    -- stub the real routes loading
-        router = require 'carb.core.router'
-        require 'carb.core.routes'
-        Controller = require 'carb.core.controller'
-        Request = require 'carb.core.request'
+        router = require 'zebra.core.router'
+        require 'zebra.core.routes'
+        Controller = require 'zebra.core.controller'
+        Request = require 'zebra.core.request'
         ngx = {
             HTTP_NOT_FOUND = 404,
             exit = function(code) return end,
@@ -26,11 +26,11 @@ describe("Router", function()
     end)
 
     after_each(function()
-        package.loaded['carb.core.router'] = nil
-        package.loaded['carb.core.routes'] = nil
+        package.loaded['zebra.core.router'] = nil
+        package.loaded['zebra.core.routes'] = nil
         Routes = nil
-        package.loaded['carb.core.controller'] = nil
-        package.loaded['carb.core.request'] = nil
+        package.loaded['zebra.core.controller'] = nil
+        package.loaded['zebra.core.request'] = nil
         Request = nil
         router = nil
         Controller = nil
@@ -207,7 +207,7 @@ describe("Router", function()
                 before_each(function()
                     TestController = {}
                     function TestController:action()
-                        return 403, { name = 'carb' }
+                        return 403, { name = 'zebra' }
                     end
                     package.loaded['controller_name'] = TestController
                 end)
@@ -221,7 +221,7 @@ describe("Router", function()
                 it("calls nginx with the serialized json of the controller response body", function()
                     local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                    assert.are.same({ name = 'carb' }, response.body)
+                    assert.are.same({ name = 'zebra' }, response.body)
                 end)
             end)
 
@@ -230,7 +230,7 @@ describe("Router", function()
                     TestController = {}
                     function TestController:action()
                         local headers = { ["Cache-Control"] = "max-age=3600", ["Retry-After"] = "120" }
-                        return 403, { name = 'carb' }, headers
+                        return 403, { name = 'zebra' }, headers
                     end
                     package.loaded['controller_name'] = TestController
                 end)
@@ -244,7 +244,7 @@ describe("Router", function()
                 it("calls nginx with the serialized json of the controller response body", function()
                     local response = router.call_controller(ngx, "controller_name", "action", "params")
 
-                    assert.are.same({ name = 'carb' }, response.body)
+                    assert.are.same({ name = 'zebra' }, response.body)
                 end)
 
                 it("sets the nginx response headers", function()
@@ -261,7 +261,7 @@ describe("Router", function()
                 TestController = {}
                 function TestController:action()
                     self:raise_error(1000, { additional_info = "some-info" })
-                    return { name = 'carb' }
+                    return { name = 'zebra' }
                 end
                 package.loaded['controller_name'] = TestController
             end)
@@ -395,7 +395,7 @@ describe("Router", function()
             response = Response.new({
                 status = 200,
                 headers = { ['one'] = 'first', ['two'] = 'second' },
-                body = { name = 'carb'}
+                body = { name = 'zebra'}
             })
         end)
 
@@ -415,7 +415,7 @@ describe("Router", function()
         it("sets the content length header", function()
             router.respond(ngx, response)
 
-            assert.are.equal(15, ngx.header['Content-Length'])
+            assert.are.equal(16, ngx.header['Content-Length'])
         end)
 
         it("calls ngx print with the encoded body", function()
@@ -423,7 +423,7 @@ describe("Router", function()
 
             router.respond(ngx, response)
 
-            assert.stub(ngx.print).was_called_with('{"name":"carb"}')
+            assert.stub(ngx.print).was_called_with('{"name":"zebra"}')
         end)
     end)
 end)

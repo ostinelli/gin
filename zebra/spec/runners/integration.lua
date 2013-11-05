@@ -77,7 +77,7 @@ local function hit_server(request)
     local full_url = url.build({
         scheme = 'http',
         host = '127.0.0.1',
-        port = Carb.settings.port,
+        port = Zebra.settings.port,
         path = request.url,
         query = IntegrationRunner.encode_table(request.uri_params)
     })
@@ -98,8 +98,8 @@ local function hit_server(request)
 end
 
 function IntegrationRunner.hit(request)
-    local launcher = require 'carb.cli.launcher'
-    local ResponseSpec = require 'carb.spec.runners.response'
+    local launcher = require 'zebra.cli.launcher'
+    local ResponseSpec = require 'zebra.spec.runners.response'
 
     -- ensure content-length is set
     request = ensure_content_length(request)

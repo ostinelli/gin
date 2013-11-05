@@ -1,22 +1,22 @@
 #!/usr/bin/env lua
 
-require 'carb.core.carb'
+require 'zebra.core.zebra'
 
-local help_description = "CARB v" .. Carb.version ..", a JSON-API web framework. " .. [[
-Usage: carb COMMAND [ARGS]
+local help_description = "ZEBRA v" .. Zebra.version ..", a JSON-API web framework. " .. [[
+Usage: zebra COMMAND [ARGS]
 
-The available carb commands are:
- new [name]             Create a new Carb application
- start                  Starts the Carb server
- stop                   Stops the Carb server
+The available zebra commands are:
+ new [name]             Create a new Zebra application
+ start                  Starts the Zebra server
+ stop                   Stops the Zebra server
  generate migration     Create a new SQL migration
  migrate                Run all SQL migrations that have not been run
  migrate rollback       Rollback one SQL migration
 ]]
 
-local launcher = require 'carb.cli.launcher'
-local application = require 'carb.cli.application'
-local sql_migrations = require 'carb.cli.sql_migrations'
+local launcher = require 'zebra.cli.launcher'
+local application = require 'zebra.cli.application'
+local sql_migrations = require 'zebra.cli.sql_migrations'
 
 if arg[1] == 'new' and arg[2] then application.new(arg[2])
 elseif arg[1] == 'start' then launcher.start()

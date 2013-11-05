@@ -1,6 +1,6 @@
 require 'spec.spec_helper'
 
-local c = require 'carb.core.controller'
+local c = require 'zebra.core.controller'
 
 describe("Controller", function()
     before_each(function()

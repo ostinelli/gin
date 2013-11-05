@@ -1,7 +1,7 @@
 -- settings
 local migrations_port = 42579
-local nginx_conf_file_path = Carb.app_dirs.tmp .. '/nginx.conf'
-local error_log_file_path = Carb.app_dirs.logs .. '/carb-migrations-error.log'
+local nginx_conf_file_path = Zebra.app_dirs.tmp .. '/nginx.conf'
+local error_log_file_path = Zebra.app_dirs.logs .. '/zebra-migrations-error.log'
 
 -- dependencies
 local http = require 'socket.http'
@@ -9,17 +9,17 @@ local url = require 'socket.url'
 local lfs = require 'lfs'
 local ansicolors = require 'ansicolors'
 
--- carb
-require 'carb.core.carb'
-require 'carb.core.helpers'
+-- zebra
+require 'zebra.core.zebra'
+require 'zebra.core.helpers'
 
-local BaseLauncher = require 'carb.cli.base_launcher'
+local BaseLauncher = require 'zebra.cli.base_launcher'
 
 
 local migrations_new = [====[
 local SqlMigration = {}
 
--- specify the database used in this migration (needed by the Carb migration engine)
+-- specify the database used in this migration (needed by the Zebra migration engine)
 SqlMigration.db = MYSQLDB
 
 function SqlMigration.up()
@@ -47,7 +47,7 @@ return SqlMigration
 
 local migrations_nginx_conf_template = [[
 worker_processes 1;
-pid ]] .. Carb.app_dirs.tmp .. [[/carb-migrations-nginx.pid;
+pid ]] .. Zebra.app_dirs.tmp .. [[/zebra-migrations-nginx.pid;
 
 events {
     worker_connections 1024;
@@ -57,13 +57,13 @@ http {
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
 
     server {
-        access_log logs/carb-migrations-access.log;
+        access_log logs/zebra-migrations-access.log;
         error_log ]] .. error_log_file_path .. [[;
 
         listen ]] .. migrations_port .. [[;
 
         location / {
-            content_by_lua 'require(\"carb.db.sql.migration\").run(ngx, "{{DIRECTION}}", "{{MODULE_NAME}}")';
+            content_by_lua 'require(\"zebra.db.sql.migration\").run(ngx, "{{DIRECTION}}", "{{MODULE_NAME}}")';
         }
     }
 }
@@ -84,7 +84,7 @@ end
 local function migration_modules()
     local modules = {}
 
-    local path = Carb.app_dirs.migrations
+    local path = Zebra.app_dirs.migrations
     if folder_exists(path) then
         for file_name in lfs.dir(path) do
             if file_name ~= "." and file_name ~= ".." then
@@ -180,7 +180,7 @@ local SqlMigrations = {}
 function SqlMigrations.new(name)
     -- define file path
     local timestamp = os.date("%Y%m%d%H%M%S")
-    local full_file_path = Carb.app_dirs.migrations .. '/' .. timestamp .. '.lua'
+    local full_file_path = Zebra.app_dirs.migrations .. '/' .. timestamp .. '.lua'
 
     -- create file
     local fw = io.open(full_file_path, "w")

@@ -1,5 +1,5 @@
 -- init module dependencies
-require 'carb.core.carb'
+require 'zebra.core.zebra'
 -- load application modules
 require 'config.application'
 require 'config.routes'

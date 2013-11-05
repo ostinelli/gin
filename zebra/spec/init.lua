@@ -1,7 +1,7 @@
 package.path = './?.lua;' .. package.path
 
 -- ensure test environment is specified
-Carb = {}
-Carb.env = 'test'
+Zebra = {}
+Zebra.env = 'test'
 
-require 'carb.core.carb'
+require 'zebra.core.zebra'
