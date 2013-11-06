@@ -2,7 +2,24 @@
 
 require 'zebra.core.zebra'
 
-local help_description = "ZEBRA v" .. Zebra.version ..", a JSON-API web framework. " .. [[
+local help_description = [[
+
+      .""\\\ _,
+    ,_\\_\\\//|,
+     \/; `:|( / \,
+     /.';_`) `\////,
+    |:'/a/ ':..:\/  /,
+   /:' ` ':. '::'`\///,
+  /_.:'`': ':/:' .:\/  \
+ /  ',:'; :_/:' .:' \ //,
+ |O)  \//` \:' .::' ;:\//,
+ '.__.'`   |' .::' .;:://'.
+           | .::' .::' `\ //.
+          /.::' .::'  .:'`-;/
+         |.::'  .:'  .:'  :'`
+
+ZEBRA v]] .. Zebra.version .. [[, a JSON-API web framework.
+
 Usage: zebra COMMAND [ARGS]
 
 The available zebra commands are:
