@@ -48,7 +48,7 @@ local function dump_schema_for(db)
     local schema_dump_file_path = Zebra.app_dirs.schemas .. '/' .. db.options.adapter .. '-' .. db.options.database .. '.lua'
     local schema = db:schema()
     -- write to file
-    pp(schema, schema_dump_file_path)
+    pp_to_file(schema, schema_dump_file_path)
 end
 
 -- get migration modules

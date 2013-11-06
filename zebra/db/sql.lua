@@ -53,6 +53,11 @@ function Database:execute(sql)
     return self.adapter.execute(self.options, sql)
 end
 
+-- quote
+function Database:quote(str)
+    return self.adapter.quote(self.options, str)
+end
+
 -- get tables' list
 function Database:tables()
     return self.adapter.tables(self.options)

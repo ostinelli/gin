@@ -1,7 +1,7 @@
 require 'zebra.spec.init'
 
--- mock dbs
-package.loaded['zebra.db.sql.mysql.adapter'] = {}
+-- use local drivers in db
+require 'zebra.core.local'
 require 'db.db'
 
 -- add integration runner

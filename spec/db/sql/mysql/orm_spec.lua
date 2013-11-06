@@ -2,15 +2,13 @@ require 'spec.spec_helper'
 
 describe("MySql ORM", function()
     before_each(function()
-        ngx = {
-            quote_sql_str = function(str) return "'q-" .. str .. "'" end
-        }
         db = {
             execute = function(self, sql)
                 query = sql
                 return { { first_name = 'zebra' } }
             end,
-            get_last_id = function() return 10 end
+            get_last_id = function() return 10 end,
+            quote = function(self, str) return "'q-" .. str .. "'" end
         }
         orm = require 'zebra.db.sql.mysql.orm'
         Model = orm.define(db, 'users')
@@ -62,11 +60,10 @@ describe("MySql ORM", function()
 
     describe(".where", function()
         it("return models objects", function()
-            db = {
-                execute = function(...)
-                    return { { first_name = 'roberto' }, { first_name = 'hedy' } }
-                end
-            }
+            db.execute = function(...)
+                return { { first_name = 'roberto' }, { first_name = 'hedy' } }
+            end
+
             Model = orm.define(db, 'users')
 
             local models = Model.where({ seen_at = '2013-10-12T16:31:21 UTC' })

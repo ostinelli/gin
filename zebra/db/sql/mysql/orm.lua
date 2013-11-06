@@ -9,16 +9,12 @@ local type = type
 local tonumber = tonumber
 
 
-local function quote(str)
-    return ngx.quote_sql_str(str)
-end
-
-local function field_and_values_for(attrs)
+local function field_and_values(db, attrs)
     local fav = {}
     for k, v in pairs(attrs) do
         local key_pair = {}
         tinsert(key_pair, k)
-        if type(v) ~= 'number' then v = quote(v) end
+        if type(v) ~= 'number' then v = db:quote(v) end
         tinsert(key_pair, "=")
         tinsert(key_pair, v)
 
@@ -39,7 +35,7 @@ local function create(db, table_name, attrs)
     local values = {}
     for k, v in pairs(attrs) do
         tinsert(fields, k)
-        if type(v) ~= 'number' then v = quote(v) end
+        if type(v) ~= 'number' then v = db:quote(v) end
         tinsert(values, v)
     end
     -- build sql
@@ -65,7 +61,7 @@ local function where(db, table_name, attrs, options)
     -- where
     if attrs ~= nil and next(attrs) ~= nil then
         tinsert(sql, " WHERE (")
-        tinsert(sql, field_and_values_for(attrs))
+        tinsert(sql, field_and_values(db, attrs))
         tinsert(sql, ")")
     end
     -- options
@@ -101,7 +97,7 @@ local function delete_where(db, table_name, attrs, options)
     -- where
     if attrs ~= nil and next(attrs) ~= nil then
         tinsert(sql, " WHERE (")
-        tinsert(sql, field_and_values_for(attrs))
+        tinsert(sql, field_and_values(db, attrs))
         tinsert(sql, ")")
     end
     -- options
@@ -129,7 +125,7 @@ local function save(db, table_name, attrs)
     local id = attrs.id
     attrs.id = nil
     -- fields
-    tinsert(sql, field_and_values_for(attrs))
+    tinsert(sql, field_and_values(db, attrs))
     -- where
     tinsert(sql, " WHERE id=")
     tinsert(sql, id)

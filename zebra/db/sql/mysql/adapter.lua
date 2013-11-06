@@ -1,5 +1,6 @@
 -- perf
 local error = error
+local ipairs = ipairs
 local require = require
 local tinsert = table.insert
 
@@ -7,6 +8,7 @@ local mysql = require "resty.mysql"
 local timeout_subsequent_ops = 1000 -- 1 sec
 local max_idle_timeout = 10000 -- 10 sec
 local max_packet_size = 1024 * 1024 -- 1MB
+
 
 local MySql = {}
 
@@ -35,6 +37,11 @@ local function mysql_keepalive(db, options)
     -- put it into the connection pool
     local ok, err = db:set_keepalive(max_idle_timeout, options.pool)
     if not ok then error("failed to set mysql keepalive: ", err) end
+end
+
+-- quote
+function MySql.quote(options, str)
+    return ngx.quote_sql_str(str)
 end
 
 -- return list of tables

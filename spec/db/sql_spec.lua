@@ -90,6 +90,28 @@ describe("Database SQL", function()
 
     end)
 
+    describe(".quote", function()
+        before_each(function()
+            arg1 = nil
+            package.loaded['zebra.db.sql.mysql.adapter'] = {
+                quote = function(...) arg1, arg2 = ... end
+            }
+            DB = db.new(options)
+        end)
+
+        after_each(function()
+            arg1 = nil
+            DB = nil
+        end)
+
+        it("calls quote on the adapter", function()
+            DB:quote("zebra")
+
+            assert.are.same(options, arg1)
+            assert.are.same("zebra", arg2)
+        end)
+    end)
+
     describe(".tables", function()
         before_each(function()
             arg1 = nil
