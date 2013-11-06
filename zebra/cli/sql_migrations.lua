@@ -63,7 +63,7 @@ http {
         listen ]] .. migrations_port .. [[;
 
         location / {
-            content_by_lua 'require(\"zebra.db.sql.migration\").run(ngx, "{{DIRECTION}}", "{{MODULE_NAME}}")';
+            content_by_lua 'require(\"zebra.db.sql.migrations\").run(ngx, "{{DIRECTION}}")';
         }
     }
 }
@@ -71,61 +71,18 @@ http {
 
 
 -- prepare nginx file contents
-local function nginx_conf_content(direction, module_name)
+local function nginx_conf_content(direction)
     -- inject params in content
     local nginx_content = migrations_nginx_conf_template
-    nginx_content = string.gsub(nginx_content, "{{MODULE_NAME}}", module_name)
     nginx_content = string.gsub(nginx_content, "{{DIRECTION}}", direction)
 
     return nginx_content
 end
 
--- get migration modules
-local function migration_modules()
-    local modules = {}
-
-    local path = Zebra.app_dirs.migrations
-    if folder_exists(path) then
-        for file_name in lfs.dir(path) do
-            if file_name ~= "." and file_name ~= ".." then
-                local file_path = path .. '/' .. file_name
-                local attr = lfs.attributes(file_path)
-                assert(type(attr) == "table")
-                if attr.mode ~= "directory" then
-                    local module_name = get_lua_module_name(file_path)
-                    if module_name ~= nil then
-                        -- add migration module
-                        table.insert(modules, module_name)
-                    end
-                end
-            end
-        end
-    end
-
-    return modules
-end
-
-local function migration_modules_reverse()
-    return table.reverse(migration_modules())
-end
-
--- remove error log file
-local function remove_error_log_file()
-    os.remove(error_log_file_path)
-end
-
--- read from error log file
-local function read_error_log_file()
-    return read_file(error_log_file_path)
-end
-
 -- hit server to run migration
-local function hit_migration_server(direction, module_name)
+local function hit_migration_server(direction)
     -- init base_launcher
-    local base_launcher = BaseLauncher.new(nginx_conf_content(direction, module_name), nginx_conf_file_path)
-
-    -- remove log file
-    remove_error_log_file()
+    local base_launcher = BaseLauncher.new(nginx_conf_content(direction), nginx_conf_file_path)
 
     -- start nginx
     base_launcher:start()
@@ -137,41 +94,56 @@ local function hit_migration_server(direction, module_name)
         port = migrations_port,
         path = '/'
     })
-    local ok, response_status, response_headers = http.request({
+
+    local response_body_raw = {}
+    local ok = http.request({
         method = 'GET',
         url = full_url,
+        sink = ltn12.sink.table(response_body_raw),
         redirect = false
     })
+    response_body_raw = table.concat(response_body_raw, "")
+    local response_body = JSON.decode(response_body_raw)
 
     -- stop nginx
     base_launcher:stop()
 
-    return ok, response_status, read_error_log_file()
+    return ok, response_body
 end
 
-local function run_migration(direction, module_name)
-    -- run migration for module
-    local ok, response_status, error_log = hit_migration_server(direction, module_name)
-    if ok == nil then error("An error occurred while connecting to the migration server while running module: " .. module_name) end
+local function display_result(direction, response_body)
+    local error_head, error_message, success_message, symbol
 
-    if error_log:len() > 0 then
-        -- an error happened
-        print(ansicolors("%{red}ERROR:%{reset} An error occurred while running the migration module: " .. module_name))
-        print(error_log)
-        error()
+    if direction == "up" then
+        error_head = "An error occurred while running the migration:"
+        error_message = "More recent migrations have been canceled. Please review the error:"
+        success_message = "Successfully applied migration:"
+        symbol = "==>"
+    else
+        error_head = "An error occurred while rolling back the migration:"
+        error_message = "Please review the error:"
+        success_message = "Successfully rolled back migration:"
+        symbol = "<=="
     end
 
-    -- print success
-    local applied = false
-    if response_status == 201 then
-        applied = true
-        print(ansicolors("==> %{green}Applied migration:%{reset} " .. module_name))
-    elseif response_status == 200 then
-        applied = true
-        print(ansicolors("==> %{green}Rollback migration:%{reset} " .. module_name))
+    if #response_body > 0 then
+        for k, version_info in ipairs(response_body) do
+            if version_info.error ~= nil then
+                print(ansicolors("%{red}ERROR:%{reset} " .. error_head .. " %{cyan}" .. version_info.version .. "%{reset}"))
+                print(error_message)
+                print("-------------------------------------------------------------------")
+                print(version_info.error)
+                print("-------------------------------------------------------------------")
+            else
+                print(ansicolors(symbol .. " %{green}" .. success_message .. "%{reset} " .. version_info.version))
+            end
+        end
     end
+end
 
-    return applied
+function migration_do(direction)
+    local ok, response_body = hit_migration_server(direction)
+    display_result(direction, response_body)
 end
 
 
@@ -193,23 +165,11 @@ function SqlMigrations.new(name)
 end
 
 function SqlMigrations.migrate()
-    -- get list of all migration modules
-    local modules = migration_modules()
-
-    for _, module_name in ipairs(modules) do
-        run_migration("up", module_name)
-    end
+    migration_do("up")
 end
 
 function SqlMigrations.rollback()
-    -- get list of all migration modules
-    local modules = migration_modules_reverse()
-
-    for _, module_name in ipairs(modules) do
-        local applied = run_migration("down", module_name)
-        -- stop rolling back asa one rollback has been applied
-        if applied == true then return end
-    end
+    migration_do("down")
 end
 
 return SqlMigrations
