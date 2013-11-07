@@ -4,19 +4,31 @@ require 'zebra.core.zebra'
 
 local help_description = [[
 
-      .""\\\ _,
-    ,_\\_\\\//|,
-     \/; `:|( / \,
-     /.';_`) `\////,
-    |:'/a/ ':..:\/  /,
-   /:' ` ':. '::'`\///,
-  /_.:'`': ':/:' .:\/  \
- /  ',:'; :_/:' .:' \ //,
- |O)  \//` \:' .::' ;:\//,
- '.__.'`   |' .::' .;:://'.
-           | .::' .::' `\ //.
-          /.::' .::'  .:'`-;/
-         |.::'  .:'  .:'  :'`
+                 ```-`.
+             -.-/++.:sdo+.-+:
+    `.--::. `s.dh:.++:/MM/`oMms-`
+     /`/dhyoydh-dMs .s/oMM/ oMM-/y`
+     `s.sMMN-.hd+sh- +:+NMd -MMh.Md:-
+       ///+so .+:+:-/.:om:mo:mMy.MMNd
+         `-:/:o+/-:`dy. yNym`/MNyMMMM.+`
+          :/ss.--:/ `dN:.Mdyh sMMmNMd/m:
+         +-od`./ho `.-Md MMhM. yMN-d/yM+
+        -N/s+-md.   `+M:oMMMM:  dMo/mNM+
+        yydh:NM-   o.sd:N/MMM.  +Ms:sMd:`
+       `s-ymsMN     `ddoy mMs   +M:o:msy`
+       ://-MsMs  ./+`/M+d dMh   dd`m`dMm
+       +:/:dod:yhohN+-Mhd-mMm  oM++s hMy
+       s:`ysdsMo.mMMohMhN:NMh /MM-/``NM-
+      .s.:+moM+.mMMh/mhsm:Md./MMM-  oMy
+      +`.-m:m+-ms+h.hs/sNh:`sMMMM- -MN.
+     : ``o.y:/d--N.y/mhy: /mMMMMN `mM/
+   ``    `:.o/  .hsy+-`-omh/+MMN:`dM+
+  +-  .-   -.` ./`+oydMNs.`/NMh.`dM+
+ .h: /sN   .--./  hhs+:/ohNms- :mN:
+  `-. .`    o+o. :o-odNds/.  .yMy`
+    + ``   +mm:o /h+:.     :yMd-
+    `::://syy+.s  o`  `:+hNNs-
+          .::::    -/shhs+-
 
 ZEBRA v]] .. Zebra.version .. [[, a JSON-API web framework.
 
