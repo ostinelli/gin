@@ -1,4 +1,5 @@
--- init and get db
+-- init with local adapters
+require 'zebra.core.local'
 require 'zebra.core.init'
 
 
@@ -12,7 +13,6 @@ CREATE TABLE ]] .. Migration.migrations_table_name .. [[ (
     PRIMARY KEY (version)
 );
 ]]
-
 
 local function ensure_schema_migrations_exists(db)
     local tables = db:tables()
@@ -110,8 +110,7 @@ local function run_migration(direction, module_name)
     return ok, version, err
 end
 
-
-function Migration.run(ngx, direction)
+local function migrate(direction)
     local reponse = {}
 
     -- get modules
@@ -133,16 +132,22 @@ function Migration.run(ngx, direction)
 
         if ok == false then
             -- an error occurred
-            ngx.status = 500
-            ngx.print(JSON.encode(reponse))
-            return
+            return false, response
         end
 
         if direction == "down" and version ~= nil then break end
     end
 
     -- return reponse
-    ngx.print(JSON.encode(reponse))
+    return true, reponse
+end
+
+function Migration.up()
+    return migrate("up")
+end
+
+function Migration.down()
+    return migrate("down")
 end
 
 return Migration

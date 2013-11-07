@@ -46,15 +46,15 @@ The available zebra commands are:
 
 local launcher = require 'zebra.cli.launcher'
 local application = require 'zebra.cli.application'
-local sql_migrations = require 'zebra.cli.sql_migrations'
+local migrations = require 'zebra.cli.migrations'
 local console = require 'zebra.cli.console'
 
 if arg[1] == 'new' and arg[2] then application.new(arg[2])
 elseif arg[1] == 'start' then launcher.start()
 elseif arg[1] == 'stop' then launcher.stop()
-elseif arg[1] == 'generate' and arg[2] == 'migration' then sql_migrations.new()
-elseif arg[1] == 'migrate' and arg[2] == nil then sql_migrations.migrate()
-elseif arg[1] == 'migrate' and arg[2] == "rollback" then sql_migrations.rollback()
+elseif arg[1] == 'generate' and arg[2] == 'migration' then migrations.new()
+elseif arg[1] == 'migrate' and arg[2] == nil then migrations.up()
+elseif arg[1] == 'migrate' and arg[2] == "rollback" then migrations.down()
 elseif arg[1] == 'console' then console.start()
 else print(help_description)
 end
