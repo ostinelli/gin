@@ -58,8 +58,8 @@ end
 
 -- return last inserted if
 function MySql.get_last_id(options)
-    local res = MySql.execute(options, "SELECT LAST_INSERT_ID();")
-    return tonumber(res[1][1])
+    local res = MySql.execute(options, "SELECT LAST_INSERT_ID() as id;")
+    return tonumber(res[1].id)
 end
 
 -- return schema as a table
