@@ -1,10 +1,13 @@
+-- dependencies
+local mysql = require "resty.mysql"
+
 -- perf
 local error = error
 local ipairs = ipairs
 local require = require
 local tinsert = table.insert
 
-local mysql = require "resty.mysql"
+-- settings
 local timeout_subsequent_ops = 1000 -- 1 sec
 local max_idle_timeout = 10000 -- 10 sec
 local max_packet_size = 1024 * 1024 -- 1MB
