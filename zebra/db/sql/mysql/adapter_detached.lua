@@ -1,6 +1,3 @@
--- dependencies
-local ansicolors = require 'ansicolors'
-
 -- perf
 local assert = assert
 local ipairs = ipairs
@@ -84,9 +81,6 @@ end
 
 -- execute a query
 function MySql.execute(options, sql)
-    -- print statement
-    print(ansicolors("%{cyan}SQL =>%{reset} " .. sql))
-
     -- connect
     mysql_ensure_connection(options)
 

@@ -1,7 +1,7 @@
 require 'zebra.spec.init'
 
--- use local drivers in db
-require 'zebra.core.local'
+-- use detached drivers in db
+require 'zebra.core.detached'
 require 'db.db'
 
 -- add integration runner

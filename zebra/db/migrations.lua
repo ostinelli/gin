@@ -1,5 +1,5 @@
--- init with local adapters
-require 'zebra.core.local'
+-- init with detached adapters
+require 'zebra.core.detached'
 require 'zebra.core.init'
 
 
