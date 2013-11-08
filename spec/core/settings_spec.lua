@@ -74,7 +74,7 @@ describe("Settings", function()
                 it("returns the defaults", function()
                     local defaults = {
                         code_cache = true,
-                        port = 7200,
+                        port = 80,
                         expose_api_console = false
                     }
 

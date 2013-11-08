@@ -27,7 +27,7 @@ ZebraSettings.defaults = {
 
     other = {
         code_cache = true,
-        port = 7200,
+        port = 80,
         expose_api_console = false
     }
 }
