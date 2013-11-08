@@ -38,10 +38,10 @@ The available zebra commands are:
  new [name]             Create a new Zebra application
  start                  Starts the Zebra server
  stop                   Stops the Zebra server
- generate migration     Create a new SQL migration
- migrate                Run all SQL migrations that have not been run
- migrate rollback       Rollback one SQL migration
  console                Start a Zebra console
+ generate migration     Create a new migration
+ migrate                Run all migrations that have not been run
+ migrate rollback       Rollback one migration
 ]]
 
 local launcher = require 'zebra.cli.launcher'
