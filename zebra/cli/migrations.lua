@@ -84,12 +84,16 @@ function SqlMigrations.new(name)
 end
 
 function SqlMigrations.up()
+    print(ansicolors("Migrating up in %{cyan}" .. Zebra.env .. "%{reset} environment"))
+
     local ok, response = migrations.up()
     display_result("up", response)
 
 end
 
 function SqlMigrations.down()
+    print(ansicolors("Rolling back one migration in %{cyan}" .. Zebra.env .. "%{reset} environment"))
+
     local ok, response = migrations.down()
     display_result("down", response)
 end
