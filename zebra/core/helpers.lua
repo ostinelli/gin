@@ -109,6 +109,14 @@ function table.reverse(tab)
     return reversed
 end
 
+-- included in array
+function included(t, value)
+    for _, v in ipairs(t) do
+        if v == value then return true end
+    end
+    return false
+end
+
 -- pretty print
 function pp(o)
     prettyprint.dump(o)

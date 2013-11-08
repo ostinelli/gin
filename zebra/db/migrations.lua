@@ -2,6 +2,9 @@
 require 'zebra.core.detached'
 require 'zebra.core.init'
 
+-- settings
+local accepted_adapters = { "mysql" }
+
 
 local Migration = {}
 Migration.migrations_table_name = 'schema_migrations'
@@ -85,6 +88,12 @@ local function run_migration(direction, module_name)
     local db = migration_module.db
     local version = version_from(module_name)
 
+    -- check adapter is supported
+    if included(accepted_adapters, db.options.adapter) == false then
+        err_message = "Cannot run migrations for the adapter '" .. db.options.adapter .. "'. Supported adapters are: '" .. table.concat(accepted_adapters, "', '") .. "'."
+        return false, version, err_message
+    end
+
     ensure_schema_migrations_exists(db)
 
     -- exit if version already run
@@ -111,7 +120,7 @@ local function run_migration(direction, module_name)
 end
 
 local function migrate(direction)
-    local reponse = {}
+    local response = {}
 
     -- get modules
     local modules
@@ -127,7 +136,7 @@ local function migrate(direction)
         local ok, version, err = run_migration(direction, module_name)
 
         if version ~= nil then
-            table.insert(reponse, { version = version, error = err })
+            table.insert(response, { version = version, error = err })
         end
 
         if ok == false then
@@ -138,8 +147,8 @@ local function migrate(direction)
         if direction == "down" and version ~= nil then break end
     end
 
-    -- return reponse
-    return true, reponse
+    -- return response
+    return true, response
 end
 
 function Migration.up()
