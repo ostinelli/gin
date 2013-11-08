@@ -7,28 +7,30 @@ local require = require
 local ZebraSettings = {}
 
 ZebraSettings.defaults = {
-    test = {
+    development = {
         code_cache = false,
-        port = 7201
+        port = 7200,
+        expose_api_console = true
+    },
+
+    test = {
+        code_cache = true,
+        port = 7201,
+        expose_api_console = false
     },
 
     production = {
         code_cache = true,
-        port = 80
+        port = 80,
+        expose_api_console = false
     },
 
     other = {
-        code_cache = false,
-        port = 7200
+        code_cache = true,
+        port = 7200,
+        expose_api_console = false
     }
 }
-
-local function require_app_settings()
-    local ok, settings = pcall(function() return require('config.settings') end)
-    if ok == true then
-        return settings
-    end
-end
 
 function ZebraSettings.for_current_environment()
     -- load defaults
@@ -36,7 +38,7 @@ function ZebraSettings.for_current_environment()
     if settings == nil then settings = ZebraSettings.defaults.other end
 
     -- override defaults from app settings
-    local app_settings = require_app_settings()
+    local app_settings = require('config.settings')
 
     if app_settings ~= nil then
         local app_settings_env = app_settings[Zebra.env]

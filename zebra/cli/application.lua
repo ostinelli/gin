@@ -134,17 +134,20 @@ local Settings = {}
 
 Settings.development = {
     code_cache = false,
-    port = 7200
+    port = 7200,
+    expose_api_console = true
 }
 
 Settings.test = {
     code_cache = true,
-    port = 7201
+    port = 7201,
+    expose_api_console = false
 }
 
 Settings.production = {
     code_cache = true,
-    port = 80
+    port = 80,
+    expose_api_console = false
 }
 
 return Settings

@@ -34,7 +34,7 @@ local function nginx_conf_content()
     -- api console
     local api_console_code = [[content_by_lua 'require(\"zebra.cli.api_console\").handler(ngx)';]]
 
-    if Zebra.env == 'development' then
+    if Zebra.settings.expose_api_console == true then
         nginx_content = string.gsub(nginx_content, "{{ZEBRA_API_CONSOLE}}", api_console_code)
     else
         nginx_content = string.gsub(nginx_content, "{{ZEBRA_API_CONSOLE}}", "")

@@ -15,15 +15,33 @@ describe("Settings", function()
 
     describe(".for_current_environment", function()
         describe("the defaults", function()
-            describe("when in test environment", function()
+            describe("when in development environment", function()
                 before_each(function()
-                    Zebra.env = 'test'
+                    Zebra.env = 'development'
                 end)
 
                 it("returns the defaults", function()
                     local defaults = {
                         code_cache = false,
-                        port = 7201
+                        port = 7200,
+                        expose_api_console = true
+                    }
+
+                    assert.are.same(defaults, settings.for_current_environment())
+                end)
+            end)
+
+            describe("when in test environment", function()
+                before_each(function()
+                    Zebra.env = 'test'
+                end)
+
+
+                it("returns the defaults", function()
+                    local defaults = {
+                        code_cache = true,
+                        port = 7201,
+                        expose_api_console = false
                     }
 
                      package.loaded['config.settings'] = false
@@ -40,7 +58,8 @@ describe("Settings", function()
                 it("returns the defaults", function()
                     local defaults = {
                         code_cache = true,
-                        port = 80
+                        port = 80,
+                        expose_api_console = false
                     }
 
                     assert.are.same(defaults, settings.for_current_environment())
@@ -49,13 +68,14 @@ describe("Settings", function()
 
             describe("when in any other environments", function()
                 before_each(function()
-                    Zebra.env = 'development'
+                    Zebra.env = 'something-else'
                 end)
 
                 it("returns the defaults", function()
                     local defaults = {
-                        code_cache = false,
-                        port = 7200
+                        code_cache = true,
+                        port = 7200,
+                        expose_api_console = false
                     }
 
                     assert.are.same(defaults, settings.for_current_environment())
