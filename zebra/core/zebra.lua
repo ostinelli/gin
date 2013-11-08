@@ -12,7 +12,7 @@ local lfs = require 'lfs'
 Zebra = Zebra or {}
 
 -- version
-Zebra.version = '0.1-rc1'
+Zebra.version = '0.0.1'
 
 -- environment
 Zebra.env = Zebra.env or os.getenv("ZEBRA_ENV") or 'development'
