@@ -18,7 +18,8 @@ dependencies = {
     "busted",
     "lua-cjson",
     "luasocket",
-    "luafilesystem"
+    "luafilesystem",
+    "penlight"
 }
 
 build = {
