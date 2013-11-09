@@ -1,6 +1,7 @@
 -- dependencies
 local http = require 'socket.http'
 local url = require 'socket.url'
+local json = require 'cjson'
 
 -- get application name
 require 'config.application'
@@ -37,14 +38,19 @@ local function ensure_content_length(request)
     return request
 end
 
+function IntegrationRunner.source_for_caller_at(i)
+    return debug.getinfo(i).source
+end
+
 local function major_version_for_caller()
     local major_version
     -- limit to 10 stacktrace items
     for i = 1, 10 do
-        local source = debug.getinfo(i).source
+        -- local source = debug.getinfo(i).source
+        local source = IntegrationRunner.source_for_caller_at(i)
         if source == nil then break end
 
-        major_version = string.match(debug.getinfo(i).source, "controllers/(%d+)/(.*)_spec.lua")
+        major_version = string.match(source, "controllers/(%d+)/(.*)_spec.lua")
         if major_version ~= nil then break end
     end
     if major_version == nil then error("Could not determine API major version from controller spec file. Ensure to follow naming conventions.") end
@@ -100,6 +106,11 @@ end
 function IntegrationRunner.hit(request)
     local launcher = require 'zebra.cli.launcher'
     local ResponseSpec = require 'zebra.spec.runners.response'
+
+    -- convert body to JSON request
+    if request.body ~= nil then
+        request.body = json.encode(request.body)
+    end
 
     -- ensure content-length is set
     request = ensure_content_length(request)

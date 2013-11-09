@@ -7,6 +7,7 @@ describe("Zebra", function()
 
     after_each(function()
         package.loaded['zebra.core.zebra'] = nil
+        Zebra.env = 'test'
     end)
 
     describe(".env", function()
