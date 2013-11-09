@@ -10,7 +10,7 @@ local migrations_new = [====[
 local SqlMigration = {}
 
 -- specify the database used in this migration (needed by the Zebra migration engine)
-SqlMigration.db = MYSQLDB
+-- SqlMigration.db = MYSQLDB
 
 function SqlMigration.up()
     -- Run your migration, for instance:
