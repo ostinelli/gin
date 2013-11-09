@@ -31,10 +31,11 @@ function Database.new(options)
 
     if #missing_options > 0 then error("missing required database options: " .. tconcat(missing_options, ', ')) end
 
-    -- init instance
+    -- init adapter & orm
     local adapter = require('zebra.db.sql.' .. options.adapter .. '.adapter')
     local orm = require('zebra.db.sql.' .. options.adapter .. '.orm')
 
+    -- init instance
     local instance = {
         options = options,
         adapter = adapter,

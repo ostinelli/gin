@@ -126,3 +126,8 @@ end
 function pp_to_file(o, file_path)
     prettyprint.dump(o, file_path)
 end
+
+-- try to require
+function try_require(module_name)
+    return pcall(function() return require(module_name) end)
+end

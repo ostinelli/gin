@@ -45,6 +45,7 @@ build = {
         ["zebra.db.sql.mysql.adapter"] = "zebra/db/sql/mysql/adapter.lua",
         ["zebra.db.sql.mysql.adapter_detached"] = "zebra/db/sql/mysql/adapter_detached.lua",
         ["zebra.db.sql.mysql.orm"] = "zebra/db/sql/mysql/orm.lua",
+        ["zebra.db.sql.adapter_unavailable"] = "zebra/db/sql/adapter_unavailable.lua",
         ["zebra.db.migrations"] = "zebra/db/migrations.lua",
         ["zebra.db.sql"] = "zebra/db/sql.lua",
         ["zebra.spec.runners.integration"] = "zebra/spec/runners/integration.lua",
