@@ -129,7 +129,7 @@ local settings = [[
 -- `Zebra.settings` will return the ones that correspond to the environment
 -- you are running the server in.
 --------------------------------------------------------------------------------
-`
+
 local Settings = {}
 
 Settings.development = {
