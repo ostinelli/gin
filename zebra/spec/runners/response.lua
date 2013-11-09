@@ -14,8 +14,12 @@ function ResponseSpec.new(options)
 
     -- body
     local json_body = {}
+    local ok
     if options.body ~= nil and trim(options.body) ~= "" then
-        json_body = json.decode(options.body)
+        ok, json_body = pcall(function() return json.decode(options.body) end)
+        if ok == false then json_body = nil end
+        -- json_body = json.decode(options.body)
+        -- if type(json_body) ~= 'table' then json_body = nil end
     end
 
     -- init instance
@@ -23,6 +27,7 @@ function ResponseSpec.new(options)
         status = options.status,
         headers = options.headers or {},
         body = json_body,
+        body_raw = options.body
     }
     setmetatable(instance, ResponseSpec)
     return instance
