@@ -50,7 +50,7 @@ local sqldb = require 'zebra.db.sql'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "zebra_development",
+--         database = "{{APP_NAME}}_development",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -60,7 +60,7 @@ local sqldb = require 'zebra.db.sql'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "zebra_test",
+--         database = "{{APP_NAME}}_test",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -70,7 +70,7 @@ local sqldb = require 'zebra.db.sql'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "zebra_production",
+--         database = "{{APP_NAME}}_production",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -191,7 +191,7 @@ ZebraApplication.files = {
     ['config/settings.lua'] = settings,
     ['db/migrations/.gitkeep'] = "",
     ['db/schemas/.gitkeep'] = "",
-    ['db/db.lua'] = db,
+    ['db/db.lua'] = "",
     ['lib/.gitkeep'] = "",
     ['spec/controllers/1/pages_controller_spec.lua'] = pages_controller_spec,
     ['spec/models/.gitkeep'] = "",
@@ -202,6 +202,7 @@ function ZebraApplication.new(name)
     print(ansicolors("Creating app %{cyan}" .. name .. "%{reset}..."))
 
     ZebraApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
+    ZebraApplication.files['db/db.lua'] = string.gsub(db, "{{APP_NAME}}", name)
     ZebraApplication.create_files(name)
 end
 
