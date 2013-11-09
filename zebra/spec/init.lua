@@ -4,4 +4,7 @@ package.path = './?.lua;' .. package.path
 Zebra = {}
 Zebra.env = 'test'
 
+-- load detached
 require 'zebra.core.zebra'
+require 'zebra.core.detached'
+require 'zebra.core.init'
