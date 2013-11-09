@@ -6,12 +6,11 @@ require 'zebra.core.init'
 local accepted_adapters = { "mysql" }
 
 
-local Migration = {}
-Migration.migrations_table_name = 'schema_migrations'
+local Migrations = {}
+Migrations.migrations_table_name = 'schema_migrations'
 
-
-local migrations_table_sql = [[
-CREATE TABLE ]] .. Migration.migrations_table_name .. [[ (
+local create_schema_migrations_sql = [[
+CREATE TABLE ]] .. Migrations.migrations_table_name .. [[ (
     version varchar(14) NOT NULL,
     PRIMARY KEY (version)
 );
@@ -21,26 +20,26 @@ local function ensure_schema_migrations_exists(db)
     local tables = db:tables()
     -- chech if exists
     for _, table_name in pairs(tables) do
-        if table_name == Migration.migrations_table_name then
+        if table_name == Migrations.migrations_table_name then
             -- table found, exit
             return
         end
     end
     -- table does not exist, create
-    db:execute(migrations_table_sql)
+    db:execute(create_schema_migrations_sql)
 end
 
-local function version_already_run(db, version)
-    local res = db:execute("SELECT version FROM " .. Migration.migrations_table_name .. " WHERE version = '" .. version .. "';")
+function Migrations.version_already_run(db, version)
+    local res = db:execute("SELECT version FROM " .. Migrations.migrations_table_name .. " WHERE version = '" .. version .. "';")
     return #res > 0
 end
 
 local function add_version(db, version)
-    db:execute("INSERT INTO " .. Migration.migrations_table_name .. " (version) VALUES ('" .. version .. "');")
+    db:execute("INSERT INTO " .. Migrations.migrations_table_name .. " (version) VALUES ('" .. version .. "');")
 end
 
 local function remove_version(db, version)
-    db:execute("DELETE FROM " .. Migration.migrations_table_name .. " WHERE version = '" .. version .. "';")
+    db:execute("DELETE FROM " .. Migrations.migrations_table_name .. " WHERE version = '" .. version .. "';")
 end
 
 local function version_from(module_name)
@@ -55,7 +54,7 @@ local function dump_schema_for(db)
 end
 
 -- get migration modules
-local function migration_modules()
+function Migrations.migration_modules()
     local modules = {}
 
     local path = Zebra.app_dirs.migrations
@@ -79,8 +78,8 @@ local function migration_modules()
     return modules
 end
 
-local function migration_modules_reverse()
-    return table.reverse(migration_modules())
+function Migrations.migration_modules_reverse()
+    return table.reverse(Migrations.migration_modules())
 end
 
 local function run_migration(direction, module_name)
@@ -98,10 +97,10 @@ local function run_migration(direction, module_name)
 
     -- exit if version already run
     local should_run = direction == "up"
-    if version_already_run(db, version) == should_run then return end
+    if Migrations.version_already_run(db, version) == should_run then return end
 
-    -- run up migration
-    ok, err = pcall(function()return migration_module[direction]() end)
+    -- run migration
+    local ok, err = pcall(function() return migration_module[direction]() end)
 
     if ok == true then
         -- track version
@@ -126,9 +125,9 @@ local function migrate(direction)
     local modules
 
     if direction == "up" then
-        modules = migration_modules()
+        modules = Migrations.migration_modules()
     else
-        modules = migration_modules_reverse()
+        modules = Migrations.migration_modules_reverse()
     end
 
     -- loop migration modules & build response
@@ -151,12 +150,12 @@ local function migrate(direction)
     return true, response
 end
 
-function Migration.up()
+function Migrations.up()
     return migrate("up")
 end
 
-function Migration.down()
+function Migrations.down()
     return migrate("down")
 end
 
-return Migration
+return Migrations
