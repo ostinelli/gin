@@ -14,7 +14,7 @@ local pairs = pairs
 local pcall = pcall
 local require = require
 local setmetatable = setmetatable
-local strmatch = string.match
+local smatch = string.match
 local tinsert = table.insert
 
 
@@ -80,7 +80,7 @@ function Router.match(request)
     -- match version based on headers
     if request.headers['accept'] == nil then error({ code = 100 }) end
 
-    local major_version, rest_version = strmatch(request.headers['accept'], accept_header_matcher)
+    local major_version, rest_version = smatch(request.headers['accept'], accept_header_matcher)
     if major_version == nil then error({ code = 101 }) end
 
     local routes_dispatchers = Routes.dispatchers[tonumber(major_version)]
@@ -89,7 +89,7 @@ function Router.match(request)
     -- loop dispatchers to find route
     for _, dispatcher in ipairs(routes_dispatchers) do
         if dispatcher[method] then -- avoid matching if method is not defined in dispatcher
-            local match = { strmatch(uri, dispatcher.pattern) }
+            local match = { smatch(uri, dispatcher.pattern) }
 
             if #match > 0 then
                 local params = {}

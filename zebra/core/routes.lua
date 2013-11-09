@@ -2,8 +2,8 @@
 local error = error
 local pairs = pairs
 local setmetatable = setmetatable
-local strgsub = string.gsub
-local strmatch = string.match
+local sgsub = string.gsub
+local smatch = string.match
 local tinsert = table.insert
 local type = type
 local tostring = tostring
@@ -15,7 +15,7 @@ Version.__index = Version
 
 function Version.new(number)
     if type(number) ~= 'number' then error("version is not an integer number (got string).") end
-    if strmatch(tostring(number), "%.") ~= nil then error("version is not an integer number (got float).") end
+    if smatch(tostring(number), "%.") ~= nil then error("version is not an integer number (got float).") end
 
     local instance = {
         number = number
@@ -38,7 +38,7 @@ end
 
 function Version:build_named_parameters(pattern)
     local params = {}
-    local new_pattern = strgsub(pattern, "/:([A-Za-z0-9_]+)", function(m)
+    local new_pattern = sgsub(pattern, "/:([A-Za-z0-9_]+)", function(m)
         tinsert(params, m)
         return "/([A-Za-z0-9_]+)"
     end)
