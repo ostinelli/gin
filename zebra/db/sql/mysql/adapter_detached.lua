@@ -1,7 +1,14 @@
+local ansicolors = require 'ansicolors'
+
 -- perf
 local assert = assert
 local ipairs = ipairs
+local pcall = pcall
+local smatch = string.match
 local tinsert = table.insert
+
+-- settings
+local mysql_default_database = 'mysql'
 
 local luasql = require 'luasql.mysql'
 
@@ -11,12 +18,40 @@ local MySql = {
     db = nil
 }
 
+-- the creation of the database should only be allowed in detached adapters.
+local function create_db(options)
+    local db = MySql.env:connect(mysql_default_database, options.user, options.password)
+    db:execute("CREATE DATABASE ".. options.database .. ";")
+    print(ansicolors("Database '" .. options.database .. "' does not exist, %{green}created%{reset}."))
+    db:close()
+end
+
+local function mysql_ensure_db_and_connection(options)
+    ok, db_or_err = pcall(function() return assert(MySql.env:connect(options.database, options.user, options.password)) end)
+
+    if ok == true then
+        -- connection successful
+        return db_or_err
+    end
+
+    if smatch(db_or_err, "Unknown database") ~= nil then
+        -- database does not exist, create
+        create_db(options)
+        -- connect to newly created database
+        db = assert(MySql.env:connect(options.database, options.user, options.password))
+        return db
+    else
+        -- connection error
+        error(db_or_err)
+    end
+end
+
 local function mysql_ensure_connection(options)
     if MySql.env == nil then
         MySql.env = assert(luasql.mysql())
     end
     if MySql.db == nil then
-        MySql.db = assert(MySql.env:connect(options.database, options.user, options.password))
+        MySql.db = mysql_ensure_db_and_connection(options)
     end
 end
 
@@ -77,7 +112,6 @@ function MySql.schema(options)
 
     return schema
 end
-
 
 -- execute a query
 function MySql.execute(options, sql)
