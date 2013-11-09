@@ -11,7 +11,7 @@ describe("Integration", function()
     end)
 
     describe(".encode_table", function()
-        it("encodes a table into form-urlencoded", function()
+        it("encodes a table into querystring params", function()
             args = {
                 arg1 = 1.0,
                 arg2 = { "two/string", "another/string" },
@@ -54,7 +54,7 @@ describe("Integration", function()
         it("ensures content length is set", function()
             IntegrationRunner.hit({
                 method = 'GET',
-                url = "/",
+                path = "/",
                 body = { name = 'zebra' }
             })
 
@@ -69,7 +69,7 @@ describe("Integration", function()
             local ok, err = pcall(function()
                 return IntegrationRunner.hit({
                     method = 'GET',
-                    url = "/"
+                    path = "/"
                 })
             end)
 
@@ -82,7 +82,7 @@ describe("Integration", function()
                 return IntegrationRunner.hit({
                     api_version = '2',
                     method = 'GET',
-                    url = "/"
+                    path = "/"
                 })
             end)
 
@@ -95,7 +95,7 @@ describe("Integration", function()
                 it("sets the accept header from the namespace", function()
                     local response = IntegrationRunner.hit({
                         method = 'GET',
-                        url = "/"
+                        path = "/"
                     })
 
                     assert.are.same("application/vnd.zebraapp.v1+json", request.headers["Accept"])
@@ -107,7 +107,7 @@ describe("Integration", function()
                     local response = IntegrationRunner.hit({
                         api_version = '1.2.3-p247',
                         method = 'GET',
-                        url = "/"
+                        path = "/"
                     })
 
                     assert.are.same("application/vnd.zebraapp.v1.2.3-p247+json", request.headers["Accept"])
@@ -130,7 +130,7 @@ describe("Integration", function()
 
             IntegrationRunner.hit({
                 method = 'GET',
-                url = "/",
+                path = "/",
                 headers = { ['Test-Header'] = 'test-header-value' },
                 body = { name = 'zebra' }
             })
@@ -145,7 +145,7 @@ describe("Integration", function()
         it("returns a ResponseSpec", function()
             local response = IntegrationRunner.hit({
                 method = 'GET',
-                url = "/"
+                path = "/"
             })
 
             assert.are.equal(201, response.status)

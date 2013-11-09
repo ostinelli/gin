@@ -84,7 +84,7 @@ local function hit_server(request)
         scheme = 'http',
         host = '127.0.0.1',
         port = Zebra.settings.port,
-        path = request.url,
+        path = request.path,
         query = IntegrationRunner.encode_table(request.uri_params)
     })
 

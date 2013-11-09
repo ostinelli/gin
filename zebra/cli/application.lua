@@ -163,7 +163,7 @@ describe("PagesController", function()
         it("responds with a welcome message", function()
             local response = hit({
                 method = 'GET',
-                url = "/"
+                path = "/"
             })
 
             assert.are.same(200, response.status)
