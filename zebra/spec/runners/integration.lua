@@ -3,9 +3,6 @@ local http = require 'socket.http'
 local url = require 'socket.url'
 local json = require 'cjson'
 
--- get application name
-require 'config.application'
-
 
 local IntegrationRunner = {}
 

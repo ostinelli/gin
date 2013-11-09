@@ -38,7 +38,7 @@ function ZebraSettings.for_current_environment()
     if settings == nil then settings = ZebraSettings.defaults.other end
 
     -- override defaults from app settings
-    local app_settings = require('config.settings')
+    local app_settings = try_require('config.settings', {})
 
     if app_settings ~= nil then
         local app_settings_env = app_settings[Zebra.env]

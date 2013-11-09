@@ -3,10 +3,10 @@ local lfs = require 'lfs'
 local prettyprint = require 'pl.pretty'
 
 -- perf
-local strmatch = string.match
-local strfind = string.find
-local strsub = string.sub
-local strgsub = string.gsub
+local smatch = string.match
+local sfind = string.find
+local ssub = string.sub
+local sgsub = string.gsub
 local tinsert = table.insert
 local ipairs = ipairs
 local assert = assert
@@ -23,7 +23,7 @@ end
 
 -- check if folder exists
 function folder_exists(folder_path)
-    return lfs.attributes(strgsub(folder_path, "\\$",""), "mode") == "directory"
+    return lfs.attributes(sgsub(folder_path, "\\$",""), "mode") == "directory"
 end
 
 -- split function
@@ -31,18 +31,18 @@ function split(str, pat)
     local t = {}
     local fpat = "(.-)" .. pat
     local last_end = 1
-    local s, e, cap = strfind(str, fpat, 1)
+    local s, e, cap = sfind(str, fpat, 1)
 
     while s do
         if s ~= 1 or cap ~= "" then
             tinsert(t,cap)
         end
         last_end = e+1
-        s, e, cap = strfind(str, fpat, last_end)
+        s, e, cap = sfind(str, fpat, last_end)
     end
 
     if last_end <= #str then
-        cap = strsub(str, last_end)
+        cap = ssub(str, last_end)
         tinsert(t, cap)
     end
 
@@ -57,7 +57,7 @@ end
 -- recursively make directories
 function mkdirs(file_path)
     -- get dir path and parts
-    dir_path = strmatch(file_path, "(.*)/.*")
+    dir_path = smatch(file_path, "(.*)/.*")
     parts = split_path(dir_path)
     -- loop
     local current_dir = nil
@@ -128,6 +128,14 @@ function pp_to_file(o, file_path)
 end
 
 -- try to require
-function try_require(module_name)
-    return pcall(function() return require(module_name) end)
+function try_require(module_name, default)
+    local ok, module_or_err = pcall(function() return require(module_name) end)
+
+    if ok == true then return module_or_err end
+
+    if ok == false and smatch(module_or_err, "'" .. module_name .. "' not found") then
+        return default
+    else
+        error(module_or_err)
+    end
 end
