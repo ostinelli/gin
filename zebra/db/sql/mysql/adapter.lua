@@ -1,6 +1,3 @@
--- dependencies
-local mysql = require "resty.mysql"
-
 -- perf
 local error = error
 local ipairs = ipairs
@@ -16,6 +13,8 @@ local max_packet_size = 1024 * 1024 -- 1MB
 local MySql = {}
 
 local function mysql_connect(options)
+    -- ini mysql
+    local mysql = require "resty.mysql"
     -- create sql object
     local db, err = mysql:new()
     if not db then error("failed to instantiate mysql: " .. err) end
