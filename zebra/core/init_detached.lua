@@ -12,3 +12,9 @@ end
 
 local adapter_mysql = require_adapter_and_fallback_to_detached('zebra.db.sql.mysql.adapter_detached', 'DBI')
 package.loaded['zebra.db.sql.mysql.adapter'] = adapter_mysql
+
+-- init
+require 'zebra.core.init'
+-- init models
+local models = require 'zebra.core.init_models'
+models.init()

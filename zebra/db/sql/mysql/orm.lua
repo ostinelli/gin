@@ -161,83 +161,79 @@ end
 
 local MySqlOrm = {}
 
-function MySqlOrm.define(db, table_name)
-    -- init object
-    local ZebraBaseModel = {}
-    ZebraBaseModel.__index = ZebraBaseModel
+function MySqlOrm.define(ZebraModel)
+    -- init index
+    ZebraModel.__index = ZebraModel
 
-    -- -- get attributes
-    local db_attrs = db_attributes(db, table_name)
+    -- get attributes
+    local db_attrs = db_attributes(ZebraModel.db, ZebraModel.table_name)
 
-    function ZebraBaseModel.create(attrs)
-        local model = ZebraBaseModel.new(attrs)
+    function ZebraModel.create(attrs)
+        local model = ZebraModel.new(attrs)
 
-        local id = create(db, table_name, attrs, db_attrs)
+        local id = create(ZebraModel.db, ZebraModel.table_name, attrs, db_attrs)
         model.id = id
 
         return model
     end
 
-    function ZebraBaseModel.where(attrs, options)
-        local results = where(db, table_name, attrs, options)
+    function ZebraModel.where(attrs, options)
+        local results = where(ZebraModel.db, ZebraModel.table_name, attrs, options)
 
         local models = {}
         for _, v in ipairs(results) do
-            tinsert(models, ZebraBaseModel.new(v))
+            tinsert(models, ZebraModel.new(v))
         end
         return models
     end
 
-    function ZebraBaseModel.delete_where(attrs, options)
-        delete_where(db, table_name, attrs, options)
+    function ZebraModel.delete_where(attrs, options)
+        delete_where(ZebraModel.db, ZebraModel.table_name, attrs, options)
     end
 
-    function ZebraBaseModel.all(options)
-        return ZebraBaseModel.where({}, options)
+    function ZebraModel.all(options)
+        return ZebraModel.where({}, options)
     end
 
-    function ZebraBaseModel.delete_all(options)
-        ZebraBaseModel.delete_where({}, options)
+    function ZebraModel.delete_all(options)
+        ZebraModel.delete_where({}, options)
     end
 
-    function ZebraBaseModel.find_by(attrs, options)
+    function ZebraModel.find_by(attrs, options)
         local merged_options = { limit = 1 }
         if options and options.order then
             merged_options.order = options.order
         end
-        local models = ZebraBaseModel.where(attrs, merged_options)
+        local models = ZebraModel.where(attrs, merged_options)
         return models[1]
     end
 
-    function ZebraBaseModel.new(attrs)
+    function ZebraModel.new(attrs)
         local instance = attrs or {}
-        setmetatable(instance, ZebraBaseModel)
+        setmetatable(instance, ZebraModel)
         return instance
     end
 
-    function ZebraBaseModel:class()
-        return ZebraBaseModel
+    function ZebraModel:class()
+        return ZebraModel
     end
 
-    function ZebraBaseModel:save()
+    function ZebraModel:save()
         if self.id ~= nil then
-            save(db, table_name, self, db_attrs)
+            save(ZebraModel.db, ZebraModel.table_name, self, db_attrs)
         else
-            local id = ZebraBaseModel.create(self)
+            local id = ZebraModel.create(self)
             self.id = id
         end
     end
 
-    function ZebraBaseModel:delete()
+    function ZebraModel:delete()
         if self.id ~= nil then
-            delete(db, table_name, self)
+            delete(ZebraModel.db, ZebraModel.table_name, self)
         else
             error("cannot delete a model without an id")
         end
     end
-
-    -- return
-    return ZebraBaseModel
 end
 
 return MySqlOrm

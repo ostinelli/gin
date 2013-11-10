@@ -78,6 +78,8 @@ end
 
 -- require recursively in a directory
 function require_recursive(path)
+    local module_list = {}
+
     if folder_exists(path) then
         for file_name in lfs.dir(path) do
             if file_name ~= "." and file_name ~= ".." then
@@ -92,11 +94,14 @@ function require_recursive(path)
                     -- require initializer
                     if module_name ~= nil then
                         require(module_name)
+                        tinsert(module_list, module_name)
                     end
                 end
             end
         end
     end
+
+    return module_list
 end
 
 -- reverse indexed table

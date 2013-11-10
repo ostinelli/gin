@@ -31,12 +31,14 @@ function Database.new(options)
 
     if #missing_options > 0 then error("missing required database options: " .. tconcat(missing_options, ', ')) end
 
-    -- init orm
+    -- init adapter & orm
+    local adapter = require('zebra.db.sql.' .. options.adapter .. '.adapter')
     local orm = require('zebra.db.sql.' .. options.adapter .. '.orm')
 
     -- init instance
     local instance = {
         options = options,
+        adapter = adapter,
         orm = orm
     }
     setmetatable(instance, Database)
@@ -49,46 +51,39 @@ end
 
 
 -- define models
-function Database:define(table_name)
-    local adapter = require('zebra.db.sql.' .. self.options.adapter .. '.adapter')
-    return self.orm.define(self, table_name)
+function Database:define(model)
+    return self.orm.define(model)
 end
 
 
 -- quote
 function Database:quote(str)
-    local adapter = require('zebra.db.sql.' .. self.options.adapter .. '.adapter')
-    return adapter.quote(self.options, str)
+    return self.adapter.quote(self.options, str)
 end
 
 -- get tables' list
 function Database:tables()
-    local adapter = require('zebra.db.sql.' .. self.options.adapter .. '.adapter')
-    return adapter.tables(self.options)
+    return self.adapter.tables(self.options)
 end
 
 -- get tables' list
 function Database:column_names(table_name)
-    local adapter = require('zebra.db.sql.' .. self.options.adapter .. '.adapter')
-    return adapter.column_names(self.options, table_name)
+    return self.adapter.column_names(self.options, table_name)
 end
 
 -- schema dump table
 function Database:schema()
-    local adapter = require('zebra.db.sql.' .. self.options.adapter .. '.adapter')
-    return adapter.schema(self.options)
+    return self.adapter.schema(self.options)
 end
 
 -- get last id
 function Database:get_last_id()
-    local adapter = require('zebra.db.sql.' .. self.options.adapter .. '.adapter')
-    return adapter.get_last_id(self.options)
+    return self.adapter.get_last_id(self.options)
 end
 
 -- execute db query
 function Database:execute(sql)
-    local adapter = require('zebra.db.sql.' .. self.options.adapter .. '.adapter')
-    return adapter.execute(self.options, sql)
+    return self.adapter.execute(self.options, sql)
 end
 
 

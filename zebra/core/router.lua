@@ -1,5 +1,5 @@
 -- ensure to reload init code when code cache is false
-if Rails == nil or Zebra.settings.code_cache == false then
+if Zebra == nil or Zebra.settings.code_cache == false then
     require 'zebra.core.init'
 end
 
@@ -42,7 +42,7 @@ end
 
 -- main handler function, called from nginx
 function Router.handler(ngx)
-    local models = require 'zebra.core.models'
+    local models = require 'zebra.core.init_models'
     models.init()
 
     -- add headers

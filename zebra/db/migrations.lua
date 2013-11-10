@@ -1,6 +1,5 @@
 -- init with detached adapters
-require 'zebra.core.detached'
-require 'zebra.core.init'
+require 'zebra.core.init_detached'
 
 -- settings
 local accepted_adapters = { "mysql" }

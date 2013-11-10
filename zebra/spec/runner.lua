@@ -1,7 +1,7 @@
 require 'zebra.spec.init'
 
 -- use detached drivers in db
-require 'zebra.core.detached'
+require 'zebra.core.init_detached'
 require 'db.db'
 
 -- add integration runner
