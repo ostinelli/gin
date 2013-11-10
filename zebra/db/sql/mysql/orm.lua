@@ -167,19 +167,15 @@ function MySqlOrm.define(db, table_name)
     ZebraBaseModel.__index = ZebraBaseModel
 
     -- -- get attributes
-    -- local db_attributes = db_attributes(db, table_name)
+    local db_attrs = db_attributes(db, table_name)
 
     function ZebraBaseModel.create(attrs)
         local model = ZebraBaseModel.new(attrs)
 
-        local id = create(db, table_name, attrs, ZebraBaseModel.attributes())
+        local id = create(db, table_name, attrs, db_attrs)
         model.id = id
 
         return model
-    end
-
-    function ZebraBaseModel.attributes()
-        return db_attributes(db, table_name)
     end
 
     function ZebraBaseModel.where(attrs, options)
@@ -225,7 +221,7 @@ function MySqlOrm.define(db, table_name)
 
     function ZebraBaseModel:save()
         if self.id ~= nil then
-            save(db, table_name, self, ZebraBaseModel.attributes())
+            save(db, table_name, self, db_attrs)
         else
             local id = ZebraBaseModel.create(self)
             self.id = id
