@@ -64,11 +64,11 @@ describe("Database SQL", function()
         end)
     end)
 
-    describe(".execute", function()
+    describe(".define", function()
         before_each(function()
-            arg1, arg2 = nil, nil
-            package.loaded['zebra.db.sql.mysql.adapter'] = {
-                execute = function(...) arg1, arg2 = ... end
+            arg1, arg2, arg3 = nil, nil, nil
+            package.loaded['zebra.db.sql.mysql.orm'] = {
+                define = function(...) arg1, arg2 = ... end
             }
             DB = db.new(options)
         end)
@@ -76,18 +76,16 @@ describe("Database SQL", function()
         after_each(function()
             arg1 = nil
             arg2 = nil
+            arg3 = nil
             DB = nil
         end)
 
         it("calls execute on the adapter", function()
-            local sql = "SELECT 1"
+            DB:define('users')
 
-            DB:execute(sql)
-
-            assert.are.same(options, arg1)
-            assert.are.same(sql, arg2)
+            assert.are.same(DB, arg1)
+            assert.are.same('users', arg2)
         end)
-
     end)
 
     describe(".quote", function()
@@ -132,11 +130,11 @@ describe("Database SQL", function()
         end)
     end)
 
-    describe(".get_last_id", function()
+    describe(".column_names", function()
         before_each(function()
             arg1 = nil
             package.loaded['zebra.db.sql.mysql.adapter'] = {
-                get_last_id = function(...) arg1 = ... end
+                column_names = function(...) arg1 = ... end
             }
             DB = db.new(options)
         end)
@@ -146,8 +144,8 @@ describe("Database SQL", function()
             DB = nil
         end)
 
-        it("calls get_last_id on the adapter", function()
-            DB:get_last_id()
+        it("calls column_names on the adapter", function()
+            DB:column_names()
             assert.are.same(options, arg1)
         end)
     end)
@@ -172,11 +170,31 @@ describe("Database SQL", function()
         end)
     end)
 
-    describe(".define", function()
+    describe(".get_last_id", function()
         before_each(function()
-            arg1, arg2, arg3 = nil, nil, nil
-            package.loaded['zebra.db.sql.mysql.orm'] = {
-                define = function(...) arg1, arg2 = ... end
+            arg1 = nil
+            package.loaded['zebra.db.sql.mysql.adapter'] = {
+                get_last_id = function(...) arg1 = ... end
+            }
+            DB = db.new(options)
+        end)
+
+        after_each(function()
+            arg1 = nil
+            DB = nil
+        end)
+
+        it("calls get_last_id on the adapter", function()
+            DB:get_last_id()
+            assert.are.same(options, arg1)
+        end)
+    end)
+
+    describe(".execute", function()
+        before_each(function()
+            arg1, arg2 = nil, nil
+            package.loaded['zebra.db.sql.mysql.adapter'] = {
+                execute = function(...) arg1, arg2 = ... end
             }
             DB = db.new(options)
         end)
@@ -184,15 +202,16 @@ describe("Database SQL", function()
         after_each(function()
             arg1 = nil
             arg2 = nil
-            arg3 = nil
             DB = nil
         end)
 
         it("calls execute on the adapter", function()
-            DB:define('users')
+            local sql = "SELECT 1"
 
-            assert.are.same(DB, arg1)
-            assert.are.same('users', arg2)
+            DB:execute(sql)
+
+            assert.are.same(options, arg1)
+            assert.are.same(sql, arg2)
         end)
     end)
 end)

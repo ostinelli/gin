@@ -93,10 +93,14 @@ function MySql.tables(options)
     return tables
 end
 
--- return last inserted if
-function MySql.get_last_id(options)
-    local res = MySql.execute(options, "SELECT BINARY LAST_INSERT_ID() as id;")
-    return tonumber(res[1].id)
+-- get list of column names
+function MySql.column_names(options, table_name)
+    local columns_info = MySql.execute(options, "SHOW COLUMNS IN " .. table_name .. ";")
+    local column_names = {}
+    for _, column_info in ipairs(columns_info) do
+        tinsert(column_names, column_info['Field'])
+    end
+    return column_names
 end
 
 -- return schema as a table
@@ -113,6 +117,12 @@ function MySql.schema(options)
     end
 
     return schema
+end
+
+-- return last inserted if
+function MySql.get_last_id(options)
+    local res = MySql.execute(options, "SELECT BINARY LAST_INSERT_ID() as id;")
+    return tonumber(res[1].id)
 end
 
 -- execute a query

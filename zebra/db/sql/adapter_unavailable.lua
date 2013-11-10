@@ -16,13 +16,18 @@ function AdapterSql.tables(options)
     raise_adapter_error(options)
 end
 
--- return last inserted if
-function AdapterSql.get_last_id(options)
+-- return list of column names
+function AdapterSql.column_names(options)
     raise_adapter_error(options)
 end
 
 -- return schema as a table
 function AdapterSql.schema(options)
+    raise_adapter_error(options)
+end
+
+-- return last inserted if
+function AdapterSql.get_last_id(options)
     raise_adapter_error(options)
 end
 

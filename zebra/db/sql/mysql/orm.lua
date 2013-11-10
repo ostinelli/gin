@@ -9,21 +9,27 @@ local type = type
 local tonumber = tonumber
 
 
-local function field_and_values(db, attrs)
+local function field_and_values(db, attrs, db_attributes)
     local fav = {}
-    for k, v in pairs(attrs) do
-        local key_pair = {}
-        tinsert(key_pair, k)
-        if type(v) ~= 'number' then v = db:quote(v) end
-        tinsert(key_pair, "=")
-        tinsert(key_pair, v)
+    for field, value in pairs(attrs) do
+        if db_attributes == nil or (db_attributes ~= nil and included(db_attributes, field)) then
+            local key_pair = {}
+            tinsert(key_pair, field)
+            if type(value) ~= 'number' then value = db:quote(value) end
+            tinsert(key_pair, "=")
+            tinsert(key_pair, value)
 
-        tinsert(fav, tconcat(key_pair))
+            tinsert(fav, tconcat(key_pair))
+        end
     end
     return tconcat(fav, ',')
 end
 
-local function create(db, table_name, attrs)
+local function db_attributes(db, table_name)
+    return db:column_names(table_name)
+end
+
+local function create(db, table_name, attrs, db_attributes)
     -- health check
     if attrs == nil or next(attrs) == nil then
         error("no attributes were specified to create new model instance")
@@ -33,10 +39,12 @@ local function create(db, table_name, attrs)
     -- build fields
     local fields = {}
     local values = {}
-    for k, v in pairs(attrs) do
-        tinsert(fields, k)
-        if type(v) ~= 'number' then v = db:quote(v) end
-        tinsert(values, v)
+    for field, value in pairs(attrs) do
+        if included(db_attributes, field) then
+            tinsert(fields, field)
+            if type(value) ~= 'number' then value = db:quote(value) end
+            tinsert(values, value)
+        end
     end
     -- build sql
     tinsert(sql, "INSERT INTO ")
@@ -114,7 +122,7 @@ local function delete_where(db, table_name, attrs, options)
     return db:execute(tconcat(sql))
 end
 
-local function save(db, table_name, attrs)
+local function save(db, table_name, attrs, db_attributes)
     -- init sql
     local sql = {}
     -- build sql
@@ -125,7 +133,7 @@ local function save(db, table_name, attrs)
     local id = attrs.id
     attrs.id = nil
     -- fields
-    tinsert(sql, field_and_values(db, attrs))
+    tinsert(sql, field_and_values(db, attrs, db_attributes))
     -- where
     tinsert(sql, " WHERE id=")
     tinsert(sql, id)
@@ -158,13 +166,20 @@ function MySqlOrm.define(db, table_name)
     local ZebraBaseModel = {}
     ZebraBaseModel.__index = ZebraBaseModel
 
+    -- -- get attributes
+    -- local db_attributes = db_attributes(db, table_name)
+
     function ZebraBaseModel.create(attrs)
         local model = ZebraBaseModel.new(attrs)
 
-        local id = create(db, table_name, attrs)
+        local id = create(db, table_name, attrs, ZebraBaseModel.attributes())
         model.id = id
 
         return model
+    end
+
+    function ZebraBaseModel.attributes()
+        return db_attributes(db, table_name)
     end
 
     function ZebraBaseModel.where(attrs, options)
@@ -210,7 +225,7 @@ function MySqlOrm.define(db, table_name)
 
     function ZebraBaseModel:save()
         if self.id ~= nil then
-            save(db, table_name, self)
+            save(db, table_name, self, ZebraBaseModel.attributes())
         else
             local id = ZebraBaseModel.create(self)
             self.id = id

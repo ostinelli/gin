@@ -49,10 +49,12 @@ function Database.new(options)
     return instance
 end
 
--- execute db query
-function Database:execute(sql)
-    return self.adapter.execute(self.options, sql)
+
+-- define models
+function Database:define(table_name)
+    return self.orm.define(self, table_name)
 end
+
 
 -- quote
 function Database:quote(str)
@@ -64,9 +66,9 @@ function Database:tables()
     return self.adapter.tables(self.options)
 end
 
--- get last id
-function Database:get_last_id()
-    return self.adapter.get_last_id(self.options)
+-- get tables' list
+function Database:column_names(table_name)
+    return self.adapter.column_names(self.options, table_name)
 end
 
 -- schema dump table
@@ -74,9 +76,15 @@ function Database:schema()
     return self.adapter.schema(self.options)
 end
 
--- define models
-function Database:define(table_name)
-    return self.orm.define(self, table_name)
+-- get last id
+function Database:get_last_id()
+    return self.adapter.get_last_id(self.options)
 end
+
+-- execute db query
+function Database:execute(sql)
+    return self.adapter.execute(self.options, sql)
+end
+
 
 return Database

@@ -7,8 +7,13 @@ describe("MySql ORM", function()
                 query = sql
                 return { { first_name = 'zebra' } }
             end,
-            get_last_id = function() return 10 end,
-            quote = function(self, str) return "'q-" .. str .. "'" end
+            get_last_id = function(...) return 10 end,
+            quote = function(self, str) return "'q-" .. str .. "'" end,
+            column_names = function(self, table_name)
+                if table_name == 'users' then
+                    return { 'id', 'first_name', 'last_name', 'seen_at', 'age' }
+                end
+            end
         }
         orm = require 'zebra.db.sql.mysql.orm'
         Model = orm.define(db, 'users')
@@ -29,22 +34,36 @@ describe("MySql ORM", function()
         end)
     end)
 
+    describe(".attributes", function()
+        it("returns the models attributes", function()
+            assert.are.same({ 'id', 'first_name', 'last_name', 'seen_at', 'age' }, Model.attributes())
+        end)
+    end)
+
+    describe("#attributes", function()
+        it("returns the models attributes", function()
+            local model = Model.new()
+            assert.are.same({ 'id', 'first_name', 'last_name', 'seen_at', 'age' }, model:attributes())
+        end)
+    end)
+
     describe(".create", function()
         describe("when attrs are specified", function()
-            it("creates a new entry", function()
-                Model.create({ first_name = 'roberto', last_name = 'zebra', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
+            it("creates a new entry with only the db attributes", function()
+                Model.create({ first_name = 'roberto', last_name = 'zebra', age = 3, seen_at = '2013-10-12T16:31:21 UTC', not_in_db = 35 })
 
-                assert.are.equal("INSERT INTO users (seen_at,last_name,first_name,age) VALUES ('q-2013-10-12T16:31:21 UTC','q-zebra','q-roberto',3);", query)
+                assert.are.equal("INSERT INTO users (first_name,last_name,seen_at,age) VALUES ('q-roberto','q-zebra','q-2013-10-12T16:31:21 UTC',3);", query)
             end)
 
             it("returns a new model", function()
-                local model = Model.create({ first_name = 'roberto', last_name = 'zebra', age = 3, seen_at = '2013-10-12T16:31:21 UTC' })
+                local model = Model.create({ first_name = 'roberto', last_name = 'zebra', age = 3, seen_at = '2013-10-12T16:31:21 UTC', not_in_db = 35 })
 
                 assert.are.equal(10, model.id)
                 assert.are.equal('roberto', model.first_name)
                 assert.are.equal('zebra', model.last_name)
                 assert.are.equal(3, model.age)
                 assert.are.equal('2013-10-12T16:31:21 UTC', model.seen_at)
+                assert.are.equal(35, model.not_in_db)
             end)
         end)
 
@@ -188,11 +207,10 @@ describe("MySql ORM", function()
     describe(".all", function()
         it("returns the .where models", function()
             local options = { offset = 10 }
-            db = {
-                execute = function(...)
-                    return { { first_name = 'roberto' }, { first_name = 'hedy' } }
-                end
-            }
+            db.execute = function(...)
+                return { { first_name = 'roberto' }, { first_name = 'hedy' } }
+            end
+
             Model = orm.define(db, 'users')
 
             spy.on(Model, 'where')
@@ -224,11 +242,9 @@ describe("MySql ORM", function()
     describe(".find_by", function()
         describe("when called without options", function()
             it("returns the .where first result model", function()
-                db = {
-                    execute = function(...)
-                        return { { first_name = 'roberto' }, { first_name = 'hedy' } }
-                    end
-                }
+                db.execute = function(...)
+                    return { { first_name = 'roberto' }, { first_name = 'hedy' } }
+                end
                 Model = orm.define(db, 'users')
 
                 spy.on(Model, 'where')
@@ -246,11 +262,9 @@ describe("MySql ORM", function()
         describe("when called with options", function()
             it("returns the .where first result model keeping only the where option", function()
                 local options = { limit = 10, offset = 5, order = "first_name DESC" }
-                db = {
-                    execute = function(...)
-                        return { { first_name = 'roberto' }, { first_name = 'hedy' } }
-                    end
-                }
+                db.execute = function(...)
+                    return { { first_name = 'roberto' }, { first_name = 'hedy' } }
+                end
                 Model = orm.define(db, 'users')
 
                 spy.on(Model, 'where')
@@ -277,8 +291,8 @@ describe("MySql ORM", function()
 
     describe("#save", function()
         describe("when an id is specified", function()
-            it("saves the model", function()
-                local model = Model.new({ id = 1, first_name = 'roberto', last_name = 'zebra' })
+            it("saves the model with only the db attributes", function()
+                local model = Model.new({ id = 1, first_name = 'roberto', last_name = 'zebra', not_in_db = 35 })
                 model:save()
 
                 assert.are.equal("UPDATE users SET last_name='q-zebra',first_name='q-roberto' WHERE id=1;", query)
