@@ -35,6 +35,7 @@ build = {
         ["zebra.core.error"] = "zebra/core/error.lua",
         ["zebra.core.helpers"] = "zebra/core/helpers.lua",
         ["zebra.core.init"] = "zebra/core/init.lua",
+        ["zebra.core.models"] = "zebra/core/models.lua",
         ["zebra.core.detached"] = "zebra/core/detached.lua",
         ["zebra.core.request"] = "zebra/core/request.lua",
         ["zebra.core.response"] = "zebra/core/response.lua",

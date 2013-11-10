@@ -8,3 +8,6 @@ Zebra.env = 'test'
 require 'zebra.core.zebra'
 require 'zebra.core.detached'
 require 'zebra.core.init'
+
+local models = require 'zebra.core.models'
+models.init()
