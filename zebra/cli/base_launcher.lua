@@ -20,16 +20,20 @@ local function remove_nginx_conf(nginx_conf_file_path)
     os.remove(nginx_conf_file_path)
 end
 
-local function nginx_command(nginx_conf_file_path, nginx_signal)
-    return os.execute("nginx " .. nginx_signal .. " -p `pwd`/ -c " .. nginx_conf_file_path .. " 2>/dev/null")
+local function nginx_command(env, nginx_conf_file_path, nginx_signal)
+    local env_cmd = ""
+    if env ~= nil then env_cmd = "-g \"env ZEBRA_ENV=" .. env .. ";\"" end
+    local cmd = "nginx " .. nginx_signal .. " " .. env_cmd .. " -p `pwd`/ -c " .. nginx_conf_file_path .. " 2>/dev/null"
+
+    return os.execute(cmd)
 end
 
-local function start_nginx(nginx_conf_file_path)
-    return nginx_command(nginx_conf_file_path, '')
+local function start_nginx(env, nginx_conf_file_path)
+    return nginx_command(env, nginx_conf_file_path, '')
 end
 
-local function stop_nginx(nginx_conf_file_path)
-    return nginx_command(nginx_conf_file_path, '-s stop')
+local function stop_nginx(env, nginx_conf_file_path)
+    return nginx_command(env, nginx_conf_file_path, '-s stop')
 end
 
 
@@ -48,15 +52,15 @@ function BaseLauncher.new(nginx_conf_content, nginx_conf_file_path)
     return instance
 end
 
-function BaseLauncher:start()
+function BaseLauncher:start(env)
     create_dirs(self.necessary_dirs)
     create_nginx_conf(self.nginx_conf_file_path, self.nginx_conf_content)
 
-    return start_nginx(self.nginx_conf_file_path)
+    return start_nginx(env, self.nginx_conf_file_path)
 end
 
-function BaseLauncher:stop()
-    result = stop_nginx(self.nginx_conf_file_path)
+function BaseLauncher:stop(env)
+    result = stop_nginx(env, self.nginx_conf_file_path)
     remove_nginx_conf(self.nginx_conf_file_path)
 
     return result

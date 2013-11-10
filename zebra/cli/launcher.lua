@@ -54,11 +54,11 @@ end
 
 local ZebraLauncher = {}
 
-function ZebraLauncher.start()
+function ZebraLauncher.start(env)
     -- init base_launcher
     local base_launcher = base_launcher()
 
-    result = base_launcher:start()
+    result = base_launcher:start(env)
 
     if result == 0 then
         if Zebra.env ~= 'test' then
@@ -69,11 +69,11 @@ function ZebraLauncher.start()
     end
 end
 
-function ZebraLauncher.stop()
+function ZebraLauncher.stop(env)
     -- init base_launcher
     local base_launcher = base_launcher()
 
-    result = base_launcher:stop()
+    result = base_launcher:stop(env)
 
     if Zebra.env ~= 'test' then
         if result == 0 then

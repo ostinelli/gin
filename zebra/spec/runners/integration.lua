@@ -122,13 +122,13 @@ function IntegrationRunner.hit(request)
     request = set_accept_header(request, api_version)
 
     -- start nginx
-    launcher.start()
+    launcher.start(Zebra.env)
 
     -- hit server
     local ok, response_status, response_headers, response_body = hit_server(request)
 
     -- stop nginx
-    launcher.stop()
+    launcher.stop(Zebra.env)
 
     if ok == nil then error("An error occurred while connecting to the test server.") end
 
