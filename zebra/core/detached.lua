@@ -10,5 +10,5 @@ local function require_adapter_and_fallback_to_detached(module_name, driver_modu
     end
 end
 
-local adapter_mysql = require_adapter_and_fallback_to_detached('zebra.db.sql.mysql.adapter_detached', 'luasql.mysql')
+local adapter_mysql = require_adapter_and_fallback_to_detached('zebra.db.sql.mysql.adapter_detached', 'DBI')
 package.loaded['zebra.db.sql.mysql.adapter'] = adapter_mysql

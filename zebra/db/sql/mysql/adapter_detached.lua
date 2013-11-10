@@ -1,4 +1,5 @@
 local ansicolors = require 'ansicolors'
+local dbi = require 'DBI'
 
 -- perf
 local assert = assert
@@ -10,24 +11,26 @@ local tinsert = table.insert
 -- settings
 local mysql_default_database = 'mysql'
 
-local luasql = require 'luasql.mysql'
-
 
 local MySql = {
-    env = nil,
     db = nil
 }
 
 -- the creation of the database should only be allowed in detached adapters.
 local function create_db(options)
-    local db = MySql.env:connect(mysql_default_database, options.user, options.password)
-    db:execute("CREATE DATABASE ".. options.database .. ";")
+    local db, err = assert(dbi.Connect("MySQL", mysql_default_database, options.user, options.password, options.host, options.port))
+    dbi.Do(db, "CREATE DATABASE ".. options.database .. ";")
     print(ansicolors("Database '" .. options.database .. "' does not exist, %{green}created%{reset}."))
     db:close()
 end
 
+local function mysql_connect(options)
+    return assert(dbi.Connect("MySQL", options.database, options.user, options.password, options.host, options.port))
+end
+
+
 local function mysql_ensure_db_and_connection(options)
-    ok, db_or_err = pcall(function() return assert(MySql.env:connect(options.database, options.user, options.password)) end)
+    local ok, db_or_err = pcall(function() return mysql_connect(options) end)
 
     if ok == true then
         -- connection successful
@@ -38,7 +41,7 @@ local function mysql_ensure_db_and_connection(options)
         -- database does not exist, create
         create_db(options)
         -- connect to newly created database
-        db = assert(MySql.env:connect(options.database, options.user, options.password))
+        db = mysql_connect(options)
         return db
     else
         -- connection error
@@ -47,11 +50,9 @@ local function mysql_ensure_db_and_connection(options)
 end
 
 local function mysql_ensure_connection(options)
-    if MySql.env == nil then
-        MySql.env = assert(luasql.mysql())
-    end
     if MySql.db == nil then
         MySql.db = mysql_ensure_db_and_connection(options)
+        MySql.db:autocommit(true)
     end
 end
 
@@ -74,12 +75,13 @@ end
 -- quote
 function MySql.quote(options, str)
     mysql_ensure_connection(options)
-    return "'" .. MySql.db:escape(str) .. "'"
+    return "'" .. MySql.db:quote(str) .. "'"
 end
 
 -- return list of tables
 function MySql.tables(options)
     local res = MySql.execute(options, "SHOW TABLES IN " .. options.database .. ";")
+
     local tables = {}
 
     for _, v in pairs(res) do
@@ -93,7 +95,7 @@ end
 
 -- return last inserted if
 function MySql.get_last_id(options)
-    local res = MySql.execute(options, "SELECT LAST_INSERT_ID() as id;")
+    local res = MySql.execute(options, "SELECT BINARY LAST_INSERT_ID() as id;")
     return tonumber(res[1].id)
 end
 
@@ -120,15 +122,20 @@ function MySql.execute(options, sql)
 
     -- build res
     local res = {}
-    local cursor_or_number = assert(MySql.db:execute(sql))
 
-    if type(cursor_or_number) ~= 'number' then
-        local row = cursor_or_number:fetch({}, "a")
-        while row do
-            local irow = deepcopy(row)
-            tinsert(res, irow)
-            row = cursor_or_number:fetch(row, "a")
-        end
+    local sth = assert(MySql.db:prepare(sql))
+
+    local ok, err = sth:execute()
+    if ok == false then error(err) end
+
+    -- loop over the returned data (if any)
+    local ok, row = pcall(function() return sth:fetch(true) end)
+    if ok == false then return end
+
+    while row do
+        local irow = deepcopy(row)
+        tinsert(res, irow)
+        row = sth:fetch(true)
     end
 
     return res
