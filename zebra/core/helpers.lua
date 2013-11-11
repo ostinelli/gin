@@ -105,6 +105,10 @@ function Helpers.pp_to_file(o, file_path)
     prettyprint.dump(o, file_path)
 end
 
+function Helpers.pp(o)
+    prettyprint.dump(o)
+end
+
 return Helpers
 
 

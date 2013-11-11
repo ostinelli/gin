@@ -1,7 +1,10 @@
 require 'spec.spec_helper'
 
-
 describe("Zebra", function()
+    before_each(function()
+        package.loaded['zebra.core.zebra'] = nil
+    end)
+
     after_each(function()
         package.loaded['zebra.core.zebra'] = nil
     end)

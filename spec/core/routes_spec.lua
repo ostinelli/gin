@@ -3,7 +3,7 @@ require 'spec.spec_helper'
 describe("Routes", function()
 
     before_each(function()
-        require('zebra.core.routes')
+        Routes = require('zebra.core.routes')
     end)
 
     after_each(function()

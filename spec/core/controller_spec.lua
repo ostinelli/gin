@@ -1,10 +1,10 @@
 require 'spec.spec_helper'
 
-local Controller = require 'zebra.core.controller'
-local Request = require 'zebra.core.request'
-
 describe("Controller", function()
     before_each(function()
+        Controller = require 'zebra.core.controller'
+        Request = require 'zebra.core.request'
+
         ngx = {
             req = {
                 read_body = function() return end,
@@ -22,6 +22,8 @@ describe("Controller", function()
     end)
 
     after_each(function()
+        package.loaded['zebra.core.controller'] = nil
+        package.loaded['zebra.core.request'] = nil
         ngx = nil
         request = nil
         params = nil

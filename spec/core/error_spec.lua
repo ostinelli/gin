@@ -1,12 +1,21 @@
 require 'spec.spec_helper'
 
-local Error = require 'zebra.core.error'
+
 
 describe("Error", function()
+    before_each(function()
+        Error = require 'zebra.core.error'
+    end)
+
+    after_each(function()
+        package.loaded['zebra.core.error'] = nil
+        Error = nil
+    end)
+
     describe(".new", function()
         describe("when no matching error can be found", function()
             it("raises an error", function()
-                ok, err = pcall(function()
+                local ok, err = pcall(function()
                     Error.new(9999)
                 end)
 

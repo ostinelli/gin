@@ -2,11 +2,15 @@ require 'spec.spec_helper'
 
 describe("Router", function()
     before_each(function()
-        package.loaded['config.routes'] = {}    -- stub the real routes loading
-        router = require 'zebra.core.router'
-        require 'zebra.core.routes'
+        -- stub application packages
+        package.loaded['config.routes'] = {}
+        Application = require 'config.application'
+
+        Router = require 'zebra.core.router'
+        Routes = require 'zebra.core.routes'
         Controller = require 'zebra.core.controller'
         Request = require 'zebra.core.request'
+
         ngx = {
             HTTP_NOT_FOUND = 404,
             exit = function(code) return end,
@@ -26,14 +30,19 @@ describe("Router", function()
     end)
 
     after_each(function()
+        package.loaded['config.routes'] = nil
+        Application = nil
+
         package.loaded['zebra.core.router'] = nil
         package.loaded['zebra.core.routes'] = nil
-        Routes = nil
         package.loaded['zebra.core.controller'] = nil
         package.loaded['zebra.core.request'] = nil
-        Request = nil
-        router = nil
+
+        Router = nil
+        Routes = nil
         Controller = nil
+        Request = nil
+
         ngx = nil
     end)
 
@@ -46,9 +55,9 @@ describe("Router", function()
 
             it("responds with an error response", function()
                 local arg_ngx, arg_response
-                router.respond = function(...) arg_ngx, arg_response = ... end
+                Router.respond = function(...) arg_ngx, arg_response = ... end
 
-                router.handler(ngx)
+                Router.handler(ngx)
 
                 assert.are.same(arg_ngx, ngx)
                 assert.are.same(104, arg_response.body.code)
@@ -58,23 +67,23 @@ describe("Router", function()
 
         it("calls the router match", function()
             local arg_request
-            router.match = function(...) arg_request = ... end
+            Router.match = function(...) arg_request = ... end
 
-            router.handler(ngx)
+            Router.handler(ngx)
 
             assert.are.same(arg_request, Request.new(ngx))
         end)
 
         describe("when the router match returns an error", function()
             before_each(function()
-                router.match = function(req) error({ code = 100, custom_attrs = { custom_attr = "custom_attr_value" } }) end
+                Router.match = function(req) error({ code = 100, custom_attrs = { custom_attr = "custom_attr_value" } }) end
             end)
 
             it("responds with an error response", function()
                 local arg_ngx, arg_response
-                router.respond = function(...) arg_ngx, arg_response = ... end
+                Router.respond = function(...) arg_ngx, arg_response = ... end
 
-                router.handler(ngx)
+                Router.handler(ngx)
 
                 assert.are.same(arg_ngx, ngx)
                 assert.are.same(100, arg_response.body.code)
@@ -84,13 +93,13 @@ describe("Router", function()
 
         describe("when a router match does not find a matching API", function()
             before_each(function()
-                router.match = function(req) return end
+                Router.match = function(req) return end
             end)
 
             it("raises a 404 error if no match is found", function()
                 stub(ngx, 'exit')
 
-                router.handler(ngx)
+                Router.handler(ngx)
 
                 assert.stub(ngx.exit).was.called_with(ngx.HTTP_NOT_FOUND)
 
@@ -101,7 +110,7 @@ describe("Router", function()
         describe("when a router match is found", function()
             before_each(function()
                 request = Request.new(ngx)
-                router.match = function(req) return "controller_name", "action", "params", request end
+                Router.match = function(req) return "controller_name", "action", "params", request end
             end)
 
             after_each(function()
@@ -109,12 +118,12 @@ describe("Router", function()
             end)
 
             it("calls controller", function()
-                stub(router, 'respond') -- stub to avoid calling the function
+                stub(Router, 'respond') -- stub to avoid calling the function
 
                 local arg_request, arg_controller_name, arg_action, arg_params
-                router.call_controller = function(...) arg_request, arg_controller_name, arg_action, arg_params = ... end
+                Router.call_controller = function(...) arg_request, arg_controller_name, arg_action, arg_params = ... end
 
-                router.handler(ngx)
+                Router.handler(ngx)
 
                 assert.are.same(ngx, arg_request.ngx)
                 assert.are.same("/users", arg_request.uri)
@@ -124,25 +133,24 @@ describe("Router", function()
                 assert.are.equal("action", arg_action)
                 assert.are.equal("params", arg_params)
 
-                router.respond:revert()
+                Router.respond:revert()
             end)
 
             it("responds with the response", function()
-                router.call_controller = function() return "response" end
+                Router.call_controller = function() return "response" end
 
-                stub(router, 'respond')
+                stub(Router, 'respond')
 
-                router.handler(ngx)
+                Router.handler(ngx)
 
-                assert.stub(router.respond).was.called_with(ngx, "response")
+                assert.stub(Router.respond).was.called_with(ngx, "response")
             end)
         end)
     end)
 
     describe(".call_controller", function()
         before_each(function()
-            original_errors = Errors
-            Errors = {
+            Error.list = {
                 [1000] = {
                     status = 500,
                     headers = { ["X-Info"] = "additional-info"},
@@ -162,14 +170,13 @@ describe("Router", function()
             instance = nil
             TestController = nil
             package.loaded['controller_name'] = nil
-            Errors = original_errors
         end)
 
         it("calls the action of an instance of the matched controller name", function()
             spy.on(TestController, 'action')
 
             local request = Request.new(ngx)
-            router.call_controller(request, "controller_name", "action", "params")
+            Router.call_controller(request, "controller_name", "action", "params")
 
             assert.spy(TestController.action).was.called()
 
@@ -191,13 +198,13 @@ describe("Router", function()
                 end)
 
                 it("returns a response with the status", function()
-                    local response = router.call_controller(ngx, "controller_name", "action", "params")
+                    local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
                     assert.are.equal(403, response.status)
                 end)
 
                 it("returns a response with the body to an empty json", function()
-                    local response = router.call_controller(ngx, "controller_name", "action", "params")
+                    local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
                     assert.are.same({}, response.body)
                 end)
@@ -213,13 +220,13 @@ describe("Router", function()
                 end)
 
                 it("sets the response response status to the controller's response status", function()
-                    local response = router.call_controller(ngx, "controller_name", "action", "params")
+                    local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
                     assert.are.equal(403, response.status)
                 end)
 
                 it("calls nginx with the serialized json of the controller response body", function()
-                    local response = router.call_controller(ngx, "controller_name", "action", "params")
+                    local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
                     assert.are.same({ name = 'zebra' }, response.body)
                 end)
@@ -236,19 +243,19 @@ describe("Router", function()
                 end)
 
                 it("sets the response status to the controller's response status", function()
-                    local response = router.call_controller(ngx, "controller_name", "action", "params")
+                    local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
                     assert.are.equal(403, response.status)
                 end)
 
                 it("calls nginx with the serialized json of the controller response body", function()
-                    local response = router.call_controller(ngx, "controller_name", "action", "params")
+                    local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
                     assert.are.same({ name = 'zebra' }, response.body)
                 end)
 
                 it("sets the nginx response headers", function()
-                    local response = router.call_controller(ngx, "controller_name", "action", "params")
+                    local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
                     assert.are.equal("max-age=3600", response.headers["Cache-Control"])
                     assert.are.equal("120", response.headers["Retry-After"])
@@ -267,19 +274,19 @@ describe("Router", function()
             end)
 
             it("sets the response status to the controller's error status", function()
-                local response = router.call_controller(ngx, "controller_name", "action", "params")
+                local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
                 assert.are.equal(500, response.status)
             end)
 
             it("sets the response headers", function()
-                local response = router.call_controller(ngx, "controller_name", "action", "params")
+                local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
                 assert.are.equal("additional-info", response.headers["X-Info"])
             end)
 
             it("calls nginx with the serialized json of the controller response", function()
-                local response = router.call_controller(ngx, "controller_name", "action", "params")
+                local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
                 assert.are.same({
                     code = 1000,
@@ -300,7 +307,7 @@ describe("Router", function()
 
             it("doesn't eat up the error", function()
                 ok, err = pcall(function()
-                    router.call_controller(ngx, "controller_name", "action", "params")
+                    Router.call_controller(ngx, "controller_name", "action", "params")
                 end)
 
                 assert.are.equal(false, ok)
@@ -314,6 +321,8 @@ describe("Router", function()
     describe(".match", function()
         before_each(function()
             -- set routes
+            local Routes = require 'zebra.core.routes'
+
             local v1 = Routes.version(1)
 
             v1:POST("/users", { controller = "users", action = "create" })
@@ -322,8 +331,16 @@ describe("Router", function()
             v1:PUT("/users/:id", { controller = "users", action = "edit" })
 
             local v2 = Routes.version(2)
-
             v2:DELETE("/users/:user_id/messages/:id", { controller = "messages", action = "destroy" })
+
+            package.loaded['config.routes'] = Routes
+
+            package.loaded['zebra.core.router'] = nil
+            Router = require 'zebra.core.router'
+        end)
+
+        after_each(function()
+            package.loaded['config.routes'] = {}
         end)
 
         it("returns the controller, action and params for a single param", function()
@@ -333,7 +350,7 @@ describe("Router", function()
 
             local request = Request.new(ngx)
 
-            controller, action, params, request = router.match(request)
+            controller, action, params, request = Router.match(request)
 
             assert.are.same("1/users_controller", controller)
             assert.are.same("show", action)
@@ -348,7 +365,7 @@ describe("Router", function()
 
             local request = Request.new(ngx)
 
-            controller, action, params, version = router.match(request)
+            controller, action, params, version = Router.match(request)
 
             assert.are.same("2/messages_controller", controller)
             assert.are.same("destroy", action)
@@ -361,7 +378,7 @@ describe("Router", function()
 
             local request = Request.new(ngx)
 
-            ok, err = pcall(function() return router.match(request) end)
+            ok, err = pcall(function() return Router.match(request) end)
 
             assert.are.equal(false, ok)
             assert.are.equal(100, err.code)
@@ -372,7 +389,7 @@ describe("Router", function()
 
             local request = Request.new(ngx)
 
-            ok, err = pcall(function() return router.match(request) end)
+            ok, err = pcall(function() return Router.match(request) end)
 
             assert.are.equal(false, ok)
             assert.are.equal(101, err.code)
@@ -383,7 +400,7 @@ describe("Router", function()
 
             local request = Request.new(ngx)
 
-            ok, err = pcall(function() return router.match(request) end)
+            ok, err = pcall(function() return Router.match(request) end)
 
             assert.are.equal(false, ok)
             assert.are.equal(102, err.code)
@@ -392,6 +409,7 @@ describe("Router", function()
 
     describe(".respond", function()
         before_each(function()
+            local Response = require 'zebra.core.response'
             response = Response.new({
                 status = 200,
                 headers = { ['one'] = 'first', ['two'] = 'second' },
@@ -400,20 +418,20 @@ describe("Router", function()
         end)
 
         it("sets the ngx status", function()
-            router.respond(ngx, response)
+            Router.respond(ngx, response)
 
             assert.are.equal(200, ngx.status)
         end)
 
         it("sets the ngx headers", function()
-            router.respond(ngx, response)
+            Router.respond(ngx, response)
 
             assert.are.equal('first', ngx.header['one'])
             assert.are.equal('second', ngx.header['two'])
         end)
 
         it("sets the content length header", function()
-            router.respond(ngx, response)
+            Router.respond(ngx, response)
 
             assert.are.equal(16, ngx.header['Content-Length'])
         end)
@@ -421,7 +439,7 @@ describe("Router", function()
         it("calls ngx print with the encoded body", function()
             stub(ngx, 'print')
 
-            router.respond(ngx, response)
+            Router.respond(ngx, response)
 
             assert.stub(ngx.print).was_called_with('{"name":"zebra"}')
         end)
