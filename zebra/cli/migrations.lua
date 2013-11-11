@@ -1,16 +1,17 @@
 -- dependencies
 local ansicolors = require 'ansicolors'
 
-require 'zebra.core.zebra'
-require 'zebra.core.helpers'
-local migrations = require 'zebra.db.migrations'
+-- zebra
+local Zebra = require 'zebra.core.zebra'
+local Helpers = require 'zebra.core.helpers'
+local Migrations = require 'zebra.db.migrations'
 
 
 local migrations_new = [====[
 local SqlMigration = {}
 
 -- specify the database used in this migration (needed by the Zebra migration engine)
--- SqlMigration.db = MYSQLDB
+-- SqlMigration.db = require 'db.mysql'
 
 function SqlMigration.up()
     -- Run your migration, for instance:
@@ -86,7 +87,7 @@ end
 function SqlMigrations.up()
     print(ansicolors("Migrating up in %{cyan}" .. Zebra.env .. "%{reset} environment"))
 
-    local ok, response = migrations.up()
+    local ok, response = Migrations.up()
     display_result("up", response)
 
 end
@@ -94,7 +95,7 @@ end
 function SqlMigrations.down()
     print(ansicolors("Rolling back one migration in %{cyan}" .. Zebra.env .. "%{reset} environment"))
 
-    local ok, response = migrations.down()
+    local ok, response = Migrations.down()
     display_result("down", response)
 end
 

@@ -45,46 +45,45 @@ return Application
 ]]
 
 
-db = [[
+mysql = [[
 local sqldb = require 'zebra.db.sql'
+local Zebra = require 'zebra.core.zebra'
 
--- Here you can setup your databases that will be accessible throughout your application.
--- First, specify the settings (you may add multiple databases with this pattern), for instance:
+-- First, specify the environment settings for this database, for instance:
 -- local DbSettings = {
---
 --     development = {
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "{{APP_NAME}}_development",
+--         database = "test1_development",
 --         user = "root",
 --         password = "",
 --         pool = 5
 --     },
---
+
 --     test = {
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "{{APP_NAME}}_test",
+--         database = "test1_test",
 --         user = "root",
 --         password = "",
 --         pool = 5
 --     },
---
+
 --     production = {
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "{{APP_NAME}}_production",
+--         database = "test1_production",
 --         user = "root",
 --         password = "",
 --         pool = 5
 --     }
 -- }
---
--- Then initialize your database(s), for instance:
--- MYSQLDB = sqldb.new(DbSettings[Zebra.env])
+
+-- Then initialize and return your database:
+-- return sqldb.new(DbSettings[Zebra.env])
 ]]
 
 
@@ -201,7 +200,7 @@ ZebraApplication.files = {
     ['config/settings.lua'] = settings,
     ['db/migrations/.gitkeep'] = "",
     ['db/schemas/.gitkeep'] = "",
-    ['db/db.lua'] = "",
+    ['db/mysql.lua'] = "",
     ['lib/.gitkeep'] = "",
     ['spec/controllers/1/pages_controller_spec.lua'] = pages_controller_spec,
     ['spec/models/.gitkeep'] = "",
@@ -212,7 +211,7 @@ function ZebraApplication.new(name)
     print(ansicolors("Creating app %{cyan}" .. name .. "%{reset}..."))
 
     ZebraApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
-    ZebraApplication.files['db/db.lua'] = string.gsub(db, "{{APP_NAME}}", name)
+    ZebraApplication.files['db/mysql.lua'] = string.gsub(mysql, "{{APP_NAME}}", name)
     ZebraApplication.create_files(name)
 end
 

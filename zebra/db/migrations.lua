@@ -1,5 +1,7 @@
 -- init with detached adapters
 require 'zebra.core.init_detached'
+local Zebra = require 'zebra.core.zebra'
+local Helpers = require 'zebra.core.helpers'
 
 -- settings
 local accepted_adapters = { "mysql" }
@@ -7,6 +9,7 @@ local accepted_adapters = { "mysql" }
 
 local Migrations = {}
 Migrations.migrations_table_name = 'schema_migrations'
+
 
 local create_schema_migrations_sql = [[
 CREATE TABLE ]] .. Migrations.migrations_table_name .. [[ (
@@ -49,7 +52,11 @@ local function dump_schema_for(db)
     local schema_dump_file_path = Zebra.app_dirs.schemas .. '/' .. db.options.adapter .. '-' .. db.options.database .. '.lua'
     local schema = db:schema()
     -- write to file
-    pp_to_file(schema, schema_dump_file_path)
+    Helpers.pp_to_file(schema, schema_dump_file_path)
+end
+
+local function get_lua_module_name(file_path)
+    return string.match(file_path, "(.*)%.lua")
 end
 
 -- get migration modules
@@ -57,7 +64,7 @@ function Migrations.migration_modules()
     local modules = {}
 
     local path = Zebra.app_dirs.migrations
-    if folder_exists(path) then
+    if Helpers.folder_exists(path) then
         for file_name in lfs.dir(path) do
             if file_name ~= "." and file_name ~= ".." then
                 local file_path = path .. '/' .. file_name
@@ -78,7 +85,7 @@ function Migrations.migration_modules()
 end
 
 function Migrations.migration_modules_reverse()
-    return table.reverse(Migrations.migration_modules())
+    return Helpers.reverse_table(Migrations.migration_modules())
 end
 
 local function run_migration(direction, module_name)
@@ -87,7 +94,7 @@ local function run_migration(direction, module_name)
     local version = version_from(module_name)
 
     -- check adapter is supported
-    if included(accepted_adapters, db.options.adapter) == false then
+    if Helpers.included_in_table(accepted_adapters, db.options.adapter) == false then
         err_message = "Cannot run migrations for the adapter '" .. db.options.adapter .. "'. Supported adapters are: '" .. table.concat(accepted_adapters, "', '") .. "'."
         return false, version, err_message
     end

@@ -1,10 +1,12 @@
+-- dependencies
 local lfs = require 'lfs'
-
+local prettyprint = require 'pl.pretty'
 
 -- perf
 local iopen = io.open
 local ipairs = ipairs
 local sfind = string.find
+local sgsub = string.gsub
 local smatch = string.match
 local ssub = string.sub
 local tinsert = table.insert
@@ -31,6 +33,11 @@ function Helpers.read_file(file_path)
     local content = f:read("*all")
     f:close()
     return content
+end
+
+-- check if folder exists
+function Helpers.folder_exists(folder_path)
+    return lfs.attributes(sgsub(folder_path, "\\$",""), "mode") == "directory"
 end
 
 -- split function
@@ -78,6 +85,25 @@ function Helpers.mkdirs(file_path)
     end
 end
 
+function Helpers.included_in_table(t, value)
+    for _, v in ipairs(t) do
+        if v == value then return true end
+    end
+    return false
+end
+
+function Helpers.reverse_table(t)
+    local size = #t + 1
+    local reversed = {}
+    for i, v in ipairs(t) do
+        reversed[size - i] = v
+    end
+    return reversed
+end
+
+function Helpers.pp_to_file(o, file_path)
+    prettyprint.dump(o, file_path)
+end
 
 return Helpers
 
