@@ -1,5 +1,8 @@
 package.path = './app/controllers/?.lua;' .. package.path
 
+-- dependencies
+local json = require 'cjson'
+
 -- zebra
 local Zebra = require 'zebra.core.zebra'
 local Controller = require 'zebra.core.controller'
@@ -14,7 +17,7 @@ local Application = require 'config.application'
 -- perf
 local error = error
 local ipairs = ipairs
-local jencode = require('cjson').encode
+local jencode = json.encode
 local pairs = pairs
 local pcall = pcall
 local require = require

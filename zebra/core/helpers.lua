@@ -1,8 +1,16 @@
-local Helpers = {}
+local lfs = require 'lfs'
+
 
 -- perf
-local smatch = string.match
 local iopen = io.open
+local ipairs = ipairs
+local sfind = string.find
+local smatch = string.match
+local ssub = string.sub
+local tinsert = table.insert
+
+
+local Helpers = {}
 
 -- try to require
 function Helpers.try_require(module_name, default)
@@ -24,6 +32,52 @@ function Helpers.read_file(file_path)
     f:close()
     return content
 end
+
+-- split function
+function Helpers.split(str, pat)
+    local t = {}
+    local fpat = "(.-)" .. pat
+    local last_end = 1
+    local s, e, cap = sfind(str, fpat, 1)
+
+    while s do
+        if s ~= 1 or cap ~= "" then
+            tinsert(t,cap)
+        end
+        last_end = e+1
+        s, e, cap = sfind(str, fpat, last_end)
+    end
+
+    if last_end <= #str then
+        cap = ssub(str, last_end)
+        tinsert(t, cap)
+    end
+
+    return t
+end
+
+-- split a path in individual parts
+function Helpers.split_path(str)
+   return Helpers.split(str, '[\\/]+')
+end
+
+-- recursively make directories
+function Helpers.mkdirs(file_path)
+    -- get dir path and parts
+    dir_path = smatch(file_path, "(.*)/.*")
+    parts = Helpers.split_path(dir_path)
+    -- loop
+    local current_dir = nil
+    for _, part in ipairs(parts) do
+        if current_dir == nil then
+            current_dir = part
+        else
+            current_dir = current_dir .. '/' .. part
+        end
+        lfs.mkdir(current_dir)
+    end
+end
+
 
 return Helpers
 

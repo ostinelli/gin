@@ -1,6 +1,7 @@
 local ansicolors = require 'ansicolors'
 
 local Zebra = require 'zebra.core.zebra'
+local Helpers = require 'zebra.core.helpers'
 
 local pages_controller = [[
 local PagesController = {}
@@ -17,7 +18,7 @@ local errors = [[
 -------------------------------------------------------------------------------------------------------------------
 -- Define all of your application errors in here. They should have the format:
 --
--- Errors = {
+-- local Errors = {
 --     [1000] = { status = 400, message = "My Application error.", headers = { ["X-Header"] = "header" } },
 -- }
 --
@@ -28,15 +29,19 @@ local errors = [[
 --     'headers' (optional)  are the headers to be returned in the response
 -------------------------------------------------------------------------------------------------------------------
 
-Errors = {}
+local Errors = {}
+
+return Errors
 ]]
 
 
 local application = [[
-Application = {
+local Application = {
     name = "{{APP_NAME}}",
     version = '0.0.1'
 }
+
+return Application
 ]]
 
 
@@ -121,6 +126,17 @@ local v1 = Routes.version(1)
 
 -- define routes
 v1:GET("/", { controller = "pages", action = "root" })
+
+
+local routes = require 'zebra.core.routes'
+
+-- define version
+local v1 = routes.version(1)
+
+-- define routes
+v1:GET("/", { controller = "pages", action = "root" })
+
+return routes
 ]]
 
 
@@ -185,7 +201,7 @@ local ZebraApplication = {}
 ZebraApplication.files = {
     ['app/controllers/1/pages_controller.lua'] = pages_controller,
     ['app/models/.gitkeep'] = "",
-    ['config/initializers/errors.lua'] = errors,
+    ['config/errors.lua'] = errors,
     ['config/application.lua'] = "",
     ['config/nginx.conf'] = nginx_config,
     ['config/routes.lua'] = routes,
@@ -211,7 +227,7 @@ function ZebraApplication.create_files(parent)
     for file_path, file_content in pairs(ZebraApplication.files) do
         -- ensure containing directory exists
         local full_file_path = parent .. "/" .. file_path
-        mkdirs(full_file_path)
+        Helpers.mkdirs(full_file_path)
 
         -- create file
         local fw = io.open(full_file_path, "w")

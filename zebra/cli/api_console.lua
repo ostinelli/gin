@@ -1,6 +1,5 @@
 -- init module dependencies
--- require 'zebra.core.zebra'
-dofile 'config/application.lua'
+local Application = require 'config/application'
 
 local ZebraApiConsole = {}
 
