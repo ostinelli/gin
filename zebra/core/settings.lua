@@ -1,3 +1,5 @@
+local helpers = require 'zebra.core.helpers'
+
 -- perf
 local pairs = pairs
 local pcall = pcall
@@ -32,16 +34,16 @@ ZebraSettings.defaults = {
     }
 }
 
-function ZebraSettings.for_current_environment()
+function ZebraSettings.for_environment(env)
     -- load defaults
-    local settings = ZebraSettings.defaults[Zebra.env]
+    local settings = ZebraSettings.defaults[env]
     if settings == nil then settings = ZebraSettings.defaults.other end
 
     -- override defaults from app settings
-    local app_settings = try_require('config.settings', {})
+    local app_settings = helpers.try_require('config.settings', {})
 
     if app_settings ~= nil then
-        local app_settings_env = app_settings[Zebra.env]
+        local app_settings_env = app_settings[env]
         if app_settings_env ~= nil then
             for k, v in pairs(app_settings_env) do
                 settings[k] = v

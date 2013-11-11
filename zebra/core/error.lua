@@ -1,24 +1,27 @@
--- perf
-local error = error
-local setmetatable = setmetatable
+local helpers = require 'zebra.core.helpers'
 
-
--- ensure global Errors is defined
-Errors = Errors or {}
-
--- add system errors
-Errors[100] = { status = 412, message = "Accept header not set." }
-Errors[101] = { status = 412, message = "Invalid Accept header format." }
-Errors[102] = { status = 412, message = "Unsupported version specified in the Accept header." }
-Errors[103] = { status = 400, message = "Could not parse JSON in body." }
-Errors[104] = { status = 400, message = "Body should be a JSON hash." }
 
 -- define error
 Error = {}
 Error.__index = Error
 
+local function init_errors()
+    -- get app errors
+    local errors = helpers.try_require('config.errors', {})
+    -- add system errors
+    errors[100] = { status = 412, message = "Accept header not set." }
+    errors[101] = { status = 412, message = "Invalid Accept header format." }
+    errors[102] = { status = 412, message = "Unsupported version specified in the Accept header." }
+    errors[103] = { status = 400, message = "Could not parse JSON in body." }
+    errors[104] = { status = 400, message = "Body should be a JSON hash." }
+
+    return errors
+end
+
+Error.list = init_errors()
+
 function Error.new(code, custom_attrs)
-    local err = Errors[code]
+    local err = Error.list[code]
     if err == nil then error("invalid error code") end
 
     local body = {

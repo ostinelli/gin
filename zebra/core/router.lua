@@ -1,15 +1,20 @@
--- ensure to reload init code when code cache is false
-if Zebra == nil or Zebra.settings.code_cache == false then
-    require 'zebra.core.init'
-end
-
 package.path = './app/controllers/?.lua;' .. package.path
+
+-- zebra
+local Zebra = require 'zebra.core.zebra'
 local Controller = require 'zebra.core.controller'
+local Request = require 'zebra.core.request'
+local Response = require 'zebra.core.response'
+local Error = require 'zebra.core.error'
+
+-- app
+local Routes = require 'config.routes'
+local Application = require 'config.application'
 
 -- perf
 local error = error
 local ipairs = ipairs
-local jencode = JSON.encode
+local jencode = require('cjson').encode
 local pairs = pairs
 local pcall = pcall
 local require = require

@@ -13,11 +13,12 @@ local tostring = tostring
 local Version = {}
 Version.__index = Version
 
-function Version.new(number)
+function Version.new(routes, number)
     if type(number) ~= 'number' then error("version is not an integer number (got string).") end
     if smatch(tostring(number), "%.") ~= nil then error("version is not an integer number (got float).") end
 
     local instance = {
+        routes = routes,
         number = number
     }
     setmetatable(instance, Version)
@@ -33,7 +34,7 @@ function Version:add(method, pattern, route_info)
     route_info.controller = route_info.controller .. "_controller"
     route_info.params = params
 
-    tinsert(Routes.dispatchers[self.number], { pattern = pattern, [method] = route_info })
+    tinsert(self.routes.dispatchers[self.number], { pattern = pattern, [method] = route_info })
 end
 
 function Version:build_named_parameters(pattern)
@@ -64,12 +65,12 @@ for http_method, _ in pairs(supported_http_methods) do
 end
 
 
---  global routes
-Routes = {}
+--  routes
+local Routes = {}
 Routes.dispatchers = {}
 
 function Routes.version(number)
-    local version = Version.new(number)
+    local version = Version.new(Routes, number)
 
     if Routes.dispatchers[number] then error("version has already been defined (got " .. number .. ").") end
     Routes.dispatchers[number] = {}

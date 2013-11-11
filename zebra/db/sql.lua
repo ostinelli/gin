@@ -5,10 +5,6 @@ local setmetatable = setmetatable
 local tconcat = table.concat
 local tinsert = table.insert
 
--- reference to all the sql DB in the application
-ZEBRA_APP_SQLDB = {}
-
-
 local Database = {}
 Database.__index = Database
 
@@ -42,9 +38,6 @@ function Database.new(options)
         orm = orm
     }
     setmetatable(instance, Database)
-
-    -- add to reference
-    tinsert(ZEBRA_APP_SQLDB, instance)
 
     return instance
 end

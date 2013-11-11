@@ -1,5 +1,6 @@
 local ansicolors = require 'ansicolors'
 
+local Zebra = require 'zebra.core.zebra'
 
 local pages_controller = [[
 local PagesController = {}

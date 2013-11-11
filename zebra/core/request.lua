@@ -7,7 +7,7 @@ local setmetatable = setmetatable
 local jdecode = json.decode
 
 
-Request = {}
+local Request = {}
 Request.__index = Request
 
 function Request.new(ngx)

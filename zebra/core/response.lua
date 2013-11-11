@@ -2,7 +2,7 @@
 local setmetatable = setmetatable
 
 
-Response = {}
+local Response = {}
 Response.__index = Response
 
 function Response.new(options)
