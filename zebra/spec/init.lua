@@ -1,8 +1,7 @@
 package.path = './?.lua;' .. package.path
 
-local posix = require "posix"
-
 -- -- ensure test environment is specified
+local posix = require "posix"
 posix.setenv("ZEBRA_ENV", 'test')
 
 -- init detached

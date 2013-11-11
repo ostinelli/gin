@@ -1,5 +1,7 @@
 require 'spec.spec_helper'
 
+local Response = require 'zebra.core.response'
+
 describe("Response", function()
     describe(".new", function()
         describe("when no options are passed in", function()

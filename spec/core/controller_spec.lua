@@ -1,6 +1,7 @@
 require 'spec.spec_helper'
 
-local c = require 'zebra.core.controller'
+local Controller = require 'zebra.core.controller'
+local Request = require 'zebra.core.request'
 
 describe("Controller", function()
     before_each(function()
@@ -17,7 +18,7 @@ describe("Controller", function()
         }
         request = Request.new(ngx)
         params = {}
-        controller = c.new(request, params)
+        controller = Controller.new(request, params)
     end)
 
     after_each(function()

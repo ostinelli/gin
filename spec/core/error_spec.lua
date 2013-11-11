@@ -1,5 +1,7 @@
 require 'spec.spec_helper'
 
+local Error = require 'zebra.core.error'
+
 describe("Error", function()
     describe(".new", function()
         describe("when no matching error can be found", function()
@@ -19,18 +21,13 @@ describe("Error", function()
             describe("when no custom attributes are passed in", function()
                 describe("when headers are defined in Errors", function()
                     before_each(function()
-                        original_errors = Errors
-                        Errors = {
+                        Error.list = {
                             [1000] = {
                                 status = 500,
                                 headers = { ["X-Info"] = "additional-info"},
                                 message = "Something bad happened here"
                             }
                         }
-                    end)
-
-                    after_each(function()
-                        Errors = original_errors
                     end)
 
                     it("sets the appropriate values", function()
@@ -49,17 +46,12 @@ describe("Error", function()
 
                 describe("when headers are not defined in Errors", function()
                     before_each(function()
-                        original_errors = Errors
-                        Errors = {
+                        Error.list = {
                             [1000] = {
                                 status = 500,
                                 message = "Something bad happened here"
                             }
                         }
-                    end)
-
-                    after_each(function()
-                        Errors = original_errors
                     end)
 
                     it("sets the appropriate values", function()
@@ -79,17 +71,12 @@ describe("Error", function()
 
             describe("when custom attributes are passed in", function()
                 before_each(function()
-                    original_errors = Errors
-                    Errors = {
+                    Error.list = {
                         [1000] = {
                             status = 500,
                             message = "Something bad happened here"
                         }
                     }
-                end)
-
-                after_each(function()
-                    Errors = original_errors
                 end)
 
                 it("adds them to the error", function()

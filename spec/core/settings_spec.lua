@@ -10,16 +10,11 @@ describe("Settings", function()
         package.loaded['config.settings'] = {}  -- reset to mock
         package.loaded['zebra.core.settings'] = nil
         settings = nil
-        Zebra.env = 'test'
     end)
 
-    describe(".for_current_environment", function()
+    describe(".for_environment", function()
         describe("the defaults", function()
             describe("when in development environment", function()
-                before_each(function()
-                    Zebra.env = 'development'
-                end)
-
                 it("returns the defaults", function()
                     local defaults = {
                         code_cache = false,
@@ -27,16 +22,11 @@ describe("Settings", function()
                         expose_api_console = true
                     }
 
-                    assert.are.same(defaults, settings.for_current_environment())
+                    assert.are.same(defaults, settings.for_environment('development'))
                 end)
             end)
 
             describe("when in test environment", function()
-                before_each(function()
-                    Zebra.env = 'test'
-                end)
-
-
                 it("returns the defaults", function()
                     local defaults = {
                         code_cache = true,
@@ -46,15 +36,11 @@ describe("Settings", function()
 
                      package.loaded['config.settings'] = false
                      package.loaded['config.settings'] = {}
-                    assert.are.same(defaults, settings.for_current_environment())
+                    assert.are.same(defaults, settings.for_environment('test'))
                 end)
             end)
 
             describe("when in production environment", function()
-                before_each(function()
-                    Zebra.env = 'production'
-                end)
-
                 it("returns the defaults", function()
                     local defaults = {
                         code_cache = true,
@@ -62,15 +48,11 @@ describe("Settings", function()
                         expose_api_console = false
                     }
 
-                    assert.are.same(defaults, settings.for_current_environment())
+                    assert.are.same(defaults, settings.for_environment('production'))
                 end)
             end)
 
             describe("when in any other environments", function()
-                before_each(function()
-                    Zebra.env = 'something-else'
-                end)
-
                 it("returns the defaults", function()
                     local defaults = {
                         code_cache = true,
@@ -78,7 +60,7 @@ describe("Settings", function()
                         expose_api_console = false
                     }
 
-                    assert.are.same(defaults, settings.for_current_environment())
+                    assert.are.same(defaults, settings.for_environment('something-else'))
                 end)
             end)
         end)
@@ -95,8 +77,6 @@ describe("Settings", function()
                     code_cache = false
                 }
                 package.loaded['config.settings'] = app_settings
-
-                Zebra.env = 'development'
             end)
 
             after_each(function()
@@ -105,7 +85,7 @@ describe("Settings", function()
             end)
 
             it("returns merged values", function()
-                local s = settings.for_current_environment()
+                local s = settings.for_environment('development')
 
                 assert.are.same(true, s.code_cache)
                 assert.are.same(7202, s.port)
