@@ -1,6 +1,6 @@
 local ansicolors = require 'ansicolors'
 
-require 'zebra.core.zebra'
+local Zebra = require 'zebra.core.zebra'
 
 
 local ZebraConsole = {}
