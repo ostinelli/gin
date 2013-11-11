@@ -19,6 +19,7 @@ dependencies = {
     "lua-cjson",
     "luasocket",
     "luafilesystem",
+    "luaposix",
     "penlight"
 }
 

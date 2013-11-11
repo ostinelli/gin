@@ -3,6 +3,10 @@ local http = require 'socket.http'
 local url = require 'socket.url'
 local json = require 'cjson'
 
+-- zebra
+local Zebra = require 'zebra.core.zebra'
+local Application = require 'config.application'
+
 
 local IntegrationRunner = {}
 

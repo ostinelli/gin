@@ -121,13 +121,6 @@ http {
 
 
 local routes = [[
--- define version
-local v1 = Routes.version(1)
-
--- define routes
-v1:GET("/", { controller = "pages", action = "root" })
-
-
 local routes = require 'zebra.core.routes'
 
 -- define version
