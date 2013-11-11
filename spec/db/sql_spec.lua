@@ -39,12 +39,6 @@ describe("Database SQL", function()
                 assert.are.equal('adapter', DB.adapter.name)
                 assert.are.equal('orm', DB.orm.name)
             end)
-
-            it("adds a reference to all the sql databases used in the application", function()
-                local DB = db.new(options)
-
-                assert.are.same(DB, ZEBRA_APP_SQLDB[1])
-            end)
         end)
 
         describe("when not all the required options are passed", function()
@@ -81,10 +75,9 @@ describe("Database SQL", function()
         end)
 
         it("calls execute on the adapter", function()
-            DB:define('users')
+            DB:define('model')
 
-            assert.are.same(DB, arg1)
-            assert.are.same('users', arg2)
+            assert.are.same('model', arg1)
         end)
     end)
 

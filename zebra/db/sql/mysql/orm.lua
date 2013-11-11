@@ -1,3 +1,5 @@
+local Helpers = require 'zebra.core.helpers'
+
 -- perf
 local error = error
 local ipairs = ipairs
@@ -12,7 +14,7 @@ local tonumber = tonumber
 local function field_and_values(db, attrs, db_attributes)
     local fav = {}
     for field, value in pairs(attrs) do
-        if db_attributes == nil or (db_attributes ~= nil and included(db_attributes, field)) then
+        if db_attributes == nil or (db_attributes ~= nil and Helpers.included_in_table(db_attributes, field)) then
             local key_pair = {}
             tinsert(key_pair, field)
             if type(value) ~= 'number' then value = db:quote(value) end
@@ -40,7 +42,7 @@ local function create(db, table_name, attrs, db_attributes)
     local fields = {}
     local values = {}
     for field, value in pairs(attrs) do
-        if included(db_attributes, field) then
+        if Helpers.included_in_table(db_attributes, field) then
             tinsert(fields, field)
             if type(value) ~= 'number' then value = db:quote(value) end
             tinsert(values, value)
@@ -175,6 +177,10 @@ function MySqlOrm.define(ZebraModel)
         model.id = id
 
         return model
+    end
+
+    function ZebraModel.attributes()
+        return db_attrs
     end
 
     function ZebraModel.where(attrs, options)

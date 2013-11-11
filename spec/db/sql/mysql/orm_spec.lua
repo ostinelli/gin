@@ -2,6 +2,8 @@ require 'spec.spec_helper'
 
 describe("MySql ORM", function()
     before_each(function()
+        query = nil
+
         db = {
             execute = function(self, sql)
                 query = sql
@@ -15,23 +17,18 @@ describe("MySql ORM", function()
                 end
             end
         }
+
         orm = require 'zebra.db.sql.mysql.orm'
-        Model = orm.define(db, 'users')
+
+        Model = { db = db, table_name = 'users' }
+        orm.define(Model)
     end)
 
     after_each(function()
-        ngx = nil
-        orm = nil
-        User = nil
         db = nil
-        query = nil
         Model = nil
-    end)
-
-    describe(".define", function()
-        it("return the model", function()
-            assert.are_not.equals(nil, Model)
-        end)
+        orm = nil
+        query = nil
     end)
 
     describe(".attributes", function()
@@ -83,7 +80,8 @@ describe("MySql ORM", function()
                 return { { first_name = 'roberto' }, { first_name = 'hedy' } }
             end
 
-            Model = orm.define(db, 'users')
+            Model = { db = db, table_name = 'users' }
+            orm.define(Model)
 
             local models = Model.where({ seen_at = '2013-10-12T16:31:21 UTC' })
             local model_1 = models[1]
@@ -210,8 +208,8 @@ describe("MySql ORM", function()
             db.execute = function(...)
                 return { { first_name = 'roberto' }, { first_name = 'hedy' } }
             end
-
-            Model = orm.define(db, 'users')
+            Model = { db = db, table_name = 'users' }
+            orm.define(Model)
 
             spy.on(Model, 'where')
 
@@ -245,7 +243,8 @@ describe("MySql ORM", function()
                 db.execute = function(...)
                     return { { first_name = 'roberto' }, { first_name = 'hedy' } }
                 end
-                Model = orm.define(db, 'users')
+                Model = { db = db, table_name = 'users' }
+                orm.define(Model)
 
                 spy.on(Model, 'where')
 
@@ -265,7 +264,8 @@ describe("MySql ORM", function()
                 db.execute = function(...)
                     return { { first_name = 'roberto' }, { first_name = 'hedy' } }
                 end
-                Model = orm.define(db, 'users')
+                Model = { db = db, table_name = 'users' }
+                orm.define(Model)
 
                 spy.on(Model, 'where')
 
