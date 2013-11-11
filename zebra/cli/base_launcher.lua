@@ -1,6 +1,8 @@
 -- dependencies
 local lfs = require 'lfs'
 
+local Zebra = require 'zebra.core.zebra'
+
 require 'zebra.core.zebra'
 
 

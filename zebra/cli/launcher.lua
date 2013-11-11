@@ -1,8 +1,9 @@
 -- dependencies
 local ansicolors = require 'ansicolors'
 
-require 'zebra.core.zebra'
+local Zebra = require 'zebra.core.zebra'
 local BaseLauncher = require 'zebra.cli.base_launcher'
+local Helpers = require 'zebra.core.helpers'
 
 -- settings
 local nginx_conf_source = 'config/nginx.conf'
@@ -15,7 +16,7 @@ end
 
 local function nginx_conf_content()
     -- read nginx.conf file
-    local nginx_conf_template = read_file(nginx_conf_source)
+    local nginx_conf_template = Helpers.read_file(nginx_conf_source)
 
     -- append notice
     nginx_conf_template = [[

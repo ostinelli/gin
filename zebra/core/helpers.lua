@@ -2,6 +2,7 @@ local Helpers = {}
 
 -- perf
 local smatch = string.match
+local iopen = io.open
 
 -- try to require
 function Helpers.try_require(module_name, default)
@@ -14,6 +15,14 @@ function Helpers.try_require(module_name, default)
     else
         error(module_or_err)
     end
+end
+
+-- read file
+function Helpers.read_file(file_path)
+    local f = iopen(file_path, "rb")
+    local content = f:read("*all")
+    f:close()
+    return content
 end
 
 return Helpers

@@ -77,3 +77,5 @@ function Routes.version(number)
 
     return version
 end
+
+return Routes

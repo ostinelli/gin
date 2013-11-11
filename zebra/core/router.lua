@@ -47,9 +47,6 @@ end
 
 -- main handler function, called from nginx
 function Router.handler(ngx)
-    local models = require 'zebra.core.init_models'
-    models.init()
-
     -- add headers
     ngx.header.content_type = 'application/json'
     ngx.header["X-Framework"] = response_version_header;
