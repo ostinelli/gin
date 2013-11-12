@@ -85,6 +85,7 @@ function Helpers.mkdirs(file_path)
     end
 end
 
+-- value in table?
 function Helpers.included_in_table(t, value)
     for _, v in ipairs(t) do
         if v == value then return true end
@@ -92,6 +93,7 @@ function Helpers.included_in_table(t, value)
     return false
 end
 
+-- reverse table
 function Helpers.reverse_table(t)
     local size = #t + 1
     local reversed = {}
@@ -101,12 +103,47 @@ function Helpers.reverse_table(t)
     return reversed
 end
 
+-- pretty print to file
 function Helpers.pp_to_file(o, file_path)
     prettyprint.dump(o, file_path)
 end
 
-function Helpers.pp(o)
-    prettyprint.dump(o)
+-- check if folder exists
+function folder_exists(folder_path)
+    return lfs.attributes(sgsub(folder_path, "\\$",""), "mode") == "directory"
+end
+
+-- get the lua module name
+function Helpers.get_lua_module_name(file_path)
+    return string.match(file_path, "(.*)%.lua")
+end
+
+-- require recursively in a directory
+function Helpers.require_recursive(path)
+    local module_list = {}
+
+    if folder_exists(path) then
+        for file_name in lfs.dir(path) do
+            if file_name ~= "." and file_name ~= ".." then
+                local file_path = path .. '/' .. file_name
+                local attr = lfs.attributes(file_path)
+                assert(type(attr) == "table")
+                if attr.mode == "directory" then
+                    -- recursive call for all subdirectories inside of directory
+                    require_recursive(file_path)
+                else
+                    local module_name = Helpers.get_lua_module_name(file_path)
+                    -- require initializer
+                    if module_name ~= nil then
+                        require(module_name)
+                        tinsert(module_list, module_name)
+                    end
+                end
+            end
+        end
+    end
+
+    return module_list
 end
 
 return Helpers
