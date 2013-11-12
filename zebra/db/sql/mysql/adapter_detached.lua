@@ -16,42 +16,9 @@ local MySql = {
     db = nil
 }
 
--- the creation of the database should only be allowed in detached adapters.
-local function create_db(options)
-    local db, err = assert(dbi.Connect("MySQL", mysql_default_database, options.user, options.password, options.host, options.port))
-    dbi.Do(db, "CREATE DATABASE ".. options.database .. ";")
-    print(ansicolors("Database '" .. options.database .. "' does not exist, %{green}created%{reset}."))
-    db:close()
-end
-
 local function mysql_connect(options)
-    return assert(dbi.Connect("MySQL", options.database, options.user, options.password, options.host, options.port))
-end
-
-
-local function mysql_ensure_db_and_connection(options)
-    local ok, db_or_err = pcall(function() return mysql_connect(options) end)
-
-    if ok == true then
-        -- connection successful
-        return db_or_err
-    end
-
-    if smatch(db_or_err, "Unknown database") ~= nil then
-        -- database does not exist, create
-        create_db(options)
-        -- connect to newly created database
-        db = mysql_connect(options)
-        return db
-    else
-        -- connection error
-        error(db_or_err)
-    end
-end
-
-local function mysql_ensure_connection(options)
     if MySql.db == nil then
-        MySql.db = mysql_ensure_db_and_connection(options)
+        MySql.db = assert(dbi.Connect("MySQL", options.database, options.user, options.password, options.host, options.port))
         MySql.db:autocommit(true)
     end
 end
@@ -74,7 +41,7 @@ end
 
 -- quote
 function MySql.quote(options, str)
-    mysql_ensure_connection(options)
+    mysql_connect(options)
     return "'" .. MySql.db:quote(str) .. "'"
 end
 
@@ -128,7 +95,7 @@ end
 -- execute a query
 function MySql.execute(options, sql)
     -- connect
-    mysql_ensure_connection(options)
+    mysql_connect(options)
 
     -- build res
     local res = {}

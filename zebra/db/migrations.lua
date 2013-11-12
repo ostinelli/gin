@@ -1,5 +1,3 @@
--- init with detached adapters
-require 'zebra.core.init_detached'
 local Zebra = require 'zebra.core.zebra'
 local Helpers = require 'zebra.core.helpers'
 

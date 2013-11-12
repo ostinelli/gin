@@ -2,6 +2,12 @@ require 'spec.spec_helper'
 
 describe("Database SQL", function()
     before_each(function()
+        ngx = {
+            req = {
+                socket = function() return true end
+            }
+        }
+
         db = require 'zebra.db.sql'
         options = {
             adapter = 'mysql',
@@ -12,22 +18,33 @@ describe("Database SQL", function()
             password = "",
             pool = 5
         }
-        package.loaded['zebra.db.sql.mysql.adapter'] = {}
+
+        package.loaded['resty.mysql'] = {}
+        package.loaded['DBI'] = {}
+
+        package.loaded['zebra.db.sql.mysql.adapter_embedded'] = {}
+        package.loaded['zebra.db.sql.mysql.adapter_detached'] = {}
         package.loaded['zebra.db.sql.mysql.orm'] = {}
     end)
 
     after_each(function()
+        ngx = nil
         db = nil
         options = nil
-        ZEBRA_APP_SQLDB = {}
-        package.loaded['zebra.db.sql.mysql.adapter'] = nil
+
+        package.loaded['resty.mysql'] = nil
+        package.loaded['DBI'] = nil
+
+        package.loaded['zebra.db.sql.mysql.adapter_embedded'] = nil
+        package.loaded['zebra.db.sql.mysql.adapter_detached'] = nil
         package.loaded['zebra.db.sql.mysql.orm'] = nil
         package.loaded['zebra.db.sql'] = nil
     end)
 
     describe(".new", function()
         before_each(function()
-            package.loaded['zebra.db.sql.mysql.adapter'] = { name = 'adapter' }
+            package.loaded['zebra.db.sql.mysql.adapter_embedded'] = { name = 'adapter_embedded' }
+            package.loaded['zebra.db.sql.mysql.adapter_detached'] = { name = 'adapter_detached' }
             package.loaded['zebra.db.sql.mysql.orm'] = { name = 'orm' }
         end)
 
@@ -36,7 +53,8 @@ describe("Database SQL", function()
                 local DB = db.new(options)
 
                 assert.are.equal(options, DB.options)
-                assert.are.equal('adapter', DB.adapter.name)
+                assert.are.equal('adapter_detached', DB.adapter_detached.name)
+                assert.are.equal('adapter_embedded', DB.adapter_embedded.name)
                 assert.are.equal('orm', DB.orm.name)
             end)
         end)
@@ -81,10 +99,69 @@ describe("Database SQL", function()
         end)
     end)
 
-    describe(".quote", function()
+    describe("#adapter", function()
+        before_each(function()
+            DB = db.new(options)
+        end)
+
+        after_each(function()
+            DB = nil
+        end)
+
+        describe("when adapter_embedded, adapter_detached and cosocket are available", function()
+            before_each(function()
+                DB.adapter_embedded = 'adapter_embedded'
+                DB.adapter_detached = 'adapter_detached'
+                ngx.req.socket = function() return 1 end
+            end)
+
+            it("returns adapter_embedded", function()
+                assert.are.same('adapter_embedded', DB:adapter())
+            end)
+        end)
+
+        describe("when adapter_embedded, adapter_detached are available but cosocket isn't", function()
+            before_each(function()
+                DB.adapter_embedded = 'adapter_embedded'
+                DB.adapter_detached = 'adapter_detached'
+                ngx.req.socket = function() return nil end
+            end)
+
+            it("returns adapter_detached", function()
+                assert.are.same('adapter_detached', DB:adapter())
+            end)
+        end)
+
+        describe("when adapter_embedded is not available but adapter_detached is", function()
+            before_each(function()
+                DB.adapter_embedded = nil
+                DB.adapter_detached = 'adapter_detached'
+            end)
+
+            it("returns adapter_detached", function()
+                assert.are.same('adapter_detached', DB:adapter())
+            end)
+        end)
+
+        describe("when no adapter is available", function()
+            before_each(function()
+                DB.adapter_embedded = nil
+                DB.adapter_detached = nil
+            end)
+
+            it("raises an error", function()
+                local ok, err = pcall(function() return DB:adapter() end)
+
+                assert.are.same(false, ok)
+                assert.are.equal(true, string.find(err, "Cannot run SQL operation as the") > 0)
+            end)
+        end)
+    end)
+
+    describe("#quote", function()
         before_each(function()
             arg1 = nil
-            package.loaded['zebra.db.sql.mysql.adapter'] = {
+            package.loaded['zebra.db.sql.mysql.adapter_embedded'] = {
                 quote = function(...) arg1, arg2 = ... end
             }
             DB = db.new(options)
@@ -103,10 +180,10 @@ describe("Database SQL", function()
         end)
     end)
 
-    describe(".tables", function()
+    describe("#tables", function()
         before_each(function()
             arg1 = nil
-            package.loaded['zebra.db.sql.mysql.adapter'] = {
+            package.loaded['zebra.db.sql.mysql.adapter_embedded'] = {
                 tables = function(...) arg1 = ... end
             }
             DB = db.new(options)
@@ -123,10 +200,10 @@ describe("Database SQL", function()
         end)
     end)
 
-    describe(".column_names", function()
+    describe("#column_names", function()
         before_each(function()
             arg1 = nil
-            package.loaded['zebra.db.sql.mysql.adapter'] = {
+            package.loaded['zebra.db.sql.mysql.adapter_embedded'] = {
                 column_names = function(...) arg1 = ... end
             }
             DB = db.new(options)
@@ -143,10 +220,10 @@ describe("Database SQL", function()
         end)
     end)
 
-    describe(".schema", function()
+    describe("#schema", function()
         before_each(function()
             arg1 = nil
-            package.loaded['zebra.db.sql.mysql.adapter'] = {
+            package.loaded['zebra.db.sql.mysql.adapter_embedded'] = {
                 schema = function(...) arg1 = ... end
             }
             DB = db.new(options)
@@ -163,10 +240,10 @@ describe("Database SQL", function()
         end)
     end)
 
-    describe(".get_last_id", function()
+    describe("#get_last_id", function()
         before_each(function()
             arg1 = nil
-            package.loaded['zebra.db.sql.mysql.adapter'] = {
+            package.loaded['zebra.db.sql.mysql.adapter_embedded'] = {
                 get_last_id = function(...) arg1 = ... end
             }
             DB = db.new(options)
@@ -183,10 +260,10 @@ describe("Database SQL", function()
         end)
     end)
 
-    describe(".execute", function()
+    describe("#execute", function()
         before_each(function()
             arg1, arg2 = nil, nil
-            package.loaded['zebra.db.sql.mysql.adapter'] = {
+            package.loaded['zebra.db.sql.mysql.adapter_embedded'] = {
                 execute = function(...) arg1, arg2 = ... end
             }
             DB = db.new(options)
