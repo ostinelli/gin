@@ -1,6 +1,6 @@
 -- mock application modules here
 package.loaded['config.routes'] = { }
-package.loaded['config.application'] = { name = "zebraapp" }
+package.loaded['config.application'] = { name = "ginapp" }
 
 -- init
-require 'zebra.spec.init'
+require 'gin.spec.init'

@@ -1,9 +1,9 @@
 -- dependencies
 local lfs = require 'lfs'
 
-local Zebra = require 'zebra.core.zebra'
+local Gin = require 'gin.core.gin'
 
-require 'zebra.core.zebra'
+require 'gin.core.gin'
 
 
 local function create_dirs(necessary_dirs)
@@ -24,7 +24,7 @@ end
 
 local function nginx_command(env, nginx_conf_file_path, nginx_signal)
     local env_cmd = ""
-    if env ~= nil then env_cmd = "-g \"env ZEBRA_ENV=" .. env .. ";\"" end
+    if env ~= nil then env_cmd = "-g \"env GIN_ENV=" .. env .. ";\"" end
     local cmd = "nginx " .. nginx_signal .. " " .. env_cmd .. " -p `pwd`/ -c " .. nginx_conf_file_path .. " 2>/dev/null"
 
     return os.execute(cmd)
@@ -43,7 +43,7 @@ local BaseLauncher = {}
 BaseLauncher.__index = BaseLauncher
 
 function BaseLauncher.new(nginx_conf_content, nginx_conf_file_path)
-    local necessary_dirs = Zebra.app_dirs
+    local necessary_dirs = Gin.app_dirs
 
     local instance = {
         nginx_conf_content = nginx_conf_content,

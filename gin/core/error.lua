@@ -1,4 +1,4 @@
-local Helpers = require 'zebra.core.helpers'
+local Helpers = require 'gin.core.helpers'
 
 
 -- define error

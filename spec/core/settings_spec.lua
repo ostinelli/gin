@@ -3,12 +3,12 @@ require 'spec.spec_helper'
 describe("Settings", function()
 
     before_each(function()
-        settings = require('zebra.core.settings')
+        settings = require('gin.core.settings')
     end)
 
     after_each(function()
         package.loaded['config.settings'] = {}  -- reset to mock
-        package.loaded['zebra.core.settings'] = nil
+        package.loaded['gin.core.settings'] = nil
         settings = nil
     end)
 

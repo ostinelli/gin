@@ -1,0 +1,59 @@
+#!/usr/bin/env lua
+
+local Gin = require 'gin.core.gin'
+
+local help_description = [[
+
+             `/++++/:
+             -NNNNNmm`
+             -NNNMNdm`
+              mNNMNmy
+             .dNMMNms`
+         .:+sydMMMMMdyo/-`
+      `sdmmmNNNMMMMMNmdhhddo
+      `dMMNNNMMMMMMMMNdhdNMy
+      `dMMNNMMMMMMMMMNdhdMMy
+      `dMMMNMMMMdsymMNdhdNMy
+      `dMMMNNho-....:shhdNMy
+      `dMMdo-......`.``:sNMy
+      `dd/........-..````-hy
+      `:...--.`----..`````.-
+      ``//+-  G  I  N  .+-/`
+      `:..-..``-...-.`.`.``-
+      `hs-```-./.:`-/`.```os
+      `hNms-.``.-.-.````+mmy
+      `hNNNNh+.-:---`-smNNmy
+      `hNNNMMMNy+.:sdNNNNNmy`
+      `dNNNNMMMMMNNNNNNNNNNy`
+      `hNNNNMMMMMMMMNNNNNNNy`
+      `hNNNNNMMMMMMMMNNmNNNy`
+       ./osyhhddddddhhyss+:`
+
+GIN v]] .. Gin.version .. [[, a JSON-API web framework.
+
+Usage: gin COMMAND [ARGS]
+
+The available gin commands are:
+ new [name]             Create a new Gin application
+ start                  Starts the Gin server
+ stop                   Stops the Gin server
+ console                Start a Gin console
+ generate migration     Create a new migration
+ migrate                Run all migrations that have not been run
+ migrate rollback       Rollback one migration
+]]
+
+local launcher = require 'gin.cli.launcher'
+local application = require 'gin.cli.application'
+local migrations = require 'gin.cli.migrations'
+local console = require 'gin.cli.console'
+
+if arg[1] == 'new' and arg[2] then application.new(arg[2])
+elseif arg[1] == 'start' then launcher.start()
+elseif arg[1] == 'stop' then launcher.stop()
+elseif (arg[1] == 'generate' or arg[1] == 'g') and arg[2] == 'migration' then migrations.new()
+elseif arg[1] == 'migrate' and arg[2] == nil then migrations.up()
+elseif arg[1] == 'migrate' and arg[2] == "rollback" then migrations.down()
+elseif arg[1] == 'console' or arg[1] == 'c' then console.start()
+else print(help_description)
+end

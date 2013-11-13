@@ -2,11 +2,11 @@ require 'spec.spec_helper'
 
 describe("ResponseSpec", function()
     before_each(function()
-        ResponseSpec = require 'zebra.spec.runners.response'
+        ResponseSpec = require 'gin.spec.runners.response'
     end)
 
     after_each(function()
-        package.loaded['zebra.spec.runners.response'] = nil
+        package.loaded['gin.spec.runners.response'] = nil
         ResponseSpec = nil
     end)
 
@@ -53,13 +53,13 @@ describe("ResponseSpec", function()
                 local response = ResponseSpec.new({
                     status = 403,
                     headers = { ["X-Custom"] = "custom" },
-                    body = '{"name":"zebra"}'
+                    body = '{"name":"gin"}'
                 })
 
                 assert.are.same(403, response.status)
                 assert.are.same({ ["X-Custom"] = "custom" }, response.headers)
-                assert.are.same({ name = "zebra" }, response.body)
-                assert.are.same('{"name":"zebra"}', response.body_raw)
+                assert.are.same({ name = "gin" }, response.body)
+                assert.are.same('{"name":"gin"}', response.body_raw)
             end)
         end)
     end)

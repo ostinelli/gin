@@ -1,6 +1,6 @@
 require 'spec.spec_helper'
 
-local Response = require 'zebra.core.response'
+local Response = require 'gin.core.response'
 
 describe("Response", function()
     describe(".new", function()

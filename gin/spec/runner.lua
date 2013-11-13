@@ -1,7 +1,7 @@
-require 'zebra.spec.init'
+require 'gin.spec.init'
 
 -- add integration runner
-local IntegrationRunner = require 'zebra.spec.runners.integration'
+local IntegrationRunner = require 'gin.spec.runners.integration'
 
 -- helpers
 function hit(request)

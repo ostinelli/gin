@@ -3,11 +3,11 @@ require 'spec.spec_helper'
 describe("Routes", function()
 
     before_each(function()
-        Routes = require('zebra.core.routes')
+        Routes = require('gin.core.routes')
     end)
 
     after_each(function()
-        package.loaded['zebra.core.routes'] = nil
+        package.loaded['gin.core.routes'] = nil
         Routes = nil
     end)
 

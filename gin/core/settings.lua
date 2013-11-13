@@ -1,4 +1,4 @@
-local Helpers = require 'zebra.core.helpers'
+local Helpers = require 'gin.core.helpers'
 
 -- perf
 local pairs = pairs
@@ -6,9 +6,9 @@ local pcall = pcall
 local require = require
 
 
-local ZebraSettings = {}
+local GinSettings = {}
 
-ZebraSettings.defaults = {
+GinSettings.defaults = {
     development = {
         code_cache = false,
         port = 7200,
@@ -34,10 +34,10 @@ ZebraSettings.defaults = {
     }
 }
 
-function ZebraSettings.for_environment(env)
+function GinSettings.for_environment(env)
     -- load defaults
-    local settings = ZebraSettings.defaults[env]
-    if settings == nil then settings = ZebraSettings.defaults.other end
+    local settings = GinSettings.defaults[env]
+    if settings == nil then settings = GinSettings.defaults.other end
 
     -- override defaults from app settings
     local app_settings = Helpers.try_require('config.settings', {})
@@ -54,4 +54,4 @@ function ZebraSettings.for_environment(env)
     return settings
 end
 
-return ZebraSettings
+return GinSettings

@@ -3,12 +3,12 @@ package.path = './app/controllers/?.lua;' .. package.path
 -- dependencies
 local json = require 'cjson'
 
--- zebra
-local Zebra = require 'zebra.core.zebra'
-local Controller = require 'zebra.core.controller'
-local Request = require 'zebra.core.request'
-local Response = require 'zebra.core.response'
-local Error = require 'zebra.core.error'
+-- gin
+local Gin = require 'gin.core.gin'
+local Controller = require 'gin.core.controller'
+local Request = require 'gin.core.request'
+local Response = require 'gin.core.response'
+local Error = require 'gin.core.error'
 
 -- app
 local Routes = require 'config.routes'
@@ -30,7 +30,7 @@ local tinsert = table.insert
 local Router = {}
 
 -- response version header
-local response_version_header = 'zebra/'.. Zebra.version
+local response_version_header = 'gin/'.. Gin.version
 
 -- accept header for application
 local accept_header_matcher = "^application/vnd." .. Application.name .. ".v(%d+)(.*)+json$"

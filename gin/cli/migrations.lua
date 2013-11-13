@@ -1,16 +1,16 @@
 -- dependencies
 local ansicolors = require 'ansicolors'
 
--- zebra
-local Zebra = require 'zebra.core.zebra'
-local Helpers = require 'zebra.core.helpers'
-local Migrations = require 'zebra.db.migrations'
+-- gin
+local Gin = require 'gin.core.gin'
+local Helpers = require 'gin.core.helpers'
+local Migrations = require 'gin.db.migrations'
 
 
 local migrations_new = [====[
 local SqlMigration = {}
 
--- specify the database used in this migration (needed by the Zebra migration engine)
+-- specify the database used in this migration (needed by the Gin migration engine)
 -- SqlMigration.db = require 'db.mysql'
 
 function SqlMigration.up()
@@ -72,7 +72,7 @@ local SqlMigrations = {}
 function SqlMigrations.new(name)
     -- define file path
     local timestamp = os.date("%Y%m%d%H%M%S")
-    local full_file_path = Zebra.app_dirs.migrations .. '/' .. timestamp .. '.lua'
+    local full_file_path = Gin.app_dirs.migrations .. '/' .. timestamp .. '.lua'
 
     -- create file
     local fw = io.open(full_file_path, "w")
@@ -85,7 +85,7 @@ function SqlMigrations.new(name)
 end
 
 function SqlMigrations.up()
-    print(ansicolors("Migrating up in %{cyan}" .. Zebra.env .. "%{reset} environment"))
+    print(ansicolors("Migrating up in %{cyan}" .. Gin.env .. "%{reset} environment"))
 
     local ok, response = Migrations.up()
     display_result("up", response)
@@ -93,7 +93,7 @@ function SqlMigrations.up()
 end
 
 function SqlMigrations.down()
-    print(ansicolors("Rolling back one migration in %{cyan}" .. Zebra.env .. "%{reset} environment"))
+    print(ansicolors("Rolling back one migration in %{cyan}" .. Gin.env .. "%{reset} environment"))
 
     local ok, response = Migrations.down()
     display_result("down", response)

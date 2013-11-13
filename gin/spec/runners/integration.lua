@@ -3,8 +3,8 @@ local http = require 'socket.http'
 local url = require 'socket.url'
 local json = require 'cjson'
 
--- zebra
-local Zebra = require 'zebra.core.zebra'
+-- gin
+local Gin = require 'gin.core.gin'
 local Application = require 'config.application'
 
 
@@ -84,7 +84,7 @@ local function hit_server(request)
     local full_url = url.build({
         scheme = 'http',
         host = '127.0.0.1',
-        port = Zebra.settings.port,
+        port = Gin.settings.port,
         path = request.path,
         query = IntegrationRunner.encode_table(request.uri_params)
     })
@@ -105,8 +105,8 @@ local function hit_server(request)
 end
 
 function IntegrationRunner.hit(request)
-    local launcher = require 'zebra.cli.launcher'
-    local ResponseSpec = require 'zebra.spec.runners.response'
+    local launcher = require 'gin.cli.launcher'
+    local ResponseSpec = require 'gin.spec.runners.response'
 
     -- convert body to JSON request
     if request.body ~= nil then
@@ -126,13 +126,13 @@ function IntegrationRunner.hit(request)
     request = set_accept_header(request, api_version)
 
     -- start nginx
-    launcher.start(Zebra.env)
+    launcher.start(Gin.env)
 
     -- hit server
     local ok, response_status, response_headers, response_body = hit_server(request)
 
     -- stop nginx
-    launcher.stop(Zebra.env)
+    launcher.stop(Gin.env)
 
     if ok == nil then error("An error occurred while connecting to the test server.") end
 

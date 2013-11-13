@@ -1,6 +1,6 @@
 require 'spec.spec_helper'
 
-local Request = require 'zebra.core.request'
+local Request = require 'gin.core.request'
 
 describe("Request", function()
     before_each(function()

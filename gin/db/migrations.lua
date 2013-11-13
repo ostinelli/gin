@@ -1,5 +1,5 @@
-local Zebra = require 'zebra.core.zebra'
-local Helpers = require 'zebra.core.helpers'
+local Gin = require 'gin.core.gin'
+local Helpers = require 'gin.core.helpers'
 
 -- settings
 local accepted_adapters = { "mysql" }
@@ -47,7 +47,7 @@ local function version_from(module_name)
 end
 
 local function dump_schema_for(db)
-    local schema_dump_file_path = Zebra.app_dirs.schemas .. '/' .. db.options.adapter .. '-' .. db.options.database .. '.lua'
+    local schema_dump_file_path = Gin.app_dirs.schemas .. '/' .. db.options.adapter .. '-' .. db.options.database .. '.lua'
     local schema = db:schema()
     -- write to file
     Helpers.pp_to_file(schema, schema_dump_file_path)
@@ -61,7 +61,7 @@ end
 function Migrations.migration_modules()
     local modules = {}
 
-    local path = Zebra.app_dirs.migrations
+    local path = Gin.app_dirs.migrations
     if Helpers.folder_exists(path) then
         for file_name in lfs.dir(path) do
             if file_name ~= "." and file_name ~= ".." then

@@ -1,40 +1,40 @@
 require 'spec.spec_helper'
 
-describe("Zebra", function()
+describe("Gin", function()
     before_each(function()
-        package.loaded['zebra.core.zebra'] = nil
+        package.loaded['gin.core.gin'] = nil
     end)
 
     after_each(function()
-        package.loaded['zebra.core.zebra'] = nil
+        package.loaded['gin.core.gin'] = nil
     end)
 
     describe(".env", function()
-        describe("when the ZEBRA_ENV value is set", function()
-            it("sets it to the ZEBRA_ENV value", function()
+        describe("when the GIN_ENV value is set", function()
+            it("sets it to the GIN_ENV value", function()
                 local original_getenv = os.getenv
                 os.getenv = function(arg)
-                    if arg == "ZEBRA_ENV" then return 'myenv' end
+                    if arg == "GIN_ENV" then return 'myenv' end
                 end
 
-                local Zebra = require 'zebra.core.zebra'
+                local Gin = require 'gin.core.gin'
 
-                assert.are.equal('myenv', Zebra.env)
+                assert.are.equal('myenv', Gin.env)
 
                 os.getenv = original_getenv
             end)
         end)
 
-        describe("when the ZEBRA_ENV value is not set", function()
+        describe("when the GIN_ENV value is not set", function()
             it("sets it to development", function()
                 local original_getenv = os.getenv
                 os.getenv = function(arg)
                     return nil
                 end
 
-                local Zebra = require 'zebra.core.zebra'
+                local Gin = require 'gin.core.gin'
 
-                assert.are.equal('development', Zebra.env)
+                assert.are.equal('development', Gin.env)
 
                 os.getenv = original_getenv
             end)
@@ -43,15 +43,15 @@ describe("Zebra", function()
 
     describe(".settings", function()
         it("sets them to the current environment settings", function()
-            package.loaded['zebra.core.settings'] = {
+            package.loaded['gin.core.settings'] = {
                 for_environment = function() return { mysetting = 'my-setting' } end
             }
 
-            local Zebra = require 'zebra.core.zebra'
+            local Gin = require 'gin.core.gin'
 
-            assert.are.same('my-setting', Zebra.settings.mysetting)
+            assert.are.same('my-setting', Gin.settings.mysetting)
 
-            package.loaded['zebra.core.settings'] = nil
+            package.loaded['gin.core.settings'] = nil
         end)
     end)
 end)

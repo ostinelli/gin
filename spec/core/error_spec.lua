@@ -4,11 +4,11 @@ require 'spec.spec_helper'
 
 describe("Error", function()
     before_each(function()
-        Error = require 'zebra.core.error'
+        Error = require 'gin.core.error'
     end)
 
     after_each(function()
-        package.loaded['zebra.core.error'] = nil
+        package.loaded['gin.core.error'] = nil
         Error = nil
     end)
 

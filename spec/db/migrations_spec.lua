@@ -10,7 +10,7 @@ CREATE TABLE schema_migrations (
 
 describe("Migrations", function()
     before_each(function()
-        migrations = require 'zebra.db.migrations'
+        migrations = require 'gin.db.migrations'
 
         migrations.migration_modules = function()
             return { 'migration/1', 'migration/2' }
@@ -70,7 +70,7 @@ describe("Migrations", function()
 
     after_each(function()
         migrations = nil
-        package.loaded['zebra.db.migrations'] = nil
+        package.loaded['gin.db.migrations'] = nil
         package.loaded['migration/1'] = nil
         package.loaded['migration/2'] = nil
         queries_1 = nil

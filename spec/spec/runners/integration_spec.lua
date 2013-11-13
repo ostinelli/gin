@@ -2,11 +2,11 @@ require 'spec.spec_helper'
 
 describe("Integration", function()
     before_each(function()
-        IntegrationRunner = require 'zebra.spec.runners.integration'
+        IntegrationRunner = require 'gin.spec.runners.integration'
     end)
 
     after_each(function()
-        package.loaded['zebra.spec.runners.integration'] = nil
+        package.loaded['gin.spec.runners.integration'] = nil
         IntegrationRunner = nil
     end)
 
@@ -27,9 +27,9 @@ describe("Integration", function()
 
     describe(".hit", function()
         before_each(function()
-            require 'zebra.cli.launcher'
-            stub(package.loaded['zebra.cli.launcher'], "start")
-            stub(package.loaded['zebra.cli.launcher'], "stop")
+            require 'gin.cli.launcher'
+            stub(package.loaded['gin.cli.launcher'], "start")
+            stub(package.loaded['gin.cli.launcher'], "stop")
 
             require 'socket.http'
             request = nil
@@ -46,7 +46,7 @@ describe("Integration", function()
         end)
 
         after_each(function()
-            package.loaded['zebra.cli.launcher'] = nil
+            package.loaded['gin.cli.launcher'] = nil
             package.loaded['socket.http'] = nil
             request = nil
         end)
@@ -55,10 +55,10 @@ describe("Integration", function()
             IntegrationRunner.hit({
                 method = 'GET',
                 path = "/",
-                body = { name = 'zebra' }
+                body = { name = 'gin' }
             })
 
-            assert.are.same(16, request.headers["Content-Length"])
+            assert.are.same(14, request.headers["Content-Length"])
         end)
 
         it("raises an error when the caller major version cannot be retrieved", function()
@@ -98,7 +98,7 @@ describe("Integration", function()
                         path = "/"
                     })
 
-                    assert.are.same("application/vnd.zebraapp.v1+json", request.headers["Accept"])
+                    assert.are.same("application/vnd.ginapp.v1+json", request.headers["Accept"])
                 end)
             end)
 
@@ -110,7 +110,7 @@ describe("Integration", function()
                         path = "/"
                     })
 
-                    assert.are.same("application/vnd.zebraapp.v1.2.3-p247+json", request.headers["Accept"])
+                    assert.are.same("application/vnd.ginapp.v1.2.3-p247+json", request.headers["Accept"])
                 end)
             end)
         end)
@@ -132,13 +132,13 @@ describe("Integration", function()
                 method = 'GET',
                 path = "/",
                 headers = { ['Test-Header'] = 'test-header-value' },
-                body = { name = 'zebra' }
+                body = { name = 'gin' }
             })
 
             assert.are.equal("http://127.0.0.1:7201/?", request.url)
             assert.are.equal('GET', request.method)
             assert.are.same('test-header-value', request.headers['Test-Header'])
-            assert.are.same('{"name":"zebra"}', request.source)
+            assert.are.same('{"name":"gin"}', request.source)
             assert.are.same(request_body_arg, request.sink)
         end)
 

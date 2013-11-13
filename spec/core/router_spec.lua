@@ -6,10 +6,10 @@ describe("Router", function()
         package.loaded['config.routes'] = {}
         Application = require 'config.application'
 
-        Router = require 'zebra.core.router'
-        Routes = require 'zebra.core.routes'
-        Controller = require 'zebra.core.controller'
-        Request = require 'zebra.core.request'
+        Router = require 'gin.core.router'
+        Routes = require 'gin.core.routes'
+        Controller = require 'gin.core.controller'
+        Request = require 'gin.core.request'
 
         ngx = {
             HTTP_NOT_FOUND = 404,
@@ -33,10 +33,10 @@ describe("Router", function()
         package.loaded['config.routes'] = nil
         Application = nil
 
-        package.loaded['zebra.core.router'] = nil
-        package.loaded['zebra.core.routes'] = nil
-        package.loaded['zebra.core.controller'] = nil
-        package.loaded['zebra.core.request'] = nil
+        package.loaded['gin.core.router'] = nil
+        package.loaded['gin.core.routes'] = nil
+        package.loaded['gin.core.controller'] = nil
+        package.loaded['gin.core.request'] = nil
 
         Router = nil
         Routes = nil
@@ -214,7 +214,7 @@ describe("Router", function()
                 before_each(function()
                     TestController = {}
                     function TestController:action()
-                        return 403, { name = 'zebra' }
+                        return 403, { name = 'gin' }
                     end
                     package.loaded['controller_name'] = TestController
                 end)
@@ -228,7 +228,7 @@ describe("Router", function()
                 it("calls nginx with the serialized json of the controller response body", function()
                     local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
-                    assert.are.same({ name = 'zebra' }, response.body)
+                    assert.are.same({ name = 'gin' }, response.body)
                 end)
             end)
 
@@ -237,7 +237,7 @@ describe("Router", function()
                     TestController = {}
                     function TestController:action()
                         local headers = { ["Cache-Control"] = "max-age=3600", ["Retry-After"] = "120" }
-                        return 403, { name = 'zebra' }, headers
+                        return 403, { name = 'gin' }, headers
                     end
                     package.loaded['controller_name'] = TestController
                 end)
@@ -251,7 +251,7 @@ describe("Router", function()
                 it("calls nginx with the serialized json of the controller response body", function()
                     local response = Router.call_controller(ngx, "controller_name", "action", "params")
 
-                    assert.are.same({ name = 'zebra' }, response.body)
+                    assert.are.same({ name = 'gin' }, response.body)
                 end)
 
                 it("sets the nginx response headers", function()
@@ -268,7 +268,7 @@ describe("Router", function()
                 TestController = {}
                 function TestController:action()
                     self:raise_error(1000, { additional_info = "some-info" })
-                    return { name = 'zebra' }
+                    return { name = 'gin' }
                 end
                 package.loaded['controller_name'] = TestController
             end)
@@ -321,7 +321,7 @@ describe("Router", function()
     describe(".match", function()
         before_each(function()
             -- set routes
-            local Routes = require 'zebra.core.routes'
+            local Routes = require 'gin.core.routes'
 
             local v1 = Routes.version(1)
 
@@ -335,8 +335,8 @@ describe("Router", function()
 
             package.loaded['config.routes'] = Routes
 
-            package.loaded['zebra.core.router'] = nil
-            Router = require 'zebra.core.router'
+            package.loaded['gin.core.router'] = nil
+            Router = require 'gin.core.router'
         end)
 
         after_each(function()
@@ -409,11 +409,11 @@ describe("Router", function()
 
     describe(".respond", function()
         before_each(function()
-            local Response = require 'zebra.core.response'
+            local Response = require 'gin.core.response'
             response = Response.new({
                 status = 200,
                 headers = { ['one'] = 'first', ['two'] = 'second' },
-                body = { name = 'zebra'}
+                body = { name = 'gin'}
             })
         end)
 
@@ -433,7 +433,7 @@ describe("Router", function()
         it("sets the content length header", function()
             Router.respond(ngx, response)
 
-            assert.are.equal(16, ngx.header['Content-Length'])
+            assert.are.equal(14, ngx.header['Content-Length'])
         end)
 
         it("calls ngx print with the encoded body", function()
@@ -441,7 +441,7 @@ describe("Router", function()
 
             Router.respond(ngx, response)
 
-            assert.stub(ngx.print).was_called_with('{"name":"zebra"}')
+            assert.stub(ngx.print).was_called_with('{"name":"gin"}')
         end)
     end)
 end)

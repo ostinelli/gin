@@ -2,8 +2,8 @@ require 'spec.spec_helper'
 
 describe("Controller", function()
     before_each(function()
-        Controller = require 'zebra.core.controller'
-        Request = require 'zebra.core.request'
+        Controller = require 'gin.core.controller'
+        Request = require 'gin.core.request'
 
         ngx = {
             req = {
@@ -22,8 +22,8 @@ describe("Controller", function()
     end)
 
     after_each(function()
-        package.loaded['zebra.core.controller'] = nil
-        package.loaded['zebra.core.request'] = nil
+        package.loaded['gin.core.controller'] = nil
+        package.loaded['gin.core.request'] = nil
         ngx = nil
         request = nil
         params = nil

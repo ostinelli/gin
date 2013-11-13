@@ -1,13 +1,13 @@
 local ansicolors = require 'ansicolors'
 
-local Zebra = require 'zebra.core.zebra'
-local Helpers = require 'zebra.core.helpers'
+local Gin = require 'gin.core.gin'
+local Helpers = require 'gin.core.helpers'
 
 local pages_controller = [[
 local PagesController = {}
 
 function PagesController:root()
-    return 200, { message = "Hello world from Zebra!" }
+    return 200, { message = "Hello world from Gin!" }
 end
 
 return PagesController
@@ -46,8 +46,8 @@ return Application
 
 
 mysql = [[
-local sqldb = require 'zebra.db.sql'
-local Zebra = require 'zebra.core.zebra'
+local sqldb = require 'gin.db.sql'
+local Gin = require 'gin.core.gin'
 
 -- First, specify the environment settings for this database, for instance:
 -- local DbSettings = {
@@ -83,13 +83,13 @@ local Zebra = require 'zebra.core.zebra'
 -- }
 
 -- Then initialize and return your database:
--- return sqldb.new(DbSettings[Zebra.env])
+-- return sqldb.new(DbSettings[Gin.env])
 ]]
 
 
 local nginx_config = [[
 worker_processes 1;
-pid ]] .. Zebra.app_dirs.tmp .. [[/{{ZEBRA_ENV}}-nginx.pid;
+pid ]] .. Gin.app_dirs.tmp .. [[/{{GIN_ENV}}-nginx.pid;
 
 events {
     worker_connections 1024;
@@ -98,21 +98,21 @@ events {
 http {
     sendfile on;
 
-    lua_code_cache {{ZEBRA_CODE_CACHE}};
+    lua_code_cache {{GIN_CODE_CACHE}};
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
 
     server {
-        access_log ]] .. Zebra.app_dirs.logs .. [[/{{ZEBRA_ENV}}-access.log;
-        error_log ]] .. Zebra.app_dirs.logs .. [[/{{ZEBRA_ENV}}-error.log;
+        access_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-access.log;
+        error_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-error.log;
 
-        listen {{ZEBRA_PORT}};
+        listen {{GIN_PORT}};
 
         location / {
-            content_by_lua 'require(\"zebra.core.router\").handler(ngx)';
+            content_by_lua 'require(\"gin.core.router\").handler(ngx)';
         }
 
-        location /zebraconsole {
-            {{ZEBRA_API_CONSOLE}}
+        location /ginconsole {
+            {{GIN_API_CONSOLE}}
         }
     }
 }
@@ -120,7 +120,7 @@ http {
 
 
 local routes = [[
-local routes = require 'zebra.core.routes'
+local routes = require 'gin.core.routes'
 
 -- define version
 local v1 = routes.version(1)
@@ -135,7 +135,7 @@ return routes
 local settings = [[
 --------------------------------------------------------------------------------
 -- Settings defined here are environment dependent. Inside of your application,
--- `Zebra.settings` will return the ones that correspond to the environment
+-- `Gin.settings` will return the ones that correspond to the environment
 -- you are running the server in.
 --------------------------------------------------------------------------------
 
@@ -176,7 +176,7 @@ describe("PagesController", function()
             })
 
             assert.are.same(200, response.status)
-            assert.are.same({ message = "Hello world from Zebra!" }, response.body)
+            assert.are.same({ message = "Hello world from Gin!" }, response.body)
         end)
     end)
 end)
@@ -184,13 +184,13 @@ end)
 
 
 local spec_helper = [[
-require 'zebra.spec.runner'
+require 'gin.spec.runner'
 ]]
 
 
-local ZebraApplication = {}
+local GinApplication = {}
 
-ZebraApplication.files = {
+GinApplication.files = {
     ['app/controllers/1/pages_controller.lua'] = pages_controller,
     ['app/models/.gitkeep'] = "",
     ['config/errors.lua'] = errors,
@@ -207,16 +207,16 @@ ZebraApplication.files = {
     ['spec/spec_helper.lua'] = spec_helper
 }
 
-function ZebraApplication.new(name)
+function GinApplication.new(name)
     print(ansicolors("Creating app %{cyan}" .. name .. "%{reset}..."))
 
-    ZebraApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
-    ZebraApplication.files['db/mysql.lua'] = string.gsub(mysql, "{{APP_NAME}}", name)
-    ZebraApplication.create_files(name)
+    GinApplication.files['config/application.lua'] = string.gsub(application, "{{APP_NAME}}", name)
+    GinApplication.files['db/mysql.lua'] = string.gsub(mysql, "{{APP_NAME}}", name)
+    GinApplication.create_files(name)
 end
 
-function ZebraApplication.create_files(parent)
-    for file_path, file_content in pairs(ZebraApplication.files) do
+function GinApplication.create_files(parent)
+    for file_path, file_content in pairs(GinApplication.files) do
         -- ensure containing directory exists
         local full_file_path = parent .. "/" .. file_path
         Helpers.mkdirs(full_file_path)
@@ -230,4 +230,4 @@ function ZebraApplication.create_files(parent)
     end
 end
 
-return ZebraApplication
+return GinApplication
