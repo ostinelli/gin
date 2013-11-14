@@ -42,6 +42,10 @@ function SqlOrm.define_model(database, table_name)
         return models
     end
 
+    function GinModel.all(options)
+        return GinModel.where({}, options)
+    end
+
     return GinModel
 end
 

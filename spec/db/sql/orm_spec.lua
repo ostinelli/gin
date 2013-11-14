@@ -163,5 +163,60 @@ describe("SqlOrm", function()
                 assert.are.equal('tonic', hedy.last_name)
             end)
         end)
+
+        describe(".all", function()
+            before_each(function()
+                MySql.execute = function(self, sql)
+                    sql_arg = sql
+                    return {
+                        { first_name = 'roberto', last_name = 'gin' },
+                        { first_name = 'hedy', last_name = 'tonic' }
+                    }
+                end
+
+                package.loaded['gin.db.sql.mysql.orm'] = {
+                    new = function(table_name, quote_fun)
+                        return {
+                            table_name = table_name,
+                            quote = quote_fun,
+                            where = function(self, ...)
+                                attrs_arg, options_arg = ...
+                                return "SQL ALL"
+                            end
+                        }
+                    end
+                }
+                Model = SqlOrm.define_model(MySql, 'users')
+            end)
+
+            after_each(function()
+                attrs_arg = nil
+                options_arg = nil
+                sql_arg = nil
+            end)
+
+            it("calls the orm with the correct params and options", function()
+                Model.all("options")
+                assert.are.same({}, attrs_arg)
+                assert.are.same("options", options_arg)
+            end)
+
+            it("calls execute with the correct params", function()
+                Model.all({ first_name = 'roberto', last_name = 'gin' })
+                assert.are.same("SQL ALL", sql_arg)
+            end)
+
+            it("returns the models", function()
+                local models = Model.all()
+
+                assert.are.equal(2, #models)
+                local roberto = models[1]
+                assert.are.equal('roberto', roberto.first_name)
+                assert.are.equal('gin', roberto.last_name)
+                local hedy = models[2]
+                assert.are.equal('hedy', hedy.first_name)
+                assert.are.equal('tonic', hedy.last_name)
+            end)
+        end)
     end)
 end)
