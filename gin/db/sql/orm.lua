@@ -1,5 +1,10 @@
-local SqlOrm = {}
+-- perf
+local ipairs = ipairs
+local require = require
+local tinsert = table.insert
 
+
+local SqlOrm = {}
 
 function SqlOrm.define_model(database, table_name)
     local GinModel = {}
@@ -18,11 +23,23 @@ function SqlOrm.define_model(database, table_name)
 
     function GinModel.create(attrs)
         local sql = orm:create(attrs)
-        local model = database:execute(sql)
+        local result = database:execute(sql)
 
+        local model = GinModel.new(attrs)
         model.id = adapter.get_last_id()
 
         return model
+    end
+
+    function GinModel.where(attrs, options)
+        local sql = orm:where(attrs, options)
+        local results = database:execute(sql)
+
+        local models = {}
+        for _, v in ipairs(results) do
+            tinsert(models, GinModel.new(v))
+        end
+        return models
     end
 
     return GinModel

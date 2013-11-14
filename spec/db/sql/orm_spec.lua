@@ -64,7 +64,7 @@ describe("SqlOrm", function()
             before_each(function()
                 MySql.execute = function(self, sql)
                     sql_arg = sql
-                    return { first_name = 'roberto', last_name = 'gin' }
+                    return 1
                 end
 
                 MySql.adapter.get_last_id = function(...) return 10 end
@@ -91,7 +91,8 @@ describe("SqlOrm", function()
 
             it("calls the orm with the correct params", function()
                 Model.create({ first_name = 'roberto', last_name = 'gin' })
-                assert.are.same({ first_name = 'roberto', last_name = 'gin' }, attrs_arg)
+                assert.are.same('roberto', attrs_arg.first_name)
+                assert.are.same('gin', attrs_arg.last_name)
             end)
 
             it("calls execute with the correct params", function()
@@ -100,11 +101,66 @@ describe("SqlOrm", function()
             end)
 
             it("returns a new model", function()
-                local model = Model.create() -- params are stubbed in the execute return
+                local model = Model.create({ first_name = 'roberto', last_name = 'gin' })
 
                 assert.are.equal(10, model.id)
                 assert.are.equal('roberto', model.first_name)
                 assert.are.equal('gin', model.last_name)
+            end)
+        end)
+
+        describe(".where", function()
+            before_each(function()
+                MySql.execute = function(self, sql)
+                    sql_arg = sql
+                    return {
+                        { first_name = 'roberto', last_name = 'gin' },
+                        { first_name = 'hedy', last_name = 'tonic' }
+                    }
+                end
+
+                package.loaded['gin.db.sql.mysql.orm'] = {
+                    new = function(table_name, quote_fun)
+                        return {
+                            table_name = table_name,
+                            quote = quote_fun,
+                            where = function(self, ...)
+                                attrs_arg, options_arg = ...
+                                return "SQL WHERE"
+                            end
+                        }
+                    end
+                }
+                Model = SqlOrm.define_model(MySql, 'users')
+            end)
+
+            after_each(function()
+                attrs_arg = nil
+                options_arg = nil
+                sql_arg = nil
+            end)
+
+            it("calls the orm with the correct params and options", function()
+                Model.where({ first_name = 'roberto', last_name = 'gin' }, "options")
+                assert.are.same({ first_name = 'roberto', last_name = 'gin' }, attrs_arg)
+                assert.are.same("options", options_arg)
+            end)
+
+            it("calls execute with the correct params", function()
+                Model.where({ first_name = 'roberto', last_name = 'gin' })
+                assert.are.same("SQL WHERE", sql_arg)
+            end)
+
+            it("returns the models", function()
+                local models = Model.where() -- params are stubbed in the execute return
+
+                assert.are.equal(2, #models)
+                local roberto = models[1]
+                assert.are.equal('roberto', roberto.first_name)
+                assert.are.equal('gin', roberto.last_name)
+                local hedy = models[2]
+                assert.are.equal('hedy', hedy.first_name)
+                assert.are.equal('tonic', hedy.last_name)
             end)
         end)
     end)
