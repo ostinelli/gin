@@ -76,7 +76,7 @@ end
 
 -- return schema as a table
 function MySql.schema(options)
-    local Migration = require 'zebra.db.migrations'
+    local Migration = require 'gin.db.migrations'
     local schema = {}
 
     local tables = MySql.tables(options)

@@ -1,6 +1,6 @@
 require 'spec.spec_helper'
 
-describe("MySql ORM", function()
+describe("MySqlOrm", function()
 
     before_each(function()
         MySqlOrm = require 'gin.db.sql.mysql.orm'
