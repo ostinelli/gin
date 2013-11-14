@@ -102,19 +102,6 @@ function MySqlOrm:where(attrs, options)
     return tconcat(sql)
 end
 
-function MySqlOrm:all(options)
-    return self:where({}, options)
-end
-
-function MySqlOrm:find_by(attrs, options)
-    local merged_options = { limit = 1 }
-    if options and options.order then
-        merged_options.order = options.order
-    end
-
-    return self:where(attrs, merged_options)
-end
-
 function MySqlOrm:delete_where(attrs, options)
     -- init sql
     local sql = {}
