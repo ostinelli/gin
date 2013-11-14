@@ -39,9 +39,13 @@ local function mysql_connect(options)
     end
 end
 
+-- init
+function MySql.init(options)
+    mysql_connect(options)
+end
+
 -- quote
 function MySql.quote(options, str)
-    mysql_connect(options)
     return "'" .. MySql.db:quote(str) .. "'"
 end
 

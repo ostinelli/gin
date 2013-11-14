@@ -24,6 +24,7 @@ function SqlDatabase.new(options)
 
     -- init adapter
     local adapter = require 'gin.db.sql.mysql.adapter'
+    adapter.init()
 
     -- init instance
     local instance = {

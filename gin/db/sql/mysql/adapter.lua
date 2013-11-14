@@ -42,6 +42,10 @@ local function mysql_keepalive(db, options)
     if not ok then error("failed to set mysql keepalive: ", err) end
 end
 
+-- init
+function MySql.init(options)
+end
+
 -- quote
 function MySql.quote(options, str)
     return ngx.quote_sql_str(str)
