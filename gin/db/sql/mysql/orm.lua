@@ -1,10 +1,12 @@
 -- gin
 local Helpers = require 'gin.core.helpers'
 
-
 -- perf
-local tinsert = table.insert
+local pairs = pairs
 local tconcat = table.concat
+local tinsert = table.insert
+local type = type
+local next = next
 
 
 local function field_and_values(quote, attrs, concat)
