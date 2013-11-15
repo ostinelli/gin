@@ -4,30 +4,27 @@ local Gin = require 'gin.core.gin'
 
 local help_description = [[
 
-             `/++++/:
-             -NNNNNmm`
-             -NNNMNdm`
-              mNNMNmy
-             .dNMMNms`
-         .:+sydMMMMMdyo/-`
-      `sdmmmNNNMMMMMNmdhhddo
-      `dMMNNNMMMMMMMMNdhdNMy
-      `dMMNNMMMMMMMMMNdhdMMy
-      `dMMMNMMMMdsymMNdhdNMy
-      `dMMMNNho-....:shhdNMy
-      `dMMdo-......`.``:sNMy
-      `dd/........-..````-hy
-      `:...--.`----..`````.-
-      ``//+-  G  I  N  .+-/`
-      `:..-..``-...-.`.`.``-
-      `hs-```-./.:`-/`.```os
-      `hNms-.``.-.-.````+mmy
-      `hNNNNh+.-:---`-smNNmy
-      `hNNNMMMNy+.:sdNNNNNmy`
-      `dNNNNMMMMMNNNNNNNNNNy`
-      `hNNNNMMMMMMMMNNNNNNNy`
-      `hNNNNNMMMMMMMMNNmNNNy`
-       ./osyhhddddddhhyss+:`
+          `/++++/:
+          -NNNNNmm`
+           mNNMNmy
+          .dNMMNms`
+      .:+sydMMMMMdyo/-`
+   `sdmmmNNNMMMMMNmdhhddo
+   `dMMNNMMMMMMMMMNdhdMMy
+   `dMMMNMMMMdsymMNdhdNMy
+   `dMMMNNho-....:shhdNMy
+   `dMMdo-......`.``:sNMy
+   `dd/........-..````-hy
+   `:...--.`----..`````.-
+   ``//+-  G  I  N  .+-/`
+   `:..-..``-...-.`.`.``-
+   `hs-```-./.:`-/`.```os
+   `hNms-.``.-.-.````+mmy
+   `hNNNNh+.-:---`-smNNmy
+   `hNNNMMMNy+.:sdNNNNNmy`
+   `dNNNNMMMMMNNNNNNNNNNy`
+   `hNNNNNMMMMMMMMNNmNNNy`
+    ./osyhhddddddhhyss+:`
 
 GIN v]] .. Gin.version .. [[, a JSON-API web framework.
 
