@@ -60,6 +60,10 @@ function SqlOrm.define_model(database, table_name)
         return database:execute(sql)
     end
 
+    function GinModel.delete_all(options)
+        return GinModel.delete_where({}, options)
+    end
+
     return GinModel
 end
 

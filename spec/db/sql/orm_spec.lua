@@ -266,5 +266,28 @@ describe("SqlOrm", function()
                 assert.are.equal(1, result)
             end)
         end)
+
+        describe(".delete_all", function()
+            before_each(function()
+                Model = SqlOrm.define_model(MySql, 'users')
+                Model.delete_where = function(...)
+                    attrs_arg, options_arg = ...
+                    return 10
+                end
+            end)
+
+            after_each(function()
+                attrs_arg = nil
+                options_arg = nil
+            end)
+
+            it("calls where with the correct options", function()
+                local result = Model.delete_all("options")
+
+                assert.are.same({}, attrs_arg)
+                assert.are.same("options", options_arg)
+                assert.are.same(10, result)
+            end)
+        end)
     end)
 end)
