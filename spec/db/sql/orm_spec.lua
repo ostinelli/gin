@@ -55,9 +55,7 @@ describe("SqlOrm", function()
 
             it("returns a new instance of Model", function()
                 local model = Model.new({ first_name = 'roberto', last_name = 'gin' })
-
-                assert.are.equal('roberto', model.first_name)
-                assert.are.equal('gin', model.last_name)
+                assert.are.same({ first_name = 'roberto', last_name = 'gin' }, model)
             end)
         end)
 
@@ -75,8 +73,8 @@ describe("SqlOrm", function()
                         return {
                             table_name = table_name,
                             quote = quote_fun,
-                            create = function(self, ...)
-                                attrs_arg = ...
+                            create = function(self, attrs)
+                                attrs_arg = Helpers.shallowcopy(attrs)
                                 return "SQL CREATE"
                             end
                         }
@@ -92,8 +90,7 @@ describe("SqlOrm", function()
 
             it("calls the orm with the correct params", function()
                 Model.create({ first_name = 'roberto', last_name = 'gin' })
-                assert.are.same('roberto', attrs_arg.first_name)
-                assert.are.same('gin', attrs_arg.last_name)
+                assert.are.same({ first_name = 'roberto', last_name = 'gin' }, attrs_arg)
             end)
 
             it("calls execute with the correct params", function()
@@ -103,10 +100,7 @@ describe("SqlOrm", function()
 
             it("returns a new model", function()
                 local model = Model.create({ first_name = 'roberto', last_name = 'gin' })
-
-                assert.are.equal(10, model.id)
-                assert.are.equal('roberto', model.first_name)
-                assert.are.equal('gin', model.last_name)
+                assert.are.same({ id = 10, first_name = 'roberto', last_name = 'gin' }, model)
             end)
         end)
 
@@ -157,11 +151,9 @@ describe("SqlOrm", function()
 
                 assert.are.equal(2, #models)
                 local roberto = models[1]
-                assert.are.equal('roberto', roberto.first_name)
-                assert.are.equal('gin', roberto.last_name)
+                assert.are.same({ first_name = 'roberto', last_name = 'gin' }, roberto)
                 local hedy = models[2]
-                assert.are.equal('hedy', hedy.first_name)
-                assert.are.equal('tonic', hedy.last_name)
+                assert.are.same({ first_name = 'hedy', last_name = 'tonic' }, hedy)
             end)
         end)
 
@@ -348,8 +340,9 @@ describe("SqlOrm", function()
 
             describe("when the instance is already saved", function()
                 before_each(function()
-                    Model.update_where = function(...)
-                        attrs_arg, options_arg = ...
+                    Model.update_where = function(attrs, options)
+                        attrs_arg = Helpers.shallowcopy(attrs)
+                        options_arg = options
                         return 1
                     end
                     model = Model.new({ id = 4, first_name = 'roberto', last_name = 'gin' })
@@ -362,8 +355,7 @@ describe("SqlOrm", function()
                 it("calls update_where with the the correct parameters", function()
                     local result = model:save()
 
-                    assert.are.same('roberto', attrs_arg.first_name)
-                    assert.are.same('gin', attrs_arg.last_name)
+                    assert.are.same({ first_name = 'roberto', last_name = 'gin' }, attrs_arg)
                     assert.are.same({ id = 4 }, options_arg)
                     assert.are.same(1, result)
                 end)
