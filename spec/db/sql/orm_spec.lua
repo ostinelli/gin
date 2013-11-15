@@ -1,4 +1,5 @@
 require 'spec.spec_helper'
+local Helpers = require 'gin.core.helpers'
 
 describe("SqlOrm", function()
 
@@ -287,6 +288,107 @@ describe("SqlOrm", function()
                 assert.are.same({}, attrs_arg)
                 assert.are.same("options", options_arg)
                 assert.are.same(10, result)
+            end)
+        end)
+
+        describe(".update_where", function()
+            before_each(function()
+                MySql.execute = function(self, sql)
+                    sql_arg = sql
+                    return 1
+                end
+
+                package.loaded['gin.db.sql.mysql.orm'] = {
+                    new = function(table_name, quote_fun)
+                        return {
+                            table_name = table_name,
+                            quote = quote_fun,
+                            update_where = function(self, ...)
+                                attrs_arg, options_arg = ...
+                                return "SQL UPDATE WHERE"
+                            end
+                        }
+                    end
+                }
+                Model = SqlOrm.define_model(MySql, 'users')
+            end)
+
+            after_each(function()
+                attrs_arg = nil
+                options_arg = nil
+                sql_arg = nil
+            end)
+
+            it("calls the orm with the correct params and options", function()
+                Model.update_where({ first_name = 'roberto', last_name = 'gin' }, "options")
+                assert.are.same({ first_name = 'roberto', last_name = 'gin' }, attrs_arg)
+                assert.are.same("options", options_arg)
+            end)
+
+            it("calls execute with the correct params", function()
+                Model.update_where({ first_name = 'roberto', last_name = 'gin' })
+                assert.are.same("SQL UPDATE WHERE", sql_arg)
+            end)
+
+            it("returns the result", function()
+                local result = Model.update_where() -- params are stubbed in the execute return
+                assert.are.equal(1, result)
+            end)
+        end)
+
+        describe("#save", function()
+            before_each(function()
+                Model = SqlOrm.define_model(MySql, 'users')
+            end)
+
+            after_each(function()
+                attrs_arg = nil
+                options_arg = nil
+            end)
+
+            describe("when the instance is already saved", function()
+                before_each(function()
+                    Model.update_where = function(...)
+                        attrs_arg, options_arg = ...
+                        return 1
+                    end
+                    model = Model.new({ id = 4, first_name = 'roberto', last_name = 'gin' })
+                end)
+
+                after_each(function()
+                    model = nil
+                end)
+
+                it("calls update_where with the the correct parameters", function()
+                    local result = model:save()
+
+                    assert.are.same('roberto', attrs_arg.first_name)
+                    assert.are.same('gin', attrs_arg.last_name)
+                    assert.are.same({ id = 4 }, options_arg)
+                    assert.are.same(1, result)
+                end)
+            end)
+
+            describe("when the instance has not been saved yet", function()
+                before_each(function()
+                    Model.create = function(attrs)
+                        attrs_arg = Helpers.shallowcopy(attrs)
+                        attrs.id = 12
+                        return attrs
+                    end
+                    model = Model.new({ first_name = 'roberto', last_name = 'gin' })
+                end)
+
+                after_each(function()
+                    model = nil
+                end)
+
+                it("calls create with the the correct parameters", function()
+                    model:save()
+
+                    assert.are.same({ first_name = 'roberto', last_name = 'gin' }, attrs_arg)
+                    assert.are.same(12, model.id)
+                end)
             end)
         end)
     end)

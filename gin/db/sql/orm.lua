@@ -1,3 +1,6 @@
+-- gin
+local Helpers = require 'gin.core.helpers'
+
 -- perf
 local ipairs = ipairs
 local require = require
@@ -62,6 +65,23 @@ function SqlOrm.define_model(database, table_name)
 
     function GinModel.delete_all(options)
         return GinModel.delete_where({}, options)
+    end
+
+    function GinModel.update_where(attrs, options)
+        local sql = orm:update_where(attrs, options)
+        return database:execute(sql)
+    end
+
+    function GinModel:save()
+        if self.id ~= nil then
+            local id = self.id
+            self.id = nil
+            local result = GinModel.update_where(self, { id = id })
+            self.id = id
+            return result
+        else
+            return GinModel.create(self)
+        end
     end
 
     return GinModel
