@@ -84,6 +84,14 @@ function SqlOrm.define_model(database, table_name)
         end
     end
 
+    function GinModel:delete()
+        if self.id ~= nil then
+            return GinModel.delete_where({ id = self.id })
+        else
+            error("cannot delete a model without an id")
+        end
+    end
+
     return GinModel
 end
 

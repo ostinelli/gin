@@ -383,5 +383,56 @@ describe("SqlOrm", function()
                 end)
             end)
         end)
+
+        describe("#delete", function()
+            before_each(function()
+                Model = SqlOrm.define_model(MySql, 'users')
+                Model.delete_where = function(attrs, options)
+                    attrs_arg = Helpers.shallowcopy(attrs)
+                    options_arg = options
+                    return 1
+                end
+            end)
+
+            after_each(function()
+                attrs_arg = nil
+                options_arg = nil
+            end)
+
+            describe("when the instance is persisted", function()
+                before_each(function()
+                    model = Model.new({ id = 4, first_name = 'roberto', last_name = 'gin' })
+                end)
+
+                after_each(function()
+                    model = nil
+                end)
+
+                it("calls delete_where with the the correct parameters", function()
+                    local result = model:delete()
+
+                    assert.are.same({ id = 4 }, attrs_arg)
+                    assert.are.same(nil, options_arg)
+                    assert.are.same(1, result)
+                end)
+            end)
+
+            describe("when the instance is not persisted", function()
+                before_each(function()
+                    model = Model.new({ first_name = 'roberto', last_name = 'gin' })
+                end)
+
+                after_each(function()
+                    model = nil
+                end)
+
+                it("returns an error", function()
+                    ok, err = pcall(function() return model:delete() end)
+
+                    assert.are.equal(false, ok)
+                    assert.are.equal(true, string.find(err, "cannot delete a model without an id") > 0)
+                end)
+            end)
+        end)
     end)
 end)
