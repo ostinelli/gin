@@ -5,7 +5,7 @@ local settings = require 'gin.core.settings'
 local Gin = {}
 
 -- version
-Gin.version = '0.0.1'
+Gin.version = '0.1'
 
 -- environment
 Gin.env = os.getenv("GIN_ENV") or 'development'
