@@ -106,44 +106,7 @@ describe("MySqlOrm", function()
                 end)
             end)
         end)
-    -- end)
-
-    -- describe("#find_by", function()
-    --     after_each(function()
-    --         attrs_arg = nil
-    --         options_arg = nil
-    --     end)
-
-    --     describe("when called without options", function()
-    --         it("calls .where with limit 1", function()
-    --             orm.where = function (...)
-    --                 _, attrs_arg, options_arg = ...
-    --                 return 'find-by-sql'
-    --             end
-
-    --             local sql = orm:find_by('attrs')
-
-    --             assert.are.same('attrs', attrs_arg)
-    --             assert.are.same({ limit = 1 }, options_arg)
-    --             assert.are.same('find-by-sql', sql)
-    --         end)
-    --     end)
-
-    --     describe("when called with options", function()
-    --         it("calls .where with limit 1 keeping only the order option", function()
-    --             orm.where = function (...)
-    --                 _, attrs_arg, options_arg = ...
-    --                 return 'find-by-sql'
-    --             end
-
-    --             local sql = orm:find_by('attrs', { limit = 10, offset = 5, order = "first_name DESC" })
-
-    --             assert.are.same('attrs', attrs_arg)
-    --             assert.are.same({ limit = 1, order = "first_name DESC" }, options_arg)
-    --             assert.are.same('find-by-sql', sql)
-    --         end)
-    --     end)
-    -- end)
+    end)
 
     describe("#delete_where", function()
         describe("when attrs are specified", function()

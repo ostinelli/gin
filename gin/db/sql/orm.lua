@@ -46,14 +46,19 @@ function SqlOrm.define_model(database, table_name)
         return GinModel.where({}, options)
     end
 
-    -- function GinModel.find_by(attrs, options)
-    --     local merged_options = { limit = 1 }
-    --     if options and options.order then
-    --         merged_options.order = options.order
-    --     end
+    function GinModel.find_by(attrs, options)
+        local merged_options = { limit = 1 }
+        if options and options.order then
+            merged_options.order = options.order
+        end
 
-    --     return GinModel.where(attrs, merged_options)
-    -- end
+        return GinModel.where(attrs, merged_options)
+    end
+
+    function GinModel.delete_where(attrs, options)
+        local sql = orm:delete_where(attrs, options)
+        return database:execute(sql)
+    end
 
     return GinModel
 end

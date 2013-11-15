@@ -205,11 +205,65 @@ describe("SqlOrm", function()
                 it("calls .where with limit 1", function()
                     local models = Model.find_by({ first_name = 'roberto' })
 
-                    -- assert.are.same({}, attrs_arg)
-                    -- assert.are.same("options", options_arg)
-                    -- assert.are.same("all models", models)
-
+                    assert.are.same({ first_name = 'roberto' }, attrs_arg)
+                    assert.are.same({ limit = 1 }, options_arg)
+                    assert.are.same("all models", models)
                 end)
+            end)
+
+            describe("when called with options", function()
+                it("calls .where with limit 1 keeping only the order option", function()
+                    local models = Model.find_by({ first_name = 'roberto' }, { limit = 10, offset = 5, order = "first_name DESC" })
+
+                    assert.are.same({ first_name = 'roberto' }, attrs_arg)
+                    assert.are.same({ limit = 1, order = "first_name DESC" }, options_arg)
+                    assert.are.same("all models", models)
+                end)
+            end)
+        end)
+
+        describe(".delete_where", function()
+            before_each(function()
+                MySql.execute = function(self, sql)
+                    sql_arg = sql
+                    return 1
+                end
+
+                package.loaded['gin.db.sql.mysql.orm'] = {
+                    new = function(table_name, quote_fun)
+                        return {
+                            table_name = table_name,
+                            quote = quote_fun,
+                            delete_where = function(self, ...)
+                                attrs_arg, options_arg = ...
+                                return "SQL DELETE WHERE"
+                            end
+                        }
+                    end
+                }
+                Model = SqlOrm.define_model(MySql, 'users')
+            end)
+
+            after_each(function()
+                attrs_arg = nil
+                options_arg = nil
+                sql_arg = nil
+            end)
+
+            it("calls the orm with the correct params and options", function()
+                Model.delete_where({ first_name = 'roberto', last_name = 'gin' }, "options")
+                assert.are.same({ first_name = 'roberto', last_name = 'gin' }, attrs_arg)
+                assert.are.same("options", options_arg)
+            end)
+
+            it("calls execute with the correct params", function()
+                Model.delete_where({ first_name = 'roberto', last_name = 'gin' })
+                assert.are.same("SQL DELETE WHERE", sql_arg)
+            end)
+
+            it("returns the result", function()
+                local result = Model.delete_where() -- params are stubbed in the execute return
+                assert.are.equal(1, result)
             end)
         end)
     end)

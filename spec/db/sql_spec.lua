@@ -16,7 +16,8 @@ describe("Database SQL", function()
 
         package.loaded['gin.db.sql.mysql.adapter'] = {
             name = 'adapter',
-            execute = function(...) options_arg, sql_arg = ... end
+            execute = function(...) options_arg, sql_arg = ... end,
+            init = function() end
         }
 
         package.loaded['gin.db.model'] = {
