@@ -46,7 +46,7 @@ return Application
 
 
 mysql = [[
-local sqldb = require 'gin.db.sql'
+local SqlDatabase = require 'gin.db.sql'
 local Gin = require 'gin.core.gin'
 
 -- First, specify the environment settings for this database, for instance:
@@ -55,7 +55,7 @@ local Gin = require 'gin.core.gin'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "test1_development",
+--         database = "{{APP_NAME}}_development",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -65,7 +65,7 @@ local Gin = require 'gin.core.gin'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "test1_test",
+--         database = "{{APP_NAME}}_test",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -75,7 +75,7 @@ local Gin = require 'gin.core.gin'
 --         adapter = 'mysql',
 --         host = "127.0.0.1",
 --         port = 3306,
---         database = "test1_production",
+--         database = "{{APP_NAME}}_production",
 --         user = "root",
 --         password = "",
 --         pool = 5
@@ -83,34 +83,47 @@ local Gin = require 'gin.core.gin'
 -- }
 
 -- Then initialize and return your database:
--- return sqldb.new(DbSettings[Gin.env])
+-- local MySql = SqlDatabase.new(DbSettings[Gin.env])
+--
+-- return MySql
 ]]
 
 
 local nginx_config = [[
-worker_processes 1;
 pid ]] .. Gin.app_dirs.tmp .. [[/{{GIN_ENV}}-nginx.pid;
 
+# This number should be at maxium the number of CPU on the server
+worker_processes 4;
+
 events {
-    worker_connections 1024;
+    # Number of connections per worker
+    worker_connections 4096;
 }
 
 http {
+    # use sendfile
     sendfile on;
 
+    # Gin initialization
     lua_code_cache {{GIN_CODE_CACHE}};
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
+    init_by_lua 'require(\"gin.core.init\")';
 
     server {
-        access_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-access.log;
-        error_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-error.log;
-
+        # List port
         listen {{GIN_PORT}};
 
+        # Access log with buffer, or disable it completetely if unneeded
+        access_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-access.log combined buffer=16k;
+        # access_log off;
+
+        # Error log with buffer
+        error_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-error.log;
+
+        # Gin
         location / {
             content_by_lua 'require(\"gin.core.router\").handler(ngx)';
         }
-
         location /ginconsole {
             {{GIN_API_CONSOLE}}
         }
