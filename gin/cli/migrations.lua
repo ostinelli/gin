@@ -14,22 +14,11 @@ local SqlMigration = {}
 -- SqlMigration.db = require 'db.mysql'
 
 function SqlMigration.up()
-    -- Run your migration, for instance:
-    -- SqlMigration.db:execute([[
-    --     CREATE TABLE users (
-    --         id int NOT NULL AUTO_INCREMENT,
-    --         first_name varchar(255) NOT NULL,
-    --         last_name varchar(255),
-    --         PRIMARY KEY (id)
-    --     );
-    -- ]])
+    -- Run your migration
 end
 
 function SqlMigration.down()
-    -- Run your rollback, for instance:
-    -- SqlMigration.db:execute([[
-    --     DROP TABLE users;
-    -- ]])
+    -- Run your rollback
 end
 
 return SqlMigration
