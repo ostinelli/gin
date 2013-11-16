@@ -65,16 +65,6 @@ function MySql.tables(options)
     return tables
 end
 
--- get list of column names
-function MySql.column_names(options, table_name)
-    local columns_info = MySql.execute(options, "SHOW COLUMNS IN " .. table_name .. ";")
-    local column_names = {}
-    for _, column_info in ipairs(columns_info) do
-        tinsert(column_names, column_info['Field'])
-    end
-    return column_names
-end
-
 -- return schema as a table
 function MySql.schema(options)
     local Migration = require 'gin.db.sql.migrations'
