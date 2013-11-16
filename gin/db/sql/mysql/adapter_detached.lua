@@ -28,9 +28,8 @@ local function deepcopy(orig)
 end
 
 
-local MySql = {
-    db = nil
-}
+local MySql = {}
+MySql.default_database = 'mysql'
 
 local function mysql_connect(options)
     if MySql.db == nil then
@@ -39,13 +38,9 @@ local function mysql_connect(options)
     end
 end
 
--- init
-function MySql.init(options)
-    mysql_connect(options)
-end
-
 -- quote
 function MySql.quote(options, str)
+    mysql_connect(options)
     return "'" .. MySql.db:quote(str) .. "'"
 end
 

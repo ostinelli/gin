@@ -20,8 +20,33 @@ CREATE TABLE ]] .. Migrations.migrations_table_name .. [[ (
 );
 ]]
 
-local function ensure_schema_migrations_exists(db)
-    local tables = db:tables()
+local function create_db(db)
+    local db_name = db.options.database
+    -- use default db
+    db.options.database = db.adapter.default_database
+    -- create
+    db:execute("CREATE DATABASE " .. db_name .. ";")
+    -- revert db name
+    db.options.database = db_name
+    -- clear db
+    db.adapter.db:close()
+    db.adapter.db = nil
+end
+
+local function ensure_db_and_schema_migrations_exist(db)
+    local ok, tables = pcall(function() return db:tables() end)
+
+    if ok == false then
+        local db_name = string.match(tables, "Unknown database '.+'")
+        if db_name ~= nil then
+            -- database does not exist, create
+            create_db(db)
+            tables = db:tables()
+        else
+            error(migration_module)
+        end
+    end
+
     -- chech if exists
     for _, table_name in pairs(tables) do
         if table_name == Migrations.migrations_table_name then
@@ -92,18 +117,7 @@ end
 
 local function run_migration(direction, module_name)
     local version = version_from(module_name)
-    local ok, migration_module = pcall(function() return require(module_name) end)
-
-    if ok == false then
-        local db_name = string.match(migration_module, "Unknown database '(.+)'")
-        if db_name ~= nil then
-            err_message = "Unknown database '" .. db_name .. "'."
-            return false, version, err_message
-        else
-            error(migration_module)
-        end
-    end
-
+    local migration_module = require(module_name)
     local db = migration_module.db
 
     -- check adapter is supported
@@ -112,7 +126,7 @@ local function run_migration(direction, module_name)
         return false, version, err_message
     end
 
-    ensure_schema_migrations_exists(db)
+    if direction == "up" then ensure_db_and_schema_migrations_exist(db) end
 
     -- exit if version already run
     local should_run = direction == "up"

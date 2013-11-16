@@ -12,6 +12,7 @@ local max_packet_size = 1024 * 1024 -- 1MB
 
 
 local MySql = {}
+MySql.default_database = 'mysql'
 
 local function mysql_connect(options)
     -- ini mysql
@@ -40,10 +41,6 @@ local function mysql_keepalive(db, options)
     -- put it into the connection pool
     local ok, err = db:set_keepalive(max_idle_timeout, options.pool)
     if not ok then error("failed to set mysql keepalive: ", err) end
-end
-
--- init
-function MySql.init(options)
 end
 
 -- quote

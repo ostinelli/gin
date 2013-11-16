@@ -84,7 +84,7 @@ describe("Migrations", function()
 
     describe("up", function()
         describe("when both migrations are run successfully", function()
-            it("runs them, creating the schema_migration if necessary", function()
+            it("runs them, creating the database and the schema_migration if necessary", function()
                 migrations.up()
 
                 assert.are.same(create_schema_migrations_sql, queries_1[1])
@@ -136,37 +136,31 @@ describe("Migrations", function()
 
         describe("when the database does not exist", function()
             before_each(function()
-                original_require = require
-                require = function(m)
-                    if m == 'migration/1' then
+                called_one = false
+                package.loaded['migration/1'].db.tables = function(...)
+                    if called_one == false then
+                        called_one = true
                         error("Failed to connect to database: Unknown database 'nonexistent-database'")
-                    else
-                        return original_require(m)
                     end
+                    return {}
                 end
+
+                package.loaded['migration/1'].db.adapter = {
+                    default_database = 'mysql',
+                    db = {
+                        close = function() end
+                    }
+                }
             end)
 
             after_each(function()
-                require = original_require
+                called_one = nil
             end)
 
-
-            it("stops from migrating subsequent migrations", function()
+            it("creates it", function()
                 migrations.up()
 
-                assert.are.same({}, queries_1)
-                assert.are.same({}, queries_2)
-            end)
-
-            it("returns an error", function()
-                local ok, response = migrations.up()
-
-                err_message = "Unknown database 'nonexistent-database'."
-
-                assert.are.equal(false, ok)
-                assert.are.same({
-                    [1] = { version = '1', error = err_message }
-                }, response)
+                assert.are.same("CREATE DATABASE mydb;", queries_1[1])
             end)
         end)
 
@@ -239,6 +233,21 @@ describe("Migrations", function()
                     assert.are.same({
                         [1] = { version = '2' }
                     }, response)
+                end)
+            end)
+
+            describe("when the database does not exist", function()
+                before_each(function()
+                    migrations.version_already_run = function(...)
+                        error("no database")
+                    end
+                end)
+
+                it("blows up", function()
+                    local ok, err = pcall(function() return migrations.down() end)
+
+                    assert.are.equal(false, ok)
+                    assert.are.equal(true, string.find(err, "no database") > 0)
                 end)
             end)
 
