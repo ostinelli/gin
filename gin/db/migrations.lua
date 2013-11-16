@@ -1,4 +1,4 @@
--- run in detached mode
+-- detached
 require 'gin.core.detached'
 
 -- gin

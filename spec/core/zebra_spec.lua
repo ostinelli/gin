@@ -1,5 +1,6 @@
 require 'spec.spec_helper'
 
+
 describe("Gin", function()
     before_each(function()
         package.loaded['gin.core.gin'] = nil

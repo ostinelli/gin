@@ -1,6 +1,7 @@
--- dependencies
+-- dep
 local ansicolors = require 'ansicolors'
 
+-- gin
 local Gin = require 'gin.core.gin'
 local BaseLauncher = require 'gin.cli.base_launcher'
 local helpers = require 'gin.helpers.common'

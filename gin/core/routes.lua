@@ -5,8 +5,8 @@ local setmetatable = setmetatable
 local sgsub = string.gsub
 local smatch = string.match
 local tinsert = table.insert
-local type = type
 local tostring = tostring
+local type = type
 
 
 --  versions

@@ -1,5 +1,6 @@
 require 'spec.spec_helper'
 
+
 describe("Controller", function()
     before_each(function()
         Controller = require 'gin.core.controller'

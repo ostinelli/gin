@@ -1,5 +1,6 @@
 require 'spec.spec_helper'
 
+
 describe("Integration", function()
     before_each(function()
         IntegrationRunner = require 'gin.spec.runners.integration'

@@ -1,7 +1,7 @@
--- init module dependencies
+-- gin
 local Application = require 'config/application'
-
 local GinApiConsole = {}
+
 
 GinApiConsole.html = [====[
 

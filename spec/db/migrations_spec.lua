@@ -8,6 +8,7 @@ CREATE TABLE schema_migrations (
 );
 ]]
 
+
 describe("Migrations", function()
     before_each(function()
         migrations = require 'gin.db.migrations'

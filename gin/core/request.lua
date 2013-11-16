@@ -1,10 +1,12 @@
--- dependencies
+-- dep
 local json = require 'cjson'
 
 -- perf
+local error = error
+local jdecode = json.decode
+local pcall = pcall
 local rawget = rawget
 local setmetatable = setmetatable
-local jdecode = json.decode
 
 
 local Request = {}
@@ -23,7 +25,7 @@ function Request.new(ngx)
         ok, json_or_error = pcall(function() return jdecode(body_raw) end)
         if ok == false then error({ code = 103 }) end
         if json_or_error[1] ~= nil then error({ code = 104 }) end
-        body= json_or_error
+        body = json_or_error
     end
 
     -- init instance

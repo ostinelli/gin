@@ -1,15 +1,19 @@
--- dependencies
+-- dep
 local lfs = require 'lfs'
 local prettyprint = require 'pl.pretty'
 
 -- perf
 local iopen = io.open
 local ipairs = ipairs
+local pairs = pairs
+local pcall = pcall
+local require = require
 local sfind = string.find
 local sgsub = string.gsub
 local smatch = string.match
 local ssub = string.sub
 local tinsert = table.insert
+local type = type
 
 
 local CommonHelpers = {}
@@ -120,7 +124,7 @@ end
 
 -- get the lua module name
 function CommonHelpers.get_lua_module_name(file_path)
-    return string.match(file_path, "(.*)%.lua")
+    return smatch(file_path, "(.*)%.lua")
 end
 
 -- shallow copy of a table

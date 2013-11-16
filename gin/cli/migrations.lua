@@ -1,4 +1,4 @@
--- dependencies
+-- dep
 local ansicolors = require 'ansicolors'
 
 -- gin

@@ -1,6 +1,8 @@
 require 'spec.spec_helper'
 
+-- gin
 local Response = require 'gin.core.response'
+
 
 describe("Response", function()
     describe(".new", function()

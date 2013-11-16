@@ -1,3 +1,4 @@
+-- dep
 local json = require 'cjson'
 
 
@@ -18,8 +19,6 @@ function ResponseSpec.new(options)
     if options.body ~= nil and trim(options.body) ~= "" then
         ok, json_body = pcall(function() return json.decode(options.body) end)
         if ok == false then json_body = nil end
-        -- json_body = json.decode(options.body)
-        -- if type(json_body) ~= 'table' then json_body = nil end
     end
 
     -- init instance

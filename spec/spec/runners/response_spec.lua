@@ -1,5 +1,6 @@
 require 'spec.spec_helper'
 
+
 describe("ResponseSpec", function()
     before_each(function()
         ResponseSpec = require 'gin.spec.runners.response'

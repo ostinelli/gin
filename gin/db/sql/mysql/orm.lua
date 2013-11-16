@@ -1,11 +1,12 @@
 -- perf
+local next = next
 local pairs = pairs
+local setmetatable = setmetatable
 local tconcat = table.concat
 local tinsert = table.insert
 local type = type
-local next = next
 
-
+-- field and values helper
 local function field_and_values(quote, attrs, concat)
     local fav = {}
     for field, value in pairs(attrs) do

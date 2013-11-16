@@ -1,9 +1,8 @@
--- dependencies
+-- dep
 local lfs = require 'lfs'
 
+-- gin
 local Gin = require 'gin.core.gin'
-
-require 'gin.core.gin'
 
 
 local function create_dirs(necessary_dirs)

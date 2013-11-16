@@ -1,7 +1,6 @@
 require 'spec.spec_helper'
 
 
-
 describe("Error", function()
     before_each(function()
         Error = require 'gin.core.error'

@@ -1,6 +1,8 @@
 require 'spec.spec_helper'
 
+-- gin
 local Request = require 'gin.core.request'
+
 
 describe("Request", function()
     before_each(function()

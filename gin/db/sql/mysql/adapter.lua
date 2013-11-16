@@ -1,9 +1,10 @@
 -- perf
 local error = error
 local ipairs = ipairs
+local pairs = pairs
 local require = require
 local tinsert = table.insert
-local error = error
+local tonumber = tonumber
 
 -- settings
 local timeout_subsequent_ops = 1000 -- 1 sec

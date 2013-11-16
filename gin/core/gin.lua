@@ -1,5 +1,8 @@
--- settings
+-- gin
 local settings = require 'gin.core.settings'
+
+-- perf
+local ogetenv = os.getenv
 
 
 local Gin = {}
@@ -8,7 +11,7 @@ local Gin = {}
 Gin.version = '0.1'
 
 -- environment
-Gin.env = os.getenv("GIN_ENV") or 'development'
+Gin.env = ogetenv("GIN_ENV") or 'development'
 
 -- directories
 Gin.app_dirs = {

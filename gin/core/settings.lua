@@ -1,9 +1,8 @@
+-- gin
 local helpers = require 'gin.helpers.common'
 
 -- perf
 local pairs = pairs
-local pcall = pcall
-local require = require
 
 
 local GinSettings = {}

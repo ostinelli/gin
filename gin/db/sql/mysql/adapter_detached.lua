@@ -8,12 +8,16 @@ local Gin = require 'gin.core.gin'
 -- perf
 local assert = assert
 local ipairs = ipairs
+local pairs = pairs
 local pcall = pcall
+local setmetatable = setmetatable
 local smatch = string.match
 local tinsert = table.insert
+local tonumber = tonumber
 
 -- settings
 local mysql_default_database = 'mysql'
+
 
 -- deepcopy of a table
 local function deepcopy(orig)

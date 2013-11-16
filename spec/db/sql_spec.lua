@@ -1,5 +1,6 @@
 require 'spec.spec_helper'
 
+
 describe("Database SQL", function()
     before_each(function()
         SqlDatabase =  require 'gin.db.sql'

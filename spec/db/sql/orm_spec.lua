@@ -1,5 +1,8 @@
 require 'spec.spec_helper'
+
+-- gin
 local helpers = require 'gin.helpers.common'
+
 
 describe("SqlOrm", function()
 

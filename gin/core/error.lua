@@ -1,4 +1,10 @@
+-- gin
 local helpers = require 'gin.helpers.common'
+
+-- perf
+local error = error
+local pairs = pairs
+local setmetatable = setmetatable
 
 
 -- define error

@@ -1,4 +1,4 @@
--- dependencies
+-- dep
 local http = require 'socket.http'
 local url = require 'socket.url'
 local json = require 'cjson'

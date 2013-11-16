@@ -1,6 +1,6 @@
 package.path = './app/controllers/?.lua;' .. package.path
 
--- dependencies
+-- dep
 local json = require 'cjson'
 
 -- gin
