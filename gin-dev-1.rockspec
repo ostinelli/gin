@@ -48,6 +48,7 @@ build = {
         ["gin.db.sql.orm"] = "gin/db/sql/orm.lua",
         ["gin.db.migrations"] = "gin/db/migrations.lua",
         ["gin.db.sql"] = "gin/db/sql.lua",
+        ["gin.helpers.command"] = "gin/helpers/command.lua",
         ["gin.helpers.common"] = "gin/helpers/common.lua",
         ["gin.spec.runners.integration"] = "gin/spec/runners/integration.lua",
         ["gin.spec.runners.response"] = "gin/spec/runners/response.lua",
