@@ -155,9 +155,9 @@ body {
 
 .title {
   height: 56px;
-  width: 164px;
+  width: 136px;
   padding-top: 14px;
-  background-color: #e54d42;
+  background-color: #a8b6c4;
   font-size: 35px;
   text-align: center;
 }
