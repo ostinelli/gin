@@ -134,6 +134,42 @@ describe("Migrations", function()
             end)
         end)
 
+        describe("when the database does not exist", function()
+            before_each(function()
+                original_require = require
+                require = function(m)
+                    if m == 'migration/1' then
+                        error("Failed to connect to database: Unknown database 'nonexistent-database'")
+                    else
+                        return original_require(m)
+                    end
+                end
+            end)
+
+            after_each(function()
+                require = original_require
+            end)
+
+
+            it("stops from migrating subsequent migrations", function()
+                migrations.up()
+
+                assert.are.same({}, queries_1)
+                assert.are.same({}, queries_2)
+            end)
+
+            it("returns an error", function()
+                local ok, response = migrations.up()
+
+                err_message = "Unknown database 'nonexistent-database'."
+
+                assert.are.equal(false, ok)
+                assert.are.same({
+                    [1] = { version = '1', error = err_message }
+                }, response)
+            end)
+        end)
+
         describe("when running a migration with an unsupported adapter", function()
             before_each(function()
                 migration_1.db.options.adapter = 'unsupported-adapter'

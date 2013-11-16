@@ -1,3 +1,7 @@
+-- run in detached mode
+require 'gin.core.detached'
+
+-- gin
 local Gin = require 'gin.core.gin'
 local helpers = require 'gin.helpers.common'
 
@@ -87,9 +91,20 @@ function Migrations.migration_modules_reverse()
 end
 
 local function run_migration(direction, module_name)
-    local migration_module = require(module_name)
-    local db = migration_module.db
     local version = version_from(module_name)
+    local ok, migration_module = pcall(function() return require(module_name) end)
+
+    if ok == false then
+        local db_name = string.match(migration_module, "Unknown database '(.+)'")
+        if db_name ~= nil then
+            err_message = "Unknown database '" .. db_name .. "'."
+            return false, version, err_message
+        else
+            error(migration_module)
+        end
+    end
+
+    local db = migration_module.db
 
     -- check adapter is supported
     if helpers.included_in_table(accepted_adapters, db.options.adapter) == false then
