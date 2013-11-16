@@ -6,22 +6,22 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 
-      <link rel="stylesheet" href="./assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
-      <script src="./assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+      <link rel="stylesheet" href="/assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
+      <script src="/assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
   </head>
 
   <body>
     <div id="header">
       <div class="container">
         <div class="title">
-          <a href="./">GIN.IO</a>
+          <a href="/">GIN.IO</a>
         </div>
 
         <div class="top-nav">
           <ul>
-            <li><a href="./">Home</a></li>
-            <li><a href="./docs/install.html">Docs</a></li>
-            <li><a href="./tutorial.html">Tutorial</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/docs/install.html">Docs</a></li>
+            <li><a href="/tutorial.html">Tutorial</a></li>
             <li><a href="https://github.com/ostinelli/gin">Source</a></li>
           </ul>
         </div>
@@ -35,7 +35,7 @@
     <div class="main">
       <h1>Migrations</h1>
 
-<p>Gin implements a migration engine to help you handle the evolution of your databases. It currently only supports the SQL databases available in Gin (see <a href="./docs/models.html">models</a>).</p>
+<p>Gin implements a migration engine to help you handle the evolution of your databases. It currently only supports the SQL databases available in Gin (see <a href="/docs/models.html">models</a>).</p>
 
 <p>To create a new migration:</p>
 <div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin generate migration
@@ -61,7 +61,7 @@ Created new migration file
 <p>To set up a migration, you need to define:</p>
 
 <ul>
-<li>the <code>SqlMigration.db</code>, which must be one of the available databases, for example the <code>MySql</code> database specified in <code>./db/mysql.lua</code> (see <a href="./docs/application_files.html">application files</a> for more info).</li>
+<li>the <code>SqlMigration.db</code>, which must be one of the available databases, for example the <code>MySql</code> database specified in <code>./db/mysql.lua</code> (see <a href="/docs/application_files.html">application files</a> for more info).</li>
 <li>the <code>SqlMigration.up()</code> function, where you basically execute a SQL statement on the specified db. This function will be called by the Gin migration engine when running the migration.</li>
 <li>the <code>SqlMigration.down()</code> function, where you execute a SQL statement on the specified db. This function will be called by the Gin migration engine when rolling back the migration.</li>
 </ul>
@@ -112,18 +112,18 @@ Rolling back one migration in development environment
       <h4>Docs</h4>
 
 <ul>
-    <li><a href="./docs/install.html">Install</a></li>
-    <li><a href="./docs/getting_started.html">Getting Started</a></li>
-    <li><a href="./docs/api_console.html">API Console</a></li>
-    <li><a href="./docs/application_files.html">Application Files</a></li>
-    <li><a href="./docs/api_versioning.html">API Versioning</a></li>
-    <li><a href="./docs/routes.html">Routes</a></li>
-    <li><a href="./docs/errors.html">Errors</a></li>
-    <li><a href="./docs/controllers.html">Controllers</a></li>
-    <li><a href="./docs/models.html">Models</a></li>
-    <li class="active"><a href="./docs/migrations.html">Migrations</a></li>
-    <li><a href="./docs/testing.html">Testing</a></li>
-    <li><a href="./docs/other.html">Other</a></li>
+    <li><a href="/docs/install.html">Install</a></li>
+    <li><a href="/docs/getting_started.html">Getting Started</a></li>
+    <li><a href="/docs/api_console.html">API Console</a></li>
+    <li><a href="/docs/application_files.html">Application Files</a></li>
+    <li><a href="/docs/api_versioning.html">API Versioning</a></li>
+    <li><a href="/docs/routes.html">Routes</a></li>
+    <li><a href="/docs/errors.html">Errors</a></li>
+    <li><a href="/docs/controllers.html">Controllers</a></li>
+    <li><a href="/docs/models.html">Models</a></li>
+    <li class="active"><a href="/docs/migrations.html">Migrations</a></li>
+    <li><a href="/docs/testing.html">Testing</a></li>
+    <li><a href="/docs/other.html">Other</a></li>
 </ul>
 
     </div>
