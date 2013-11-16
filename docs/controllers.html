@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GIN.IO | Controllers</title>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" \>
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+
+      <link rel="stylesheet" href="./assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
+      <script src="./assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+  </head>
+
+  <body>
+    <div id="header">
+      <div class="container">
+        <div class="title">
+          <a href="./">GIN.IO</a>
+        </div>
+
+        <div class="top-nav">
+          <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="./docs/install.html">Docs</a></li>
+            <li><a href="./tutorial.html">Tutorial</a></li>
+            <li><a href="https://github.com/ostinelli/gin">Source</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+<div class="wrapper">
+  <div class="container">
+
+    <div class="main">
+      <h1>Controllers</h1>
+
+<p>After the routing has been determined (see <a href="./docs/routes.html">routes</a>), a controller action will get called to process the request and provide a response.</p>
+
+<p>Here&#39;s what a simple controller looks like:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">InfoController</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">function</span> <span class="nf">InfoController</span><span class="p">:</span><span class="n">whoami</span><span class="p">()</span>
+    <span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="p">{</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">gin&#39;</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="k">return</span> <span class="n">InfoController</span>
+</code></pre></div>
+<h5>Return values</h5>
+
+<p>The return values of a controller define its response. There are three way you can do so.</p>
+
+<h6>Just the HTTP code</h6>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="k">return</span> <span class="mi">200</span>
+</code></pre></div>
+<p>Returning only the HTTP code will respond with the provided code, an empty JSON body and no additional headers.</p>
+
+<h6>The HTTP code and the body</h6>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="p">{</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">gin&#39;</span> <span class="p">}</span>
+</code></pre></div>
+<p>Gin will respond with the provided code and the encoded JSON body, with no additional headers.</p>
+
+<h6>The HTTP code, the body and the headers</h6>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="p">{</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">gin&#39;</span> <span class="p">},</span> <span class="p">{</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s">Cache-Control&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">max-age=3600&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s">Retry-After&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">120&quot;</span> <span class="p">}</span>
+</code></pre></div>
+<p>Gin will respond with the provided code, the encoded JSON body, and the additional headers.</p>
+
+<h5>Raising errors</h5>
+
+<p>Once you have defined your <a href="./docs/errors.html">errors</a>, it&#39;s really easy to return error responses.</p>
+
+<p>To raise an error, simply refer to the error number you&#39;ve defined in your errors&#39; initializer. For instance, if your Errors are defined as:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Errors</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">[</span><span class="mi">1000</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">status</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">Invalid request.&quot;</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">return</span> <span class="n">Errors</span>
+</code></pre></div>
+<p>Then from a controller you can simply raise it with:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">self</span><span class="p">:</span><span class="n">raise_error</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+</code></pre></div>
+<p>This will return a HTTP status <code>400</code> with the body:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Invalid request.&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>If you need to provide additional information in the payload of the error body, you can do so by passing a table as a second parameter, like so:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">self</span><span class="p">:</span><span class="n">raise_error</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="p">{</span> <span class="n">missing_fields</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;</span><span class="s">first_name&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">last_name&quot;</span> <span class="p">}</span> <span class="p">})</span>
+</code></pre></div>
+<p>This will merge the provided table and return a HTTP status <code>400</code> with the body:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Invalid request.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;missing_fields&quot;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="s2">&quot;first_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;last_name&quot;</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<h5>The routes parameters</h5>
+
+<p>The parameters resulting from a route match are available in the table:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">self</span><span class="p">.</span><span class="n">params</span>
+</code></pre></div>
+<p>Please see <a href="./docs/routes.html">routes</a> for additional information on how to capture and use these.</p>
+
+<h5>The request</h5>
+
+<p>The original request is available in a controller&#39;s action and accessible on self:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">self</span><span class="p">.</span><span class="n">request</span>
+</code></pre></div>
+<blockquote>
+<p>Gin only accepts requests that provide JSON in the body, hence the body is available to you pre-parsed for your convenience.</p>
+</blockquote>
+
+<p>The request has the following properties:</p>
+
+<ul>
+<li><code>request.uri_params</code>: the parsed querystring params (a table)</li>
+<li><code>request.method</code>: the HTTP method</li>
+<li><code>request.headers</code>: the HTTP headers (a table)</li>
+<li><code>request.body</code>: the parsed JSON body (a table)</li>
+<li><code>request.api_version</code>: the complete API version as specified by the client.</li>
+</ul>
+
+<p>It also provide these additional advanced properties:</p>
+
+<ul>
+<li><code>request.uri</code>: the full URI</li>
+<li><code>request.body_raw</code>: the raw body</li>
+<li><code>request.ngx</code>: the ngx object, refer to the <a href="http://wiki.nginx.org/HttpLuaModule">HttpLuaModule</a> documentation for more information.</li>
+</ul>
+
+<h5>Minor version support</h5>
+
+<p>While support for major version numbers is baked into Gin by calling the controllers that correspond to a major version number, minor versioning logic can be implemented at a controller level.</p>
+
+<p>Let&#39;s say that a client requests the specific version <code>1.0.2-rc1</code> in the request headers. Gin will automatically support major versioning by calling the controller located in the corresponding directory <code>./app/controllers/1</code>, but then in your controller the full version requested by the client is available in the parameter <code>self.request.api_version</code>.</p>
+
+<p>A very simple logic looks like this:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">InfoController</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">function</span> <span class="nf">InfoController</span><span class="p">:</span><span class="n">whoami</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">self</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">api_version</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="s">1.0.2-rc1&quot;</span> <span class="k">then</span>
+        <span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="p">{</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">gin newer&quot;</span> <span class="p">}</span>
+    <span class="k">else</span>
+        <span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="p">{</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">gin standard&quot;</span> <span class="p">}</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">return</span> <span class="n">InfoController</span>
+</code></pre></div>
+<h5>The Accepted Params helper</h5>
+
+<p>The controller exposes the method <code>accepted_params</code> that allows you to filter out any unwanted keys from the requested params in the body.</p>
+
+<p>This allows you to filter out:</p>
+
+<ul>
+<li>Non-existent params in a database table</li>
+<li>Params that you do not want to expose to the caller.</li>
+</ul>
+
+<p>For instance:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">params</span> <span class="o">=</span> <span class="n">self</span><span class="p">:</span><span class="n">accepted_params</span><span class="p">({</span> <span class="s1">&#39;</span><span class="s">first_name&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="s">last_name&#39;</span> <span class="p">},</span> <span class="n">self</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">body</span><span class="p">)</span>
+</code></pre></div>
+<p>The variable <code>params</code> will only contains the keys <code>first_name</code>, <code>last_name</code> from the request body.</p>
+
+    </div>
+
+    <div class="sidebar docs">
+      <h4>Docs</h4>
+
+<ul>
+    <li><a href="./docs/install.html">Install</a></li>
+    <li><a href="./docs/getting_started.html">Getting Started</a></li>
+    <li><a href="./docs/api_console.html">API Console</a></li>
+    <li><a href="./docs/application_files.html">Application Files</a></li>
+    <li><a href="./docs/api_versioning.html">API Versioning</a></li>
+    <li><a href="./docs/routes.html">Routes</a></li>
+    <li><a href="./docs/errors.html">Errors</a></li>
+    <li class="active"><a href="./docs/controllers.html">Controllers</a></li>
+    <li><a href="./docs/models.html">Models</a></li>
+    <li><a href="./docs/migrations.html">Migrations</a></li>
+    <li><a href="./docs/testing.html">Testing</a></li>
+    <li><a href="./docs/other.html">Other</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div id="footer-top">
+      <div class="container">
+      </div>
+    </div>
+
+    <div id="footer-bottom">
+      <div class="container">
+        All rights reserved &copy; 2013
+      </div>
+    </div>
+  </body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45805640-1', 'gin.io');
+  ga('send', 'pageview');
+
+</script>
+
+</html>
+

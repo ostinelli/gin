@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GIN.IO | Models</title>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" \>
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+
+      <link rel="stylesheet" href="./assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
+      <script src="./assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+  </head>
+
+  <body>
+    <div id="header">
+      <div class="container">
+        <div class="title">
+          <a href="./">GIN.IO</a>
+        </div>
+
+        <div class="top-nav">
+          <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="./docs/install.html">Docs</a></li>
+            <li><a href="./tutorial.html">Tutorial</a></li>
+            <li><a href="https://github.com/ostinelli/gin">Source</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+<div class="wrapper">
+  <div class="container">
+
+    <div class="main">
+      <h1>Models</h1>
+
+<p>In Gin, you define your databases in the directory <code>./db/</code>.</p>
+
+<p>These databases can then be accessed in the various model files located in <code>./app/models</code>, where you can implement helper methods to store and query data into and from these databases.</p>
+
+<p>This is an extremely flexible and powerful design, as it allows you to implement multiple Databases support and Message Queues in your application
+(for example <a href="redis.io">Redis</a>, <a href="http://www.rabbitmq.com/">RabbitMQ</a>, <a href="http://en.wikipedia.org/wiki/NoSQL">NoSQL databases</a>, but also regular SQL databases such as
+<a href="http://www.mysql.com/">MySQL</a> or <a href="http://www.postgresql.org/">PostgreSQL</a>).</p>
+
+<blockquote>
+<p>In Gin, a model is therefore not necessarily a SQL database object representation.</p>
+</blockquote>
+
+<p>However, Gin does come with a more traditional database helper that allows you to quickly define models that have SQL Object-Relational Mapping functionalities.</p>
+
+<blockquote>
+<p>Currently, only a MySQL adapter and ORM are supported.</p>
+</blockquote>
+
+<h5>MySQL and its ORM</h5>
+
+<h6>Define a DB and a model</h6>
+
+<p>To create a MySQL model with ORM functionalities, we first need to define a new MySQL database in the file <code>./db/mysql.lua</code>, by requiring Gin&#39;s SQL helper and by specifying the <code>mysql</code> adapter like so:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">SqlDatabase</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.db.sql&#39;</span>
+<span class="kd">local</span> <span class="n">Gin</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.core.gin&#39;</span>
+
+<span class="c1">-- First, specify the environment settings for this database, for instance:</span>
+<span class="kd">local</span> <span class="n">DbSettings</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">development</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">adapter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">mysql&#39;</span><span class="p">,</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">127.0.0.1&quot;</span><span class="p">,</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="mi">3306</span><span class="p">,</span>
+        <span class="n">database</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">demo_development&quot;</span><span class="p">,</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">root&quot;</span><span class="p">,</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">&quot;</span><span class="p">,</span>
+        <span class="n">pool</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="p">},</span>
+
+    <span class="n">test</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">adapter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">mysql&#39;</span><span class="p">,</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">127.0.0.1&quot;</span><span class="p">,</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="mi">3306</span><span class="p">,</span>
+        <span class="n">database</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">demo_test&quot;</span><span class="p">,</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">root&quot;</span><span class="p">,</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">&quot;</span><span class="p">,</span>
+        <span class="n">pool</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="p">},</span>
+
+    <span class="n">production</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">adapter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">mysql&#39;</span><span class="p">,</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">127.0.0.1&quot;</span><span class="p">,</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="mi">3306</span><span class="p">,</span>
+        <span class="n">database</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">demo_production&quot;</span><span class="p">,</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">root&quot;</span><span class="p">,</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">&quot;</span><span class="p">,</span>
+        <span class="n">pool</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">-- Then initialize and return your database:</span>
+<span class="kd">local</span> <span class="n">MySql</span> <span class="o">=</span> <span class="n">SqlDatabase</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">DbSettings</span><span class="p">[</span><span class="n">Gin</span><span class="p">.</span><span class="n">env</span><span class="p">])</span>
+
+<span class="k">return</span> <span class="n">MySql</span>
+</code></pre></div>
+<p>As you can see, we&#39;re defining various database access settings for the three environments <code>development</code>, <code>test</code> and <code>production</code>, and then initializing the
+database object with the settings that correspond to the enivornment Gin is run in (available in <code>Gin.env</code>).</p>
+
+<blockquote>
+<p>The newly created object <code>MySql</code> mainly exposes the method <code>execute(sql)</code>. It allows you to use the <code>MySql</code> connection in your application to perform database queries, by calling <code>MySql:execute(sql)</code>.</p>
+</blockquote>
+
+<p>Now that we have a database object, we can define a model <code>Users</code>. To do so, create the file <code>./app/models/users.lua</code> and enter this code:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="c1">-- gin</span>
+<span class="kd">local</span> <span class="n">MySql</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">db.mysql&#39;</span>
+<span class="kd">local</span> <span class="n">SqlOrm</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.db.sql.orm&#39;</span>
+
+<span class="c1">-- define</span>
+<span class="k">return</span> <span class="n">SqlOrm</span><span class="p">.</span><span class="n">define_model</span><span class="p">(</span><span class="n">MySql</span><span class="p">,</span> <span class="s1">&#39;</span><span class="s">users&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p>This defines a model <code>Users</code> that corresponds to the database table <code>users</code>, for the database connection <code>MySql</code>.</p>
+
+<blockquote>
+<p>For the ORM to work properly, the table <code>users</code> must have an <code>AUTO_INCREMENT PRIMARY KEY</code> named <code>id</code>. Please refer to <a href="./docs/migrations.html">migrations</a> for additional information.</p>
+</blockquote>
+
+<h6>Queries</h6>
+
+<p>The <code>Users</code> model defined here above can now be used to perform standard SQL queries, after you&#39;ve required it:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Users</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">app.models.users&#39;</span>
+</code></pre></div>
+<ul>
+<li><p><code>Users.new(attrs)</code>: creates a new user with the passed in attributes. The object is not saved to the database until <code>save</code> is called on it. This returns the newly created user object. For example:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">user</span> <span class="o">=</span> <span class="n">Users</span><span class="p">.</span><span class="n">new</span><span class="p">({</span> <span class="n">first_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">gin&#39;</span> <span class="p">})</span>
+</code></pre></div></li>
+<li><p><code>Users.create(attrs)</code>: creates and saves a new user with the passed in attributes. The attributes must correspond to the ones defined in the table <code>users</code>.
+This returns the newly created user object, with the sequence <code>id</code> that was returned by MySQL. For example:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">user</span> <span class="o">=</span> <span class="n">Users</span><span class="p">.</span><span class="n">create</span><span class="p">({</span> <span class="n">first_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">gin&#39;</span> <span class="p">})</span>
+<span class="n">user</span><span class="p">.</span><span class="n">id</span> <span class="c1">-- =&gt; 1</span>
+</code></pre></div></li>
+<li><p><code>Users.all(options)</code>: returns all users. If provided, <code>options</code> is a table that can specify the <code>limit</code>, the <code>offset</code> and the <code>order</code> of the resultset. For example:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">users</span> <span class="o">=</span> <span class="n">Users</span><span class="p">.</span><span class="n">all</span><span class="p">()</span>
+</code></pre></div></li>
+<li><p><code>Users.where(attrs, options)</code>: returns users that match the query specified in attributes. If provided, <code>options</code> is a table that can specify the <code>limit</code>, the <code>offset</code> and the <code>order</code> of the resultset. For example:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">users</span> <span class="o">=</span> <span class="n">Users</span><span class="p">.</span><span class="n">where</span><span class="p">({</span> <span class="n">first_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">gin&#39;</span><span class="p">},</span> <span class="p">{</span> <span class="n">limit</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">first_name DESC&quot;</span> <span class="p">}</span> <span class="p">)</span>
+</code></pre></div></li>
+<li><p><code>Users.find_by(attrs, options)</code>: same as <code>.where</code>, but will return only the first match. If provided, <code>options</code> is a table that can specify the <code>order</code> of the resultset. For example:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">user</span> <span class="o">=</span> <span class="n">Users</span><span class="p">.</span><span class="n">find_by</span><span class="p">({</span> <span class="n">first_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">gin&#39;</span><span class="p">})</span>
+</code></pre></div></li>
+<li><p><code>Users.delete_all(options)</code>: deletes all users. If provided, <code>options</code> is a table that can specify the <code>limit</code> of the row count. For example:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">users</span> <span class="o">=</span> <span class="n">Users</span><span class="p">.</span><span class="n">delete_all</span><span class="p">()</span>
+</code></pre></div></li>
+<li><p><code>Users.delete_where(attrs, options)</code>: deletes all users that match the query specified in attributes. If provided, <code>options</code> is a table that can specify the <code>limit</code> of the row count. For example:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">users</span> <span class="o">=</span> <span class="n">Users</span><span class="p">.</span><span class="n">delete_where</span><span class="p">({</span> <span class="n">first_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">gin&#39;</span><span class="p">},</span> <span class="p">{</span> <span class="n">limit</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">})</span>
+</code></pre></div></li>
+<li><p><code>user:save()</code>: saves a new model instance or updates an existing one. For example:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">user</span> <span class="o">=</span> <span class="n">Users</span><span class="p">.</span><span class="n">new</span><span class="p">({</span> <span class="n">first_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">gin&#39;</span> <span class="p">})</span>
+<span class="n">user</span><span class="p">:</span><span class="n">save</span><span class="p">()</span>
+</code></pre></div></li>
+<li><p><code>user:delete()</code>: deletes a model instance. For example:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">user</span> <span class="o">=</span> <span class="n">Users</span><span class="p">.</span><span class="n">find_by</span><span class="p">({</span> <span class="n">first_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">gin&#39;</span> <span class="p">})</span>
+<span class="n">user</span><span class="p">:</span><span class="n">delete</span><span class="p">()</span>
+</code></pre></div></li>
+</ul>
+
+    </div>
+
+    <div class="sidebar docs">
+      <h4>Docs</h4>
+
+<ul>
+    <li><a href="./docs/install.html">Install</a></li>
+    <li><a href="./docs/getting_started.html">Getting Started</a></li>
+    <li><a href="./docs/api_console.html">API Console</a></li>
+    <li><a href="./docs/application_files.html">Application Files</a></li>
+    <li><a href="./docs/api_versioning.html">API Versioning</a></li>
+    <li><a href="./docs/routes.html">Routes</a></li>
+    <li><a href="./docs/errors.html">Errors</a></li>
+    <li><a href="./docs/controllers.html">Controllers</a></li>
+    <li class="active"><a href="./docs/models.html">Models</a></li>
+    <li><a href="./docs/migrations.html">Migrations</a></li>
+    <li><a href="./docs/testing.html">Testing</a></li>
+    <li><a href="./docs/other.html">Other</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div id="footer-top">
+      <div class="container">
+      </div>
+    </div>
+
+    <div id="footer-bottom">
+      <div class="container">
+        All rights reserved &copy; 2013
+      </div>
+    </div>
+  </body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45805640-1', 'gin.io');
+  ga('send', 'pageview');
+
+</script>
+
+</html>
+

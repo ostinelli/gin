@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GIN.IO | Getting Started</title>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" \>
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+
+      <link rel="stylesheet" href="./assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
+      <script src="./assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+  </head>
+
+  <body>
+    <div id="header">
+      <div class="container">
+        <div class="title">
+          <a href="./">GIN.IO</a>
+        </div>
+
+        <div class="top-nav">
+          <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="./docs/install.html">Docs</a></li>
+            <li><a href="./tutorial.html">Tutorial</a></li>
+            <li><a href="https://github.com/ostinelli/gin">Source</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+<div class="wrapper">
+  <div class="container">
+
+    <div class="main">
+      <h1>Getting Started</h1>
+
+<p>Ready to start your first Gin app? First, move to a workspace directory:</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cd</span> ~/workspace
+</code></pre></div>
+<p>Create a new Gin app called <code>demo</code>:</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin new demo
+Creating app demo...
+  created file demo/spec/models/.gitkeep
+  created file demo/app/models/.gitkeep
+  created file demo/spec/spec_helper.lua
+  created file demo/config/settings.lua
+  created file demo/spec/controllers/1/pages_controller_spec.lua
+  created file demo/db/schemas/.gitkeep
+  created file demo/db/mysql.lua
+  created file demo/config/nginx.conf
+  created file demo/config/errors.lua
+  created file demo/lib/.gitkeep
+  created file demo/config/application.lua
+  created file demo/app/controllers/1/pages_controller.lua
+  created file demo/db/migrations/.gitkeep
+  created file demo/.gitignore
+  created file demo/config/routes.lua
+</code></pre></div>
+<p>A new <code>hello world</code> app has been created for you. CD into the <code>demo</code> directory:</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cd </span>demo
+</code></pre></div>
+<p>The greenfield application just created for you comes with a simple controller and its test. You can run the test with
+<a href="http://olivinelabs.com/busted/">Busted</a>, the test library that is already included in Gin. To run all the tests for your application:</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>busted
+
+●
+1 success / 0 failures / 0 pending : 0.039959 seconds.
+</code></pre></div>
+<p>We can now start up our <code>demo</code> application. Let&#39;s do so:</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin start
+Gin app in development was succesfully started on port 7200.
+</code></pre></div>
+<p>Open up the browser and point it to <a href="http://localhost:7200/">http://localhost:7200/</a>. You should see an error message:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="nx">code</span><span class="o">:</span> <span class="mi">101</span><span class="p">,</span>
+    <span class="nx">message</span><span class="o">:</span> <span class="s2">&quot;Invalid Accept header format.&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Do not worry about the fact that you&#39;re seeing this error. It is expected behavior: Gin uses the HTTP header <code>Accept</code> to implement API versioning, therefore by accessing your Gin <code>demo</code> application directly from your browser you&#39;re not setting it correctly, which is what Gin is complaining about.</p>
+
+<p>It is however very practical for developers to play around with their API in a browser. To support this, Gin comes with an <a href="./docs/api_console.html">API console</a> that can be accessed in a browser at the address <a href="http://localhost:7200/ginconsole">http://localhost:7200/ginconsole</a>.</p>
+
+<p>Try it out now: open up the API console, then click on the <code>HIT</code> button. You should now see the Gin <code>hello world</code> of your <code>demo</code> application, in the response body:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Hello world from Gin!&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+    </div>
+
+    <div class="sidebar docs">
+      <h4>Docs</h4>
+
+<ul>
+    <li><a href="./docs/install.html">Install</a></li>
+    <li class="active"><a href="./docs/getting_started.html">Getting Started</a></li>
+    <li><a href="./docs/api_console.html">API Console</a></li>
+    <li><a href="./docs/application_files.html">Application Files</a></li>
+    <li><a href="./docs/api_versioning.html">API Versioning</a></li>
+    <li><a href="./docs/routes.html">Routes</a></li>
+    <li><a href="./docs/errors.html">Errors</a></li>
+    <li><a href="./docs/controllers.html">Controllers</a></li>
+    <li><a href="./docs/models.html">Models</a></li>
+    <li><a href="./docs/migrations.html">Migrations</a></li>
+    <li><a href="./docs/testing.html">Testing</a></li>
+    <li><a href="./docs/other.html">Other</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div id="footer-top">
+      <div class="container">
+      </div>
+    </div>
+
+    <div id="footer-bottom">
+      <div class="container">
+        All rights reserved &copy; 2013
+      </div>
+    </div>
+  </body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45805640-1', 'gin.io');
+  ga('send', 'pageview');
+
+</script>
+
+</html>
+

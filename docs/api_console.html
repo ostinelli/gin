@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GIN.IO | API Console</title>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" \>
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+
+      <link rel="stylesheet" href="./assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
+      <script src="./assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+  </head>
+
+  <body>
+    <div id="header">
+      <div class="container">
+        <div class="title">
+          <a href="./">GIN.IO</a>
+        </div>
+
+        <div class="top-nav">
+          <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="./docs/install.html">Docs</a></li>
+            <li><a href="./tutorial.html">Tutorial</a></li>
+            <li><a href="https://github.com/ostinelli/gin">Source</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+<div class="wrapper">
+  <div class="container">
+
+    <div class="main">
+      <h1>API Console</h1>
+
+<p>Gin comes with a handy tool to allow developers play around with their own API. This tool basically:</p>
+
+<ul>
+<li>takes care of adding the proper <code>Accept</code> header, used by Gin to version the API</li>
+<li>allows a developer to set various HTTP methods for a request</li>
+<li>allows a developer to specify request headers and its body</li>
+</ul>
+
+<p>This is a screenshot of what the console looks like:</p>
+
+<p><img src="./assets/api_console-c49196501fed67fe9286e89590db5a6b.png"></p>
+
+<p>To get started:</p>
+
+<ul>
+<li>Select your method from the select box (<code>GET</code>, <code>POST</code>, ...)</li>
+<li>Set the full url of the server you want to play with</li>
+<li>Set the API version</li>
+<li>Set the request headers (if any)</li>
+<li>Set the request body (must be a valid JSON)</li>
+<li>Click on the <code>HIT</code> button to see the response</li>
+</ul>
+
+<p>Please note that request headers should be specified one per line, for example:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">X-Additional: header-info
+X-Additional-2: header-info-2
+</code></pre></div>
+    </div>
+
+    <div class="sidebar docs">
+      <h4>Docs</h4>
+
+<ul>
+    <li><a href="./docs/install.html">Install</a></li>
+    <li><a href="./docs/getting_started.html">Getting Started</a></li>
+    <li class="active"><a href="./docs/api_console.html">API Console</a></li>
+    <li><a href="./docs/application_files.html">Application Files</a></li>
+    <li><a href="./docs/api_versioning.html">API Versioning</a></li>
+    <li><a href="./docs/routes.html">Routes</a></li>
+    <li><a href="./docs/errors.html">Errors</a></li>
+    <li><a href="./docs/controllers.html">Controllers</a></li>
+    <li><a href="./docs/models.html">Models</a></li>
+    <li><a href="./docs/migrations.html">Migrations</a></li>
+    <li><a href="./docs/testing.html">Testing</a></li>
+    <li><a href="./docs/other.html">Other</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div id="footer-top">
+      <div class="container">
+      </div>
+    </div>
+
+    <div id="footer-bottom">
+      <div class="container">
+        All rights reserved &copy; 2013
+      </div>
+    </div>
+  </body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45805640-1', 'gin.io');
+  ga('send', 'pageview');
+
+</script>
+
+</html>
+

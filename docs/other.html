@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GIN.IO | Other</title>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" \>
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+
+      <link rel="stylesheet" href="./assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
+      <script src="./assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+  </head>
+
+  <body>
+    <div id="header">
+      <div class="container">
+        <div class="title">
+          <a href="./">GIN.IO</a>
+        </div>
+
+        <div class="top-nav">
+          <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="./docs/install.html">Docs</a></li>
+            <li><a href="./tutorial.html">Tutorial</a></li>
+            <li><a href="https://github.com/ostinelli/gin">Source</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+<div class="wrapper">
+  <div class="container">
+
+    <div class="main">
+      <h1>Other</h1>
+
+<h5>The Gin object</h5>
+
+<p>In your application, <code>Gin</code> exposes some attributes you might need. After you&#39;ve required it:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Gin</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.core.gin&#39;</span>
+</code></pre></div>
+<ul>
+<li><code>Gin.env</code>: returns the current environment (<code>development</code>, <code>test</code>, <code>production</code>, or any other environment you may be running Gin in)</li>
+<li><code>Gin.version</code>: returns the current Gin version</li>
+<li><code>Gin.settings</code>: returns the global settings defined per environment in <code>./config/settings.lua</code> (see <a href="./docs/application_files.html">Application files</a>, under <code>settings.lua</code>)</li>
+</ul>
+
+<h5>JSON</h5>
+
+<p>If you need to manually encode/decode JSON, you can easily do so by first requiring <code>cjson</code>:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">json</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">cjson&#39;</span>
+</code></pre></div>
+<ul>
+<li>to encode: <code>json.encode(table)</code></li>
+<li>to decode: <code>json.decode(string)</code></li>
+</ul>
+
+<p>json exposes the <a href="http://www.kyne.com.au/%7Emark/software/lua-cjson.php">CJSON</a> class.</p>
+
+<h5>Running in environments</h5>
+
+<p>To run Gin in an environment different than <code>development</code> (the default), ensure this environment has been defined where appropriate (at least in <code>./config/settings.lua</code>) and run:</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ GIN_ENV</span><span class="o">={</span>environment<span class="o">}</span> gin start
+</code></pre></div>
+<p>For instance, to run Gin in production:</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ GIN_ENV</span><span class="o">=</span>production gin start
+</code></pre></div>
+<p>To stop:</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ GIN_ENV</span><span class="o">={</span>environment<span class="o">}</span> gin stop
+</code></pre></div>
+    </div>
+
+    <div class="sidebar docs">
+      <h4>Docs</h4>
+
+<ul>
+    <li><a href="./docs/install.html">Install</a></li>
+    <li><a href="./docs/getting_started.html">Getting Started</a></li>
+    <li><a href="./docs/api_console.html">API Console</a></li>
+    <li><a href="./docs/application_files.html">Application Files</a></li>
+    <li><a href="./docs/api_versioning.html">API Versioning</a></li>
+    <li><a href="./docs/routes.html">Routes</a></li>
+    <li><a href="./docs/errors.html">Errors</a></li>
+    <li><a href="./docs/controllers.html">Controllers</a></li>
+    <li><a href="./docs/models.html">Models</a></li>
+    <li><a href="./docs/migrations.html">Migrations</a></li>
+    <li><a href="./docs/testing.html">Testing</a></li>
+    <li class="active"><a href="./docs/other.html">Other</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div id="footer-top">
+      <div class="container">
+      </div>
+    </div>
+
+    <div id="footer-bottom">
+      <div class="container">
+        All rights reserved &copy; 2013
+      </div>
+    </div>
+  </body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45805640-1', 'gin.io');
+  ga('send', 'pageview');
+
+</script>
+
+</html>
+

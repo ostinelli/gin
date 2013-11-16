@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GIN.IO | API Console</title>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" \>
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+
+      <link rel="stylesheet" href="./assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
+      <script src="./assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+  </head>
+
+  <body>
+    <div id="header">
+      <div class="container">
+        <div class="title">
+          <a href="./">GIN.IO</a>
+        </div>
+
+        <div class="top-nav">
+          <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="./docs/install.html">Docs</a></li>
+            <li><a href="./tutorial.html">Tutorial</a></li>
+            <li><a href="https://github.com/ostinelli/gin">Source</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+<div class="wrapper">
+  <div class="container">
+
+    <div class="main">
+      <h1>Routes</h1>
+
+<p>Routes for your application are defined in the file <code>./config/routes.lua</code>. A very simple route file that exposes a <code>user</code> resource looks like this:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">routes</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.core.routes&#39;</span>
+
+<span class="c1">-- define version</span>
+<span class="kd">local</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">routes</span><span class="p">.</span><span class="n">version</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1">-- define routes</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">index&quot;</span> <span class="p">})</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">POST</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">create&quot;</span> <span class="p">})</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users/:id&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">show&quot;</span> <span class="p">})</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">PATCH</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users/:id&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">update&quot;</span> <span class="p">})</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">DELETE</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users/:id&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">delete&quot;</span> <span class="p">})</span>
+
+<span class="k">return</span> <span class="n">routes</span>
+</code></pre></div>
+<p>Let&#39;s see what these lines do. The first line specifies a container for version <code>1</code> of your routes:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">routes</span><span class="p">.</span><span class="n">version</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p>Gin require an integer number to define a version, as these routes are defined for major versions only. If you need to provide support for minor versions, it is possible to do so in <a href="./docs/controllers.html">controllers</a>.</p>
+</blockquote>
+
+<p>The other lines specify HTTP action routes specific to version <code>1</code>. For example:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">index&quot;</span> <span class="p">})</span>
+</code></pre></div>
+<p>This line routes all HTTP <code>GET</code> requests to <code>/users</code> to the action <code>index</code> of the controller <code>users_controller.lua</code>, whose complete path is <code>./app/controllers/1/users_controller.lua</code> (see <a href="./docs/api_versioning.html">API Versioning</a> for additional information on controller paths).</p>
+
+<p>If you need to provide support for multiple major versions, all you have to do is add multiple versions and build routes out of them, like so:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">routes</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.core.routes&#39;</span>
+
+<span class="c1">-- define version 1</span>
+<span class="kd">local</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">routes</span><span class="p">.</span><span class="n">version</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1">-- define routes</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">index&quot;</span> <span class="p">})</span>
+<span class="n">v1</span><span class="p">:</span><span class="n">POST</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">create&quot;</span> <span class="p">})</span>
+
+<span class="c1">-- define version 2</span>
+<span class="kd">local</span> <span class="n">v2</span> <span class="o">=</span> <span class="n">routes</span><span class="p">.</span><span class="n">version</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1">-- define routes</span>
+<span class="n">v2</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">index&quot;</span> <span class="p">})</span>
+<span class="n">v2</span><span class="p">:</span><span class="n">POST</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">create&quot;</span> <span class="p">})</span>
+<span class="n">v2</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users/:id&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">show&quot;</span> <span class="p">})</span>
+
+<span class="k">return</span> <span class="n">routes</span>
+</code></pre></div>
+<p>Requests to version <code>1</code> of the API will be served by controllers in the <code>./app/controllers/1</code> directory, requests to version <code>2</code> from the ones in the <code>./app/controllers/2</code> directory.</p>
+
+<h5>Named routes</h5>
+
+<p>Named routes are supported, for instance:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users/:id&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">show&quot;</span> <span class="p">})</span>
+</code></pre></div>
+<p>This line routes all HTTP <code>GET</code> requests to <code>/users/{id}</code> to the action <code>show</code> of the controller <code>users_controller.lua</code>.</p>
+
+<p>Inside of the controller, the named parameter <code>:id</code> will be available as <code>self.params.id</code>. For example, in a <code>GET</code> request to <code>/users/gin</code>, the value of <code>self.params.id</code> in the controller&#39;s action <code>show</code> will be <code>gin</code>.</p>
+
+<p>Nested named routes are possible, for instance:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users/:user_id/messages/:id&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">messages&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">show&quot;</span> <span class="p">})</span>
+</code></pre></div>
+<p>This line will expose in the <code>show</code> action of the <code>messages_controller.lua</code> the two nested routes parameters <code>self.params.user_id</code> and <code>self.params.id</code>.</p>
+
+<h5>Patterns</h5>
+
+<p><a href="http://www.lua.org/pil/20.2.html">Lua patterns</a> are supported. For instance:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/pages/(.*)&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">pages&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">show&quot;</span> <span class="p">})</span>
+</code></pre></div>
+<p>This will match all HTTP <code>GET</code> requests done to <code>/pages/*</code>. The captured portion of the route will be available in the <code>show</code> action of the controller <code>pages_controller.lua</code> as <code>self.params[1]</code>.</p>
+
+<p>For example, in a <code>GET</code> request to <code>/pages/home</code>, the value of <code>self.params[1]</code> in the controller&#39;s action <code>show</code> will be <code>home</code>.</p>
+
+    </div>
+
+    <div class="sidebar docs">
+      <h4>Docs</h4>
+
+<ul>
+    <li><a href="./docs/install.html">Install</a></li>
+    <li><a href="./docs/getting_started.html">Getting Started</a></li>
+    <li><a href="./docs/api_console.html">API Console</a></li>
+    <li><a href="./docs/application_files.html">Application Files</a></li>
+    <li><a href="./docs/api_versioning.html">API Versioning</a></li>
+    <li class="active"><a href="./docs/routes.html">Routes</a></li>
+    <li><a href="./docs/errors.html">Errors</a></li>
+    <li><a href="./docs/controllers.html">Controllers</a></li>
+    <li><a href="./docs/models.html">Models</a></li>
+    <li><a href="./docs/migrations.html">Migrations</a></li>
+    <li><a href="./docs/testing.html">Testing</a></li>
+    <li><a href="./docs/other.html">Other</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div id="footer-top">
+      <div class="container">
+      </div>
+    </div>
+
+    <div id="footer-bottom">
+      <div class="container">
+        All rights reserved &copy; 2013
+      </div>
+    </div>
+  </body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45805640-1', 'gin.io');
+  ga('send', 'pageview');
+
+</script>
+
+</html>
+

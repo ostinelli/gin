@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GIN.IO | Errors</title>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" \>
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+
+      <link rel="stylesheet" href="./assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
+      <script src="./assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+  </head>
+
+  <body>
+    <div id="header">
+      <div class="container">
+        <div class="title">
+          <a href="./">GIN.IO</a>
+        </div>
+
+        <div class="top-nav">
+          <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="./docs/install.html">Docs</a></li>
+            <li><a href="./tutorial.html">Tutorial</a></li>
+            <li><a href="https://github.com/ostinelli/gin">Source</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+<div class="wrapper">
+  <div class="container">
+
+    <div class="main">
+      <h1>Errors</h1>
+
+<p>As part of your application&#39;s default initializers, a <code>./config/errors.lua</code> file has been generated for you.</p>
+
+<p>This is what a simple error file looks like:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Errors</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">[</span><span class="mi">1000</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">status</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">Invalid request.&quot;</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s">X-Header&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">header&quot;</span> <span class="p">}</span> <span class="p">},</span>
+<span class="p">}</span>
+
+<span class="k">return</span> <span class="n">Errors</span>
+</code></pre></div>
+<p>The global variable <code>Errors</code> contains the entries for all possible errors of your application. Every item in this table defines
+an error, where:</p>
+
+<ul>
+<li>The <code>1000</code> key is the error number</li>
+<li><code>status</code>  (required): is the HTTP status code</li>
+<li><code>message</code> (required): is the error description</li>
+<li><code>headers</code> (optional): are the additional headers to be returned in the response</li>
+</ul>
+
+<p>From a controller, raising these errors is as simple as calling:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">self</span><span class="p">:</span><span class="n">raise_error</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+</code></pre></div>
+<p>As per this example, this will return a HTTP status <code>400</code>, with the specified headers and the JSON body:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Invalid request.&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p>Your application&#39;s error numbers must be greater than <code>1000</code>. All errors numbers from <code>0</code> to <code>999</code> are reserved for Gin.</p>
+</blockquote>
+
+<h5>Gin error responses</h5>
+
+<p>If no <code>Accept</code> header is provided by a client, Gin will respond with a <code>412</code> HTTP status and a JSON body specifying the following error:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Accept header not set.&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>If an invalid <code>Accept</code> header is provided by a client, Gin will respond with a <code>412</code> HTTP status and a JSON body specifying the following error:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">101</span><span class="p">,</span>
+    <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Invalid Accept header format.&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>If the API version specified by the client is not supported by your application, Gin will respond with a <code>412</code> HTTP status and a JSON body specifying the following error:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">102</span><span class="p">,</span>
+    <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Unsupported version specified in the Accept header.&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>If the JSON body provided in a request is invalid, Gin will respond with a <code>400</code> HTTP status and a JSON body specifying the following error:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">103</span><span class="p">,</span>
+    <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Could not parse JSON in body.&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>If the JSON body provided in a request is not a JSON hash, Gin will respond with a <code>400</code> HTTP status and a JSON body specifying the following error:</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">104</span><span class="p">,</span>
+    <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Body should be a JSON hash.&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+    </div>
+
+    <div class="sidebar docs">
+      <h4>Docs</h4>
+
+<ul>
+    <li><a href="./docs/install.html">Install</a></li>
+    <li><a href="./docs/getting_started.html">Getting Started</a></li>
+    <li><a href="./docs/api_console.html">API Console</a></li>
+    <li><a href="./docs/application_files.html">Application Files</a></li>
+    <li><a href="./docs/api_versioning.html">API Versioning</a></li>
+    <li><a href="./docs/routes.html">Routes</a></li>
+    <li class="active"><a href="./docs/errors.html">Errors</a></li>
+    <li><a href="./docs/controllers.html">Controllers</a></li>
+    <li><a href="./docs/models.html">Models</a></li>
+    <li><a href="./docs/migrations.html">Migrations</a></li>
+    <li><a href="./docs/testing.html">Testing</a></li>
+    <li><a href="./docs/other.html">Other</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div id="footer-top">
+      <div class="container">
+      </div>
+    </div>
+
+    <div id="footer-bottom">
+      <div class="container">
+        All rights reserved &copy; 2013
+      </div>
+    </div>
+  </body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45805640-1', 'gin.io');
+  ga('send', 'pageview');
+
+</script>
+
+</html>
+

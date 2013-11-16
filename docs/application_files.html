@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GIN.IO | Application Files</title>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" \>
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+
+      <link rel="stylesheet" href="./assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
+      <script src="./assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+  </head>
+
+  <body>
+    <div id="header">
+      <div class="container">
+        <div class="title">
+          <a href="./">GIN.IO</a>
+        </div>
+
+        <div class="top-nav">
+          <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="./docs/install.html">Docs</a></li>
+            <li><a href="./tutorial.html">Tutorial</a></li>
+            <li><a href="https://github.com/ostinelli/gin">Source</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+<div class="wrapper">
+  <div class="container">
+
+    <div class="main">
+      <h1>Application Files</h1>
+
+<p>A greenfield <code>demo</code> application has the following structure:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">-- demo
+    |-- app
+        |-- controllers
+            |-- 1
+                pages_controller.lua
+        |-- models
+            .
+    |-- config
+        application.lua
+        errors.lua
+        nginx.conf
+        routes.lua
+        settings.lua
+    |-- db
+        |-- migrations
+            .
+        |-- schemas
+            .
+        mysql.lua
+    |-- lib
+        .
+    |-- spec
+        |-- controllers
+            |-- 1
+                pages_controller_spec.lua
+        |-- models
+            .
+        spec_helper.lua
+</code></pre></div>
+<p>Let&#39;s look what these files and directories contain.</p>
+
+<h5>./app</h5>
+
+<p>The <code>app</code> directory is the main container for all the code of your application. It contains all the controllers (in the <code>controllers</code> subdirectory) and all of the models (in the <code>models</code> subdirectory).</p>
+
+<h6>./app/controllers</h6>
+
+<p>The <code>controllers</code> subdirectory contains the directories of all of API major versions that are supported by your application. The greenfield application supports only a single major version (1), hence it only contains the directory <code>1</code>. You can read more about API versioning <a href="./docs/api_versioning.html">here</a>.</p>
+
+<p>Inside the versioned directories, you can find all of the controllers. The greenfield application has a single controller for version 1: <code>pages_controller.lua</code>, which basically just responds with an <code>hello world</code> example on <code>/</code>. More on controllers <a href="./docs/controllers.html">here</a>.</p>
+
+<h6>./app/models</h6>
+
+<p>The <code>models</code> subdirectory contains all your models. More on models <a href="./docs/models.html">here</a>.</p>
+
+<h5>./config</h5>
+
+<p>The <code>config</code> directory contains all the configuration files of your app, and allows you to define your own initializers.</p>
+
+<h6><code>application.lua</code></h6>
+
+<p>This file is currently used only to define your application name and version. The application name is used to define the <code>Accept</code> header used in <a href="./docs/api_versioning.html">API versioning</a>. Here&#39;s what a normal file looks like:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">Application</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">demo&quot;</span><span class="p">,</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">0.0.1&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h6><code>errors.lua</code></h6>
+
+<p>A single entry point that defines all of the errors that your application can raise. More on errors can be read <a href="./docs/errors.html">here</a>.</p>
+
+<h6><code>nginx.conf</code></h6>
+
+<p>This file will be used to dinamically generate the file that will be used by an instance of OpenResty&#39;s <code>nginx</code>. It contains the necessary code to make Gin work, but can be customized at will like a normal <code>nginx.conf</code> file (for example, to add SSL support).</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">pid tmp/{{GIN_ENV}}-nginx.pid;
+
+# This number should be at maxium the number of CPU on the server
+worker_processes 4;
+
+events {
+    # Number of connections per worker
+    worker_connections 4096;
+}
+
+http {
+    # use sendfile
+    sendfile on;
+
+    # Gin initialization
+    lua_code_cache {{GIN_CODE_CACHE}};
+    lua_package_path &quot;./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;&quot;;
+
+    server {
+        # List port
+        listen {{GIN_PORT}};
+
+        # Access log with buffer, or disable it completetely if unneeded
+        access_log logs/{{GIN_ENV}}-access.log combined buffer=16k;
+        # access_log off;
+
+        # Error log with buffer
+        error_log logs/{{GIN_ENV}}-error.log;
+
+        # Gin
+        location / {
+            content_by_lua &#39;require(\&quot;gin.core.router\&quot;).handler(ngx)&#39;;
+        }
+        location /ginconsole {
+            {{GIN_API_CONSOLE}}
+        }
+    }
+}
+</code></pre></div>
+<p>You can see that it contains 3 parameters, all of which takes values defined in the <code>settings.lua</code> file (see here below):</p>
+
+<ul>
+<li><code>{{GIN_ENV}}</code>: it contains the Gin environment the server is run on, such as <code>development</code>, <code>production</code>, etc</li>
+<li><code>{{GIN_CODE_CACHE}}</code>: can be <code>on</code> or <code>off</code></li>
+<li><code>{{GIN_PORT}}</code>: <code></code>: the <code>nginx</code> port</li>
+</ul>
+
+<p>It also contains one last parameter, not specified in <code>settings.lua</code> file: <code>{{GIN_API_CONSOLE}}</code>, a helper to set the code needed to run the <a href="./docs/api_console.html">API console</a> out of a specific directory (by default, <code>/ginconsole</code>).</p>
+
+<h6><code>routes.lua</code></h6>
+
+<p>This is where your application&#39;s versioned routes get defined. You can read more on routes <a href="./docs/routes.html">here</a>.</p>
+
+<h6><code>settings.lua</code></h6>
+
+<p>This file defines the Gin environments, and the settings to be used for every one of them. By default, Gin defines three environments: <code>development</code>, <code>test</code> and <code>production</code>. This is what a basic file looks like:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Settings</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="n">Settings</span><span class="p">.</span><span class="n">development</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">code_cache</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">7200</span><span class="p">,</span>
+    <span class="n">expose_api_console</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
+
+<span class="n">Settings</span><span class="p">.</span><span class="n">test</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">code_cache</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">7201</span><span class="p">,</span>
+    <span class="n">expose_api_console</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="p">}</span>
+
+<span class="n">Settings</span><span class="p">.</span><span class="n">production</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">code_cache</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>
+    <span class="n">expose_api_console</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="p">}</span>
+
+<span class="k">return</span> <span class="n">Settings</span>
+</code></pre></div>
+<p>The three Gin parameters that can be specified in every environment are:</p>
+
+<ul>
+<li><code>code_cache</code>: whether to cache code or not. If set to <code>false</code>, the code will reload on every page request. This is to be used for development purposes only, as it has a considerable performance impact. Set this to <code>true</code> on production environments. This value defaults to <code>false</code> for the <code>development</code> environment, to <code>true</code> for all the other environments.</li>
+<li><code>port</code>: the port to be used by <code>nginx</code>. This value default to <code>7200</code> for the <code>development</code> environment, to <code>7201</code> for the <code>test</code> environment and to <code>80</code> for all of the other environments (including <code>production</code>).</li>
+<li><code>expose_api_console</code>: if set to <code>true</code>, expose the <a href="./docs/api_console.html">API Console</a>. Defaults to <code>true</code> for the <code>development</code> environment, to <code>false</code> for all of the other environments.</li>
+</ul>
+
+<p>You may also specify your own custom settings in here. All of the setting parameters specified in this file will be available inside your application: <code>Gin.settings</code> will return the ones that correspond to the environment you are running the server in.
+For example, <code>Gin.settings.port</code> returns the port the server is running on.</p>
+
+<h5>./db</h5>
+
+<p>This directory is used to namespace everything related to your databases.</p>
+
+<h6><code>mysql.lua</code></h6>
+
+<p>This generated file contains an example on how to define a connection to a <code>mysql</code> database (currently, the only RDBMS database with a Gin ORM). Please refer to <a href="./docs/models.html">models</a> on how to use this file.</p>
+
+<p>Gin supports having multiple databases in your application: all you have to do is add multiple files like this one, and reference them in your models or where needed. You may also consider setting connections to <a href="http://redis.io/">Redis</a>, <a href="http://www.rabbitmq.com/">RabbitMQ</a> or other types of datastores.</p>
+
+<h6>./db/migrations</h6>
+
+<p>This directory contains all of your SQL migrations. Read more about migrations <a href="./docs/migrations.html">here</a>.</p>
+
+<h6>./db/schemas</h6>
+
+<p>This directory contains a Lua representation of the current schema of your SQL databases, after having run the migrations.</p>
+
+<h5>./lib</h5>
+
+<p>This directory may be used to put any library files you might need to require from your code.</p>
+
+<h5>./spec</h5>
+
+<p>Gin comes with test helpers to test drive your code. By convention, the subdirectories and filenames match the ones defined in the <code>./app</code> directory, with one caveat: all of the test files must have their name end in <code>*_spec.lua</code>.</p>
+
+<p>The <code>spec_helper.lua</code> file is a helper file that needs to be included in all of your tests to be able to access test runners. You may however also use it to define your own custom test helpers. More on tests <a href="./docs/testing.html">here</a>.</p>
+
+    </div>
+
+    <div class="sidebar docs">
+      <h4>Docs</h4>
+
+<ul>
+    <li><a href="./docs/install.html">Install</a></li>
+    <li><a href="./docs/getting_started.html">Getting Started</a></li>
+    <li><a href="./docs/api_console.html">API Console</a></li>
+    <li class="active"><a href="./docs/application_files.html">Application Files</a></li>
+    <li><a href="./docs/api_versioning.html">API Versioning</a></li>
+    <li><a href="./docs/routes.html">Routes</a></li>
+    <li><a href="./docs/errors.html">Errors</a></li>
+    <li><a href="./docs/controllers.html">Controllers</a></li>
+    <li><a href="./docs/models.html">Models</a></li>
+    <li><a href="./docs/migrations.html">Migrations</a></li>
+    <li><a href="./docs/testing.html">Testing</a></li>
+    <li><a href="./docs/other.html">Other</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div id="footer-top">
+      <div class="container">
+      </div>
+    </div>
+
+    <div id="footer-bottom">
+      <div class="container">
+        All rights reserved &copy; 2013
+      </div>
+    </div>
+  </body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45805640-1', 'gin.io');
+  ga('send', 'pageview');
+
+</script>
+
+</html>
+

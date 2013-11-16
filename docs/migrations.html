@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GIN.IO | Migrations</title>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" \>
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+
+      <link rel="stylesheet" href="./assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
+      <script src="./assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+  </head>
+
+  <body>
+    <div id="header">
+      <div class="container">
+        <div class="title">
+          <a href="./">GIN.IO</a>
+        </div>
+
+        <div class="top-nav">
+          <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="./docs/install.html">Docs</a></li>
+            <li><a href="./tutorial.html">Tutorial</a></li>
+            <li><a href="https://github.com/ostinelli/gin">Source</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+<div class="wrapper">
+  <div class="container">
+
+    <div class="main">
+      <h1>Migrations</h1>
+
+<p>Gin implements a migration engine to help you handle the evolution of your databases. It currently only supports the SQL databases available in Gin (see <a href="./docs/models.html">models</a>).</p>
+
+<p>To create a new migration:</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin generate migration
+Created new migration file
+  db/migrations/20131107134407.lua
+</code></pre></div>
+<p>The migration name is just the timestamp of the moment the migration file was created. Open up the newly generated migration file:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">SqlMigration</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1">-- specify the database used in this migration (needed by the Gin migration engine)</span>
+<span class="c1">-- SqlMigration.db = require &#39;db.mysql&#39;</span>
+
+<span class="k">function</span> <span class="nc">SqlMigration</span><span class="p">.</span><span class="nf">up</span><span class="p">()</span>
+    <span class="c1">-- Run your migration</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="nc">SqlMigration</span><span class="p">.</span><span class="nf">down</span><span class="p">()</span>
+    <span class="c1">-- Run your rollback</span>
+<span class="k">end</span>
+
+<span class="k">return</span> <span class="n">SqlMigration</span>
+</code></pre></div>
+<p>To set up a migration, you need to define:</p>
+
+<ul>
+<li>the <code>SqlMigration.db</code>, which must be one of the available databases, for example the <code>MySql</code> database specified in <code>./db/mysql.lua</code> (see <a href="./docs/application_files.html">application files</a> for more info).</li>
+<li>the <code>SqlMigration.up()</code> function, where you basically execute a SQL statement on the specified db. This function will be called by the Gin migration engine when running the migration.</li>
+<li>the <code>SqlMigration.down()</code> function, where you execute a SQL statement on the specified db. This function will be called by the Gin migration engine when rolling back the migration.</li>
+</ul>
+
+<p>The following example migration file shows the creation of a <code>users</code> table, and the rollback of the migration which drops the table:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">SqlMigration</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="n">SqlMigration</span><span class="p">.</span><span class="n">db</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">db.mysql&#39;</span>
+
+<span class="k">function</span> <span class="nc">SqlMigration</span><span class="p">.</span><span class="nf">up</span><span class="p">()</span>
+    <span class="n">SqlMigration</span><span class="p">.</span><span class="n">db</span><span class="p">:</span><span class="n">execute</span><span class="p">(</span><span class="s">[[</span>
+<span class="s">        CREATE TABLE users (</span>
+<span class="s">            id int NOT NULL AUTO_INCREMENT,</span>
+<span class="s">            first_name varchar(255) NOT NULL,</span>
+<span class="s">            last_name varchar(255),</span>
+<span class="s">            PRIMARY KEY (id)</span>
+<span class="s">        );</span>
+<span class="s">    ]]</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="nc">SqlMigration</span><span class="p">.</span><span class="nf">down</span><span class="p">()</span>
+    <span class="n">SqlMigration</span><span class="p">.</span><span class="n">db</span><span class="p">:</span><span class="n">execute</span><span class="p">(</span><span class="s">[[</span>
+<span class="s">        DROP TABLE users;</span>
+<span class="s">    ]]</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">return</span> <span class="n">SqlMigration</span>
+</code></pre></div>
+<p>To run the migration:</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin migrate
+Migrating up in development <span class="nv">environment</span>
+<span class="o">==</span>&gt; Successfully applied migration: 20131107134407
+</code></pre></div>
+<blockquote>
+<p>The Gin migration engine will also take care to generate the environment database if it doesn&#39;t exist yet.</p>
+</blockquote>
+
+<p>You will now have the database <code>demo_development</code>.</p>
+
+<p>To rollback a single migration:</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin migrate rollback
+Rolling back one migration in development environment
+&lt;<span class="o">==</span> Successfully rolled back migration: 20131107134407
+</code></pre></div>
+    </div>
+
+    <div class="sidebar docs">
+      <h4>Docs</h4>
+
+<ul>
+    <li><a href="./docs/install.html">Install</a></li>
+    <li><a href="./docs/getting_started.html">Getting Started</a></li>
+    <li><a href="./docs/api_console.html">API Console</a></li>
+    <li><a href="./docs/application_files.html">Application Files</a></li>
+    <li><a href="./docs/api_versioning.html">API Versioning</a></li>
+    <li><a href="./docs/routes.html">Routes</a></li>
+    <li><a href="./docs/errors.html">Errors</a></li>
+    <li><a href="./docs/controllers.html">Controllers</a></li>
+    <li><a href="./docs/models.html">Models</a></li>
+    <li class="active"><a href="./docs/migrations.html">Migrations</a></li>
+    <li><a href="./docs/testing.html">Testing</a></li>
+    <li><a href="./docs/other.html">Other</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div id="footer-top">
+      <div class="container">
+      </div>
+    </div>
+
+    <div id="footer-bottom">
+      <div class="container">
+        All rights reserved &copy; 2013
+      </div>
+    </div>
+  </body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45805640-1', 'gin.io');
+  ga('send', 'pageview');
+
+</script>
+
+</html>
+
