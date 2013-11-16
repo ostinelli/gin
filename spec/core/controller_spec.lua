@@ -59,4 +59,21 @@ describe("Controller", function()
             assert.are.same(custom_attrs, err.custom_attrs)
         end)
     end)
+
+    describe("#accepted_params", function()
+        it("keeps only the params specified in filters", function()
+            local param_filters = { 'first_name', 'last_name', 'other_param' }
+            params = {
+                first_name = 'roberto',
+                last_name = 'gin',
+                injection_param = 4
+            }
+
+            local accepted_params = controller:accepted_params(param_filters, params)
+            assert.are.same({
+                first_name = 'roberto',
+                last_name = 'gin'
+            }, accepted_params)
+        end)
+    end)
 end)
