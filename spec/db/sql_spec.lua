@@ -16,15 +16,7 @@ describe("Database SQL", function()
 
         package.loaded['gin.db.sql.mysql.adapter'] = {
             name = 'adapter',
-            execute = function(...) options_arg, sql_arg = ... end,
             init = function() end
-        }
-
-        package.loaded['gin.db.model'] = {
-            new = function(...)
-                database_arg, table_name_arg = ...
-                return 'new-model'
-            end
         }
     end)
 
@@ -34,11 +26,6 @@ describe("Database SQL", function()
         SqlDatabase = nil
         options = nil
         package.loaded['gin.db.sql.mysql.adapter'] = nil
-        options_arg = nil
-        sql_arg = nil
-        database_arg = nil
-        table_name_arg = nil
-        package.loaded['gin.db.model'] = nil
     end)
 
     describe(".new", function()
@@ -68,13 +55,106 @@ describe("Database SQL", function()
     end)
 
     describe("#execute", function()
-        it("calls the execute on the adapter", function()
+        before_each(function()
+            package.loaded['gin.db.sql.mysql.adapter'].execute = function(...)
+                options_arg, sql_arg = ...
+            end
+        end)
+
+        after_each(function()
+            options_arg = nil
+            sql_arg = nil
+        end)
+
+        it("calls execute on the adapter", function()
             local DB = SqlDatabase.new(options)
 
             DB:execute("SELECT 1;")
 
             assert.are.equal(options, options_arg)
             assert.are.equal("SELECT 1;", sql_arg)
+        end)
+    end)
+
+    describe("#quote", function()
+        before_each(function()
+            package.loaded['gin.db.sql.mysql.adapter'].quote = function(...)
+                options_arg, str_arg = ...
+            end
+        end)
+
+        after_each(function()
+            options_arg = nil
+            str_arg = nil
+        end)
+
+        it("calls quote on the adapter", function()
+            local DB = SqlDatabase.new(options)
+
+            DB:quote("string")
+
+            assert.are.equal(options, options_arg)
+            assert.are.equal("string", str_arg)
+        end)
+    end)
+
+    describe("#tables", function()
+        before_each(function()
+            package.loaded['gin.db.sql.mysql.adapter'].tables = function(...)
+                options_arg = ...
+            end
+        end)
+
+        after_each(function()
+            options_arg = nil
+        end)
+
+        it("calls tables on the adapter", function()
+            local DB = SqlDatabase.new(options)
+
+            DB:tables()
+
+            assert.are.equal(options, options_arg)
+        end)
+    end)
+
+    describe("#schema", function()
+        before_each(function()
+            package.loaded['gin.db.sql.mysql.adapter'].schema = function(...)
+                options_arg = ...
+            end
+        end)
+
+        after_each(function()
+            options_arg = nil
+        end)
+
+        it("calls schema on the adapter", function()
+            local DB = SqlDatabase.new(options)
+
+            DB:schema()
+
+            assert.are.equal(options, options_arg)
+        end)
+    end)
+
+    describe("#get_last_id", function()
+        before_each(function()
+            package.loaded['gin.db.sql.mysql.adapter'].get_last_id = function(...)
+                options_arg = ...
+            end
+        end)
+
+        after_each(function()
+            options_arg = nil
+        end)
+
+        it("calls get_last_id on the adapter", function()
+            local DB = SqlDatabase.new(options)
+
+            DB:get_last_id()
+
+            assert.are.equal(options, options_arg)
         end)
     end)
 end)

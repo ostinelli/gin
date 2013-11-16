@@ -9,9 +9,7 @@ describe("SqlOrm", function()
             options = {
                 adapter = 'mysql'
             },
-            adapter = {
-                quote = function(str) return "q-" .. str end
-            }
+            quote = function(self, str) return "q-" .. str end
         }
     end)
 
@@ -66,7 +64,7 @@ describe("SqlOrm", function()
                     return 1
                 end
 
-                MySql.adapter.get_last_id = function(...) return 10 end
+                MySql.get_last_id = function(...) return 10 end
 
                 package.loaded['gin.db.sql.mysql.orm'] = {
                     new = function(table_name, quote_fun)

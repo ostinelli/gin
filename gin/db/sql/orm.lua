@@ -6,14 +6,15 @@ local tinsert = table.insert
 
 local SqlOrm = {}
 
-function SqlOrm.define_model(database, table_name)
+function SqlOrm.define_model(sql_database, table_name)
     local GinModel = {}
     GinModel.__index = GinModel
 
     -- init
-    local adapter = database.adapter
-    local quote_fun = adapter.quote
-    local orm = require('gin.db.sql.' .. database.options.adapter .. '.orm').new(table_name, quote_fun)
+    local function quote(str)
+        return sql_database:quote(str)
+    end
+    local orm = require('gin.db.sql.' .. sql_database.options.adapter .. '.orm').new(table_name, quote)
 
     function GinModel.new(attrs)
         local instance = attrs or {}
@@ -23,17 +24,17 @@ function SqlOrm.define_model(database, table_name)
 
     function GinModel.create(attrs)
         local sql = orm:create(attrs)
-        local result = database:execute(sql)
+        local result = sql_database:execute(sql)
 
         local model = GinModel.new(attrs)
-        model.id = adapter.get_last_id()
+        model.id = sql_database:get_last_id()
 
         return model
     end
 
     function GinModel.where(attrs, options)
         local sql = orm:where(attrs, options)
-        local results = database:execute(sql)
+        local results = sql_database:execute(sql)
 
         local models = {}
         for _, v in ipairs(results) do
@@ -57,7 +58,7 @@ function SqlOrm.define_model(database, table_name)
 
     function GinModel.delete_where(attrs, options)
         local sql = orm:delete_where(attrs, options)
-        return database:execute(sql)
+        return sql_database:execute(sql)
     end
 
     function GinModel.delete_all(options)
@@ -66,7 +67,7 @@ function SqlOrm.define_model(database, table_name)
 
     function GinModel.update_where(attrs, options)
         local sql = orm:update_where(attrs, options)
-        return database:execute(sql)
+        return sql_database:execute(sql)
     end
 
     function GinModel:save()
