@@ -53,7 +53,7 @@ function SqlOrm.define_model(sql_database, table_name)
             merged_options.order = options.order
         end
 
-        return GinModel.where(attrs, merged_options)
+        return GinModel.where(attrs, merged_options)[1]
     end
 
     function GinModel.delete_where(attrs, options)

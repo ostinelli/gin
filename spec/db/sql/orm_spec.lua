@@ -186,7 +186,7 @@ describe("SqlOrm", function()
                 Model = SqlOrm.define_model(MySql, 'users')
                 Model.where = function(...)
                     attrs_arg, options_arg = ...
-                    return 'all models'
+                    return { 'first model' }
                 end
             end)
 
@@ -197,21 +197,21 @@ describe("SqlOrm", function()
 
             describe("when called without options", function()
                 it("calls .where with limit 1", function()
-                    local models = Model.find_by({ first_name = 'roberto' })
+                    local model = Model.find_by({ first_name = 'roberto' })
 
                     assert.are.same({ first_name = 'roberto' }, attrs_arg)
                     assert.are.same({ limit = 1 }, options_arg)
-                    assert.are.same("all models", models)
+                    assert.are.same("first model", model)
                 end)
             end)
 
             describe("when called with options", function()
                 it("calls .where with limit 1 keeping only the order option", function()
-                    local models = Model.find_by({ first_name = 'roberto' }, { limit = 10, offset = 5, order = "first_name DESC" })
+                    local model = Model.find_by({ first_name = 'roberto' }, { limit = 10, offset = 5, order = "first_name DESC" })
 
                     assert.are.same({ first_name = 'roberto' }, attrs_arg)
                     assert.are.same({ limit = 1, order = "first_name DESC" }, options_arg)
-                    assert.are.same("all models", models)
+                    assert.are.same("first model", model)
                 end)
             end)
         end)
