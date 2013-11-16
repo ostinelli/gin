@@ -33,6 +33,7 @@ build = {
         ["gin.cli.launcher"] = "gin/cli/launcher.lua",
         ["gin.cli.migrations"] = "gin/cli/migrations.lua",
         ["gin.core.controller"] = "gin/core/controller.lua",
+        ["gin.core.detached"] = "gin/core/detached.lua",
         ["gin.core.error"] = "gin/core/error.lua",
         ["gin.core.gin"] = "gin/core/gin.lua",
         ["gin.core.helpers"] = "gin/core/helpers.lua",

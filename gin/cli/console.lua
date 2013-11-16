@@ -8,7 +8,7 @@ local GinConsole = {}
 
 function GinConsole.start()
     print(ansicolors("Loading %{cyan}" .. Gin.env .. "%{reset} environment (Gin v" .. Gin.version .. ")"))
-    os.execute("lua -i -e \"require 'gin.core.globals'\"")
+    os.execute("lua -i -e \"require 'gin.core.detached' require 'gin.core.init'\"")
 end
 
 return GinConsole
