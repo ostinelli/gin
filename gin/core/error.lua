@@ -1,4 +1,4 @@
-local Helpers = require 'gin.core.helpers'
+local helpers = require 'gin.helpers.common'
 
 
 -- define error
@@ -7,7 +7,7 @@ Error.__index = Error
 
 local function init_errors()
     -- get app errors
-    local errors = Helpers.try_require('config.errors', {})
+    local errors = helpers.try_require('config.errors', {})
     -- add system errors
     errors[100] = { status = 412, message = "Accept header not set." }
     errors[101] = { status = 412, message = "Invalid Accept header format." }

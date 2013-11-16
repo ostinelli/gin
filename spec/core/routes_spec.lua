@@ -165,7 +165,7 @@ describe("Routes", function()
         end)
     end)
 
-    describe("Version Helpers", function()
+    describe("Version helpers", function()
 
         before_each(function()
             version = Routes.version(1)

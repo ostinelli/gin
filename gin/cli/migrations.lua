@@ -3,7 +3,7 @@ local ansicolors = require 'ansicolors'
 
 -- gin
 local Gin = require 'gin.core.gin'
-local Helpers = require 'gin.core.helpers'
+local helpers = require 'gin.helpers.common'
 local Migrations = require 'gin.db.migrations'
 
 

@@ -1,5 +1,5 @@
 require 'spec.spec_helper'
-local Helpers = require 'gin.core.helpers'
+local helpers = require 'gin.helpers.common'
 
 describe("SqlOrm", function()
 
@@ -74,7 +74,7 @@ describe("SqlOrm", function()
                             table_name = table_name,
                             quote = quote_fun,
                             create = function(self, attrs)
-                                attrs_arg = Helpers.shallowcopy(attrs)
+                                attrs_arg = helpers.shallowcopy(attrs)
                                 return "SQL CREATE"
                             end
                         }
@@ -341,7 +341,7 @@ describe("SqlOrm", function()
             describe("when the instance is already saved", function()
                 before_each(function()
                     Model.update_where = function(attrs, options)
-                        attrs_arg = Helpers.shallowcopy(attrs)
+                        attrs_arg = helpers.shallowcopy(attrs)
                         options_arg = options
                         return 1
                     end
@@ -364,7 +364,7 @@ describe("SqlOrm", function()
             describe("when the instance has not been saved yet", function()
                 before_each(function()
                     Model.create = function(attrs)
-                        attrs_arg = Helpers.shallowcopy(attrs)
+                        attrs_arg = helpers.shallowcopy(attrs)
                         attrs.id = 12
                         return attrs
                     end
@@ -388,7 +388,7 @@ describe("SqlOrm", function()
             before_each(function()
                 Model = SqlOrm.define_model(MySql, 'users')
                 Model.delete_where = function(attrs, options)
-                    attrs_arg = Helpers.shallowcopy(attrs)
+                    attrs_arg = helpers.shallowcopy(attrs)
                     options_arg = options
                     return 1
                 end

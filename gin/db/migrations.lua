@@ -1,5 +1,5 @@
 local Gin = require 'gin.core.gin'
-local Helpers = require 'gin.core.helpers'
+local helpers = require 'gin.helpers.common'
 
 -- settings
 local accepted_adapters = { "mysql" }
@@ -50,7 +50,7 @@ local function dump_schema_for(db)
     local schema_dump_file_path = Gin.app_dirs.schemas .. '/' .. db.options.adapter .. '-' .. db.options.database .. '.lua'
     local schema = db:schema()
     -- write to file
-    Helpers.pp_to_file(schema, schema_dump_file_path)
+    helpers.pp_to_file(schema, schema_dump_file_path)
 end
 
 local function get_lua_module_name(file_path)
@@ -62,7 +62,7 @@ function Migrations.migration_modules()
     local modules = {}
 
     local path = Gin.app_dirs.migrations
-    if Helpers.folder_exists(path) then
+    if helpers.folder_exists(path) then
         for file_name in lfs.dir(path) do
             if file_name ~= "." and file_name ~= ".." then
                 local file_path = path .. '/' .. file_name
@@ -83,7 +83,7 @@ function Migrations.migration_modules()
 end
 
 function Migrations.migration_modules_reverse()
-    return Helpers.reverse_table(Migrations.migration_modules())
+    return helpers.reverse_table(Migrations.migration_modules())
 end
 
 local function run_migration(direction, module_name)
@@ -92,7 +92,7 @@ local function run_migration(direction, module_name)
     local version = version_from(module_name)
 
     -- check adapter is supported
-    if Helpers.included_in_table(accepted_adapters, db.options.adapter) == false then
+    if helpers.included_in_table(accepted_adapters, db.options.adapter) == false then
         err_message = "Cannot run migrations for the adapter '" .. db.options.adapter .. "'. Supported adapters are: '" .. table.concat(accepted_adapters, "', '") .. "'."
         return false, version, err_message
     end

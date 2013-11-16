@@ -1,7 +1,7 @@
 local ansicolors = require 'ansicolors'
 
 local Gin = require 'gin.core.gin'
-local Helpers = require 'gin.core.helpers'
+local helpers = require 'gin.helpers.common'
 
 
 local gitignore = [[
@@ -263,7 +263,7 @@ function GinApplication.create_files(parent)
     for file_path, file_content in pairs(GinApplication.files) do
         -- ensure containing directory exists
         local full_file_path = parent .. "/" .. file_path
-        Helpers.mkdirs(full_file_path)
+        helpers.mkdirs(full_file_path)
 
         -- create file
         local fw = io.open(full_file_path, "w")

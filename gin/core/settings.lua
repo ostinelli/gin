@@ -1,4 +1,4 @@
-local Helpers = require 'gin.core.helpers'
+local helpers = require 'gin.helpers.common'
 
 -- perf
 local pairs = pairs
@@ -40,7 +40,7 @@ function GinSettings.for_environment(env)
     if settings == nil then settings = GinSettings.defaults.other end
 
     -- override defaults from app settings
-    local app_settings = Helpers.try_require('config.settings', {})
+    local app_settings = helpers.try_require('config.settings', {})
 
     if app_settings ~= nil then
         local app_settings_env = app_settings[env]

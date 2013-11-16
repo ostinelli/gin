@@ -3,7 +3,7 @@ local ansicolors = require 'ansicolors'
 
 local Gin = require 'gin.core.gin'
 local BaseLauncher = require 'gin.cli.base_launcher'
-local Helpers = require 'gin.core.helpers'
+local helpers = require 'gin.helpers.common'
 
 -- settings
 local nginx_conf_source = 'config/nginx.conf'
@@ -16,7 +16,7 @@ end
 
 local function nginx_conf_content()
     -- read nginx.conf file
-    local nginx_conf_template = Helpers.read_file(nginx_conf_source)
+    local nginx_conf_template = helpers.read_file(nginx_conf_source)
 
     -- append notice
     nginx_conf_template = [[

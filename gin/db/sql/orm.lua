@@ -1,6 +1,3 @@
--- gin
-local Helpers = require 'gin.core.helpers'
-
 -- perf
 local ipairs = ipairs
 local require = require

@@ -1,4 +1,4 @@
-local Helpers = require 'gin.core.helpers'
+local helpers = require 'gin.helpers.common'
 -- local prettyprint = require 'pl.pretty'
 
 -- -- console functions
@@ -11,4 +11,4 @@ local Helpers = require 'gin.core.helpers'
 -- Error = require 'gin.core.error'
 
 -- load models
-Helpers.require_recursive('app/models')
+helpers.require_recursive('app/models')
