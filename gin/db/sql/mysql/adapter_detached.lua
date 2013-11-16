@@ -1,5 +1,9 @@
+-- dep
 local ansicolors = require 'ansicolors'
 local dbi = require 'DBI'
+
+-- gin
+local Gin = require 'gin.core.gin'
 
 -- perf
 local assert = assert
@@ -83,6 +87,9 @@ end
 
 -- execute a query
 function MySql.execute(options, sql)
+    if Gin.env ~= 'test' then
+        print(ansicolors("%{magenta}==> " .. sql .. "%{reset}"))
+    end
     -- connect
     mysql_connect(options)
 

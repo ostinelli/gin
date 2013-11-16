@@ -7,6 +7,9 @@ local helpers = require 'gin.helpers.common'
 local posix = require "posix"
 posix.setenv("GIN_ENV", 'test')
 
+-- detached
+require 'gin.core.detached'
+
 -- helpers
 function pp(o)
     return helpers.pp(o)
