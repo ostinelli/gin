@@ -4,8 +4,8 @@ local Gin = require 'gin.core.gin'
 
 local help_description = [[
 
-          `/++++/:
-          -NNNNNmm`
+           /++++/:
+           NNNNNmm
            mNNMNmy
           .dNMMNms`
       .:+sydMMMMMdyo/-`
