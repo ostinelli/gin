@@ -137,7 +137,6 @@ http {
     # Gin initialization
     lua_code_cache {{GIN_CODE_CACHE}};
     lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
-    init_by_lua 'require(\"gin.core.init\")';
 
     server {
         # List port

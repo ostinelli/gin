@@ -36,7 +36,6 @@ build = {
         ["gin.core.detached"] = "gin/core/detached.lua",
         ["gin.core.error"] = "gin/core/error.lua",
         ["gin.core.gin"] = "gin/core/gin.lua",
-        ["gin.core.init"] = "gin/core/init.lua",
         ["gin.core.request"] = "gin/core/request.lua",
         ["gin.core.response"] = "gin/core/response.lua",
         ["gin.core.router"] = "gin/core/router.lua",
