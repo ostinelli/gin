@@ -3,6 +3,36 @@ local ansicolors = require 'ansicolors'
 local Gin = require 'gin.core.gin'
 local Helpers = require 'gin.core.helpers'
 
+
+local gitignore = [[
+# gin
+client_body_temp
+fastcgi_temp
+logs
+proxy_temp
+tmp
+uwsgi_temp
+
+# vim
+.*.sw[a-z]
+*.un~
+Session.vim
+
+# textmate
+*.tmproj
+*.tmproject
+tmtags
+
+# OSX
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+*.swp
+]]
+
+
+
 local pages_controller = [[
 local PagesController = {}
 
@@ -204,6 +234,7 @@ require 'gin.spec.runner'
 local GinApplication = {}
 
 GinApplication.files = {
+    ['.gitignore'] = gitignore,
     ['app/controllers/1/pages_controller.lua'] = pages_controller,
     ['app/models/.gitkeep'] = "",
     ['config/errors.lua'] = errors,
