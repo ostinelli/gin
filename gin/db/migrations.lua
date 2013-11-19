@@ -28,9 +28,6 @@ local function create_db(db)
     db:execute("CREATE DATABASE " .. db_name .. ";")
     -- revert db name
     db.options.database = db_name
-    -- clear db
-    db.adapter.db:close()
-    db.adapter.db = nil
 end
 
 local function ensure_db_and_schema_migrations_exist(db)
