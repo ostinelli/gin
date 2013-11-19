@@ -1,8 +1,8 @@
--- dep
-local prettyprint = require 'pl.pretty'
+-- gin
+local Helpers = require 'gin.helpers.common'
 
 
 -- pretty print
 function pp(o)
-    prettyprint.dump(o)
+    Helpers.pp(o)
 end
