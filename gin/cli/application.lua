@@ -124,6 +124,8 @@ local Gin = require 'gin.core.gin'
 local nginx_config = [[
 pid ]] .. Gin.app_dirs.tmp .. [[/{{GIN_ENV}}-nginx.pid;
 
+error_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-error.log;
+
 # This number should be at maxium the number of CPU on the server
 worker_processes 4;
 
@@ -147,9 +149,6 @@ http {
         # Access log with buffer, or disable it completetely if unneeded
         access_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-access.log combined buffer=16k;
         # access_log off;
-
-        # Error log with buffer
-        error_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-error.log;
 
         # Gin
         location / {
