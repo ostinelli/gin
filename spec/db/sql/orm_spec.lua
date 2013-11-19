@@ -62,12 +62,10 @@ describe("SqlOrm", function()
 
         describe(".create", function()
             before_each(function()
-                MySql.execute = function(self, sql)
+                MySql.execute_and_return_last_id = function(self, sql)
                     sql_arg = sql
-                    return 1
+                    return 10
                 end
-
-                MySql.get_last_id = function(...) return 10 end
 
                 package.loaded['gin.db.sql.mysql.orm'] = {
                     new = function(table_name, quote_fun)
@@ -94,7 +92,7 @@ describe("SqlOrm", function()
                 assert.are.same({ first_name = 'roberto', last_name = 'gin' }, attrs_arg)
             end)
 
-            it("calls execute with the correct params", function()
+            it("calls execute_and_return_last_id with the correct params", function()
                 Model.create({ first_name = 'roberto', last_name = 'gin' })
                 assert.are.same("SQL CREATE", sql_arg)
             end)

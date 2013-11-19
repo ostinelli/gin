@@ -79,23 +79,37 @@ function MySql.schema(options)
     return schema
 end
 
--- return last inserted if
-function MySql.get_last_id(options)
-    local res = MySql.execute(options, "SELECT LAST_INSERT_ID() AS id;")
-    return tonumber(res[1].id)
+-- execute query on db
+local function db_execute(options, db, sql)
+    local res, err, errno, sqlstate = db:query(sql)
+    if not res then error("bad mysql result: " .. err .. ": " .. errno .. " " .. sqlstate) end
+    -- return
+    return res
 end
 
 -- execute a query
 function MySql.execute(options, sql)
     -- get db object
-    local db_conn = mysql_connect(options)
+    local db = mysql_connect(options)
     -- execute query
-    local res, err, errno, sqlstate = db_conn:query(sql)
-    if not res then error("bad mysql result: " .. err .. ": " .. errno .. " " .. sqlstate) end
+    local res = db_execute(options, db, sql)
     -- keepalive
-    mysql_keepalive(db_conn, options)
+    mysql_keepalive(db, options)
     -- return
     return res
+end
+
+-- execute a query and return the last ID
+function MySql.execute_and_return_last_id(options, sql)
+    -- get db object
+    local db = mysql_connect(options)
+    -- execute query
+    db_execute(options, db, sql)
+    -- get last id
+    local res = db_execute(options, db, "SELECT LAST_INSERT_ID() AS id;")
+    -- keepalive
+    mysql_keepalive(db, options)
+    return tonumber(res[1].id)
 end
 
 return MySql

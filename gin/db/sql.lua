@@ -46,6 +46,10 @@ function SqlDatabase:execute(sql)
     return self.adapter.execute(self.options, sql)
 end
 
+function SqlDatabase:execute_and_return_last_id(sql)
+    return self.adapter.execute_and_return_last_id(self.options, sql)
+end
+
 
 function SqlDatabase:quote(str)
     return self.adapter.quote(self.options, str)
@@ -57,10 +61,6 @@ end
 
 function SqlDatabase:schema()
     return self.adapter.schema(self.options)
-end
-
-function SqlDatabase:get_last_id()
-    return self.adapter.get_last_id(self.options)
 end
 
 return SqlDatabase

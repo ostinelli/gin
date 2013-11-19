@@ -24,10 +24,10 @@ function SqlOrm.define_model(sql_database, table_name)
 
     function GinModel.create(attrs)
         local sql = orm:create(attrs)
-        local result = sql_database:execute(sql)
+        local id = sql_database:execute_and_return_last_id(sql)
 
         local model = GinModel.new(attrs)
-        model.id = sql_database:get_last_id()
+        model.id = id
 
         return model
     end

@@ -76,6 +76,26 @@ describe("Database SQL", function()
         end)
     end)
 
+    describe("#execute_and_return_last_id", function()
+        before_each(function()
+            package.loaded['gin.db.sql.mysql.adapter'].execute_and_return_last_id = function(...)
+                options_arg = ...
+            end
+        end)
+
+        after_each(function()
+            options_arg = nil
+        end)
+
+        it("calls execute_and_return_last_id on the adapter", function()
+            local DB = SqlDatabase.new(options)
+
+            DB:execute_and_return_last_id()
+
+            assert.are.equal(options, options_arg)
+        end)
+    end)
+
     describe("#quote", function()
         before_each(function()
             package.loaded['gin.db.sql.mysql.adapter'].quote = function(...)
@@ -133,26 +153,6 @@ describe("Database SQL", function()
             local DB = SqlDatabase.new(options)
 
             DB:schema()
-
-            assert.are.equal(options, options_arg)
-        end)
-    end)
-
-    describe("#get_last_id", function()
-        before_each(function()
-            package.loaded['gin.db.sql.mysql.adapter'].get_last_id = function(...)
-                options_arg = ...
-            end
-        end)
-
-        after_each(function()
-            options_arg = nil
-        end)
-
-        it("calls get_last_id on the adapter", function()
-            local DB = SqlDatabase.new(options)
-
-            DB:get_last_id()
 
             assert.are.equal(options, options_arg)
         end)

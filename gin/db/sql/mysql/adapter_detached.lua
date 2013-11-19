@@ -14,9 +14,6 @@ local smatch = string.match
 local tinsert = table.insert
 local tonumber = tonumber
 
--- settings
-local mysql_default_database = 'mysql'
-
 
 -- deepcopy of a table
 local function deepcopy(orig)
@@ -39,16 +36,22 @@ local MySql = {}
 MySql.default_database = 'mysql'
 
 local function mysql_connect(options)
-    if MySql.db == nil then
-        MySql.db = assert(dbi.Connect("MySQL", options.database, options.user, options.password, options.host, options.port))
-        MySql.db:autocommit(true)
-    end
+    local db = assert(dbi.Connect("MySQL", options.database, options.user, options.password, options.host, options.port))
+    db:autocommit(true)
+
+    return db
+end
+
+local function mysql_close(db)
+    db:close()
 end
 
 -- quote
 function MySql.quote(options, str)
-    mysql_connect(options)
-    return "'" .. MySql.db:quote(str) .. "'"
+    local db = mysql_connect(options)
+    local quoted_str = "'" .. db:quote(str) .. "'"
+    mysql_close(db)
+    return quoted_str
 end
 
 -- return list of tables
@@ -82,36 +85,54 @@ function MySql.schema(options)
     return schema
 end
 
--- return last inserted if
-function MySql.get_last_id(options)
-    local res = MySql.execute(options, "SELECT BINARY LAST_INSERT_ID() as id;")
-    return tonumber(res[1].id)
+-- execute query on db
+local function db_execute(db, sql)
+    -- execute
+    local sth = assert(db:prepare(sql))
+    local ok, err = sth:execute()
+    if ok == false then error(err) end
+    -- get first returned row (if any)
+    local ok, row = pcall(function() return sth:fetch(true) end)
+    if ok == false then row = nil end
+    return sth, row
 end
 
 -- execute a query
 function MySql.execute(options, sql)
     -- connect
-    mysql_connect(options)
-
+    local db = mysql_connect(options)
+    -- execute
+    local sth, row = db_execute(db, sql)
+    if row == nil then return end
     -- build res
     local res = {}
-
-    local sth = assert(MySql.db:prepare(sql))
-
-    local ok, err = sth:execute()
-    if ok == false then error(err) end
-
-    -- loop over the returned data (if any)
-    local ok, row = pcall(function() return sth:fetch(true) end)
-    if ok == false then return end
-
     while row do
         local irow = deepcopy(row)
         tinsert(res, irow)
         row = sth:fetch(true)
     end
-
+    -- close
+    sth:close()
+    mysql_close(db)
+    -- return
     return res
+end
+
+-- execute a query and return the last ID
+function MySql.execute_and_return_last_id(options, sql)
+    -- connect
+    local db = mysql_connect(options)
+    -- execute sql
+    local sth, row = db_execute(db, sql)
+    sth:close()
+    -- get last id
+    local sth, row = db_execute(db, "SELECT BINARY LAST_INSERT_ID() as id;")
+    local id = row.id
+    -- close
+    sth:close()
+    mysql_close(db)
+    -- return
+    return tonumber(id)
 end
 
 return MySql
