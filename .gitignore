@@ -6,11 +6,6 @@ tmp
 *.un~
 Session.vim
 
-# textmate
-*.tmproj
-*.tmproject
-tmtags
-
 # OSX
 .DS_Store
 ._*
