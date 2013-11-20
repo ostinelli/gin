@@ -21,6 +21,23 @@ local function field_and_values(quote, attrs, concat)
     return tconcat(fav, concat)
 end
 
+-- where
+local function build_where(self, sql, attrs)
+    if attrs ~= nil then
+        if type(attrs) == 'table' then
+            if next(attrs) ~= nil then
+                tinsert(sql, " WHERE (")
+                tinsert(sql, field_and_values(self.quote, attrs, ' AND '))
+                tinsert(sql, ")")
+            end
+        else
+            tinsert(sql, " WHERE (")
+            tinsert(sql, attrs)
+            tinsert(sql, ")")
+        end
+    end
+end
+
 
 local MySqlOrm = {}
 MySqlOrm.__index = MySqlOrm
@@ -71,11 +88,7 @@ function MySqlOrm:where(attrs, options)
     tinsert(sql, "SELECT * FROM ")
     tinsert(sql, self.table_name)
     -- where
-    if attrs ~= nil and next(attrs) ~= nil then
-        tinsert(sql, " WHERE (")
-        tinsert(sql, field_and_values(self.quote, attrs, ' AND '))
-        tinsert(sql, ")")
-    end
+    build_where(self, sql, attrs)
     -- options
     if options then
         -- order
@@ -107,11 +120,7 @@ function MySqlOrm:delete_where(attrs, options)
     tinsert(sql, "DELETE FROM ")
     tinsert(sql, self.table_name)
     -- where
-    if attrs ~= nil and next(attrs) ~= nil then
-        tinsert(sql, " WHERE (")
-        tinsert(sql, field_and_values(self.quote, attrs, ' AND '))
-        tinsert(sql, ")")
-    end
+    build_where(self, sql, attrs)
     -- options
     if options then
         -- limit
@@ -140,11 +149,7 @@ function MySqlOrm:update_where(attrs, where_attrs)
     -- updates
     tinsert(sql, field_and_values(self.quote, attrs, ','))
     -- where
-    if where_attrs ~= nil and next(where_attrs) ~= nil then
-        tinsert(sql, " WHERE (")
-        tinsert(sql, field_and_values(self.quote, where_attrs, ' AND '))
-        tinsert(sql, ")")
-    end
+    build_where(self, sql, where_attrs)
     -- close
     tinsert(sql, ";")
     -- execute
