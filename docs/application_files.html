@@ -118,8 +118,7 @@ http {
     sendfile on;
 
     # Gin initialization
-    lua_code_cache {{GIN_CODE_CACHE}};
-    lua_package_path &quot;./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;&quot;;
+    {{GIN_INIT}}
 
     server {
         # List port
@@ -129,28 +128,27 @@ http {
         access_log logs/{{GIN_ENV}}-access.log combined buffer=16k;
         # access_log off;
 
-        # Error log with buffer
+        # Error log
         error_log logs/{{GIN_ENV}}-error.log;
 
-        # Gin
-        location / {
-            content_by_lua &#39;require(\&quot;gin.core.router\&quot;).handler(ngx)&#39;;
-        }
-        location /ginconsole {
-            {{GIN_API_CONSOLE}}
-        }
+        # Gin runtime
+        {{GIN_RUNTIME}}
     }
 }
 </code></pre></div>
-<p>You can see that it contains 3 parameters, all of which takes values defined in the <code>settings.lua</code> file (see here below):</p>
+<p>You can see that it contains 2 parameters, which take their values defined in the <code>settings.lua</code> file (see here below):</p>
 
 <ul>
 <li><code>{{GIN_ENV}}</code>: it contains the Gin environment the server is run on, such as <code>development</code>, <code>production</code>, etc</li>
-<li><code>{{GIN_CODE_CACHE}}</code>: can be <code>on</code> or <code>off</code></li>
 <li><code>{{GIN_PORT}}</code>: <code></code>: the <code>nginx</code> port</li>
 </ul>
 
-<p>It also contains one last parameter, not specified in <code>settings.lua</code> file: <code>{{GIN_API_CONSOLE}}</code>, a helper to set the code needed to run the <a href="../docs/api_console.html">API console</a> out of a specific directory (by default, <code>/ginconsole</code>).</p>
+<p>It also contains two Gin helpers:</p>
+
+<ul>
+<li><code>{{GIN_INIT}}</code>, which sets the Gin initialization code</li>
+<li><code>{{GIN_RUNTIME}}</code>, which sets the Gin runtime code</li>
+</ul>
 
 <h6><code>routes.lua</code></h6>
 
