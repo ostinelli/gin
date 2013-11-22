@@ -147,7 +147,7 @@ http {
         access_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-access.log combined buffer=16k;
         # access_log off;
 
-        # Error log with buffer
+        # Error log
         error_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-error.log;
 
         # Gin runtime
