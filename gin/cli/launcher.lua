@@ -32,16 +32,31 @@ local function nginx_conf_content()
     local nginx_content = nginx_conf_template
     nginx_content = string.gsub(nginx_content, "{{GIN_PORT}}", Gin.settings.port)
     nginx_content = string.gsub(nginx_content, "{{GIN_ENV}}", Gin.env)
-    nginx_content = string.gsub(nginx_content, "{{GIN_CODE_CACHE}}", convert_boolean_to_onoff(Gin.settings.code_cache))
-    -- api console
-    local api_console_code = [[content_by_lua 'require(\"gin.cli.api_console\").handler(ngx)';]]
 
+    -- gin init
+    local gin_init = [[
+lua_code_cache ]] .. convert_boolean_to_onoff(Gin.settings.code_cache) .. [[;
+    lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
+]]
+    nginx_content = string.gsub(nginx_content, "{{GIN_INIT}}", gin_init)
+
+    -- gin runtime
+    local gin_runtime = [[
+location / {
+            content_by_lua 'require(\"gin.core.router\").handler(ngx)';
+        }
+]]
     if Gin.settings.expose_api_console == true then
-        nginx_content = string.gsub(nginx_content, "{{GIN_API_CONSOLE}}", api_console_code)
-    else
-        nginx_content = string.gsub(nginx_content, "{{GIN_API_CONSOLE}}", "")
+        gin_runtime = gin_runtime .. [[
+        # Gin console
+        location /ginconsole {
+            content_by_lua 'require(\"gin.cli.api_console\").handler(ngx)';
+        }
+]]
     end
+    nginx_content = string.gsub(nginx_content, "{{GIN_RUNTIME}}", gin_runtime)
 
+    -- return
     return nginx_content
 end
 
