@@ -47,6 +47,7 @@ build = {
         ["gin.db.sql.mysql.orm"] = "gin/db/sql/mysql/orm.lua",
         ["gin.db.sql.postgresql.adapter"] = "gin/db/sql/postgresql/adapter.lua",
         ["gin.db.sql.postgresql.adapter_detached"] = "gin/db/sql/postgresql/adapter_detached.lua",
+        ["gin.db.sql.postgresql.helpers"] = "gin/db/sql/postgresql/helpers.lua",
         ["gin.db.sql.postgresql.orm"] = "gin/db/sql/postgresql/orm.lua",
         ["gin.db.sql.orm"] = "gin/db/sql/orm.lua",
         ["gin.db.migrations"] = "gin/db/migrations.lua",

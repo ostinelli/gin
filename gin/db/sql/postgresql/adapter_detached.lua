@@ -4,6 +4,7 @@ local dbi = require 'DBI'
 -- gin
 local Gin = require 'gin.core.gin'
 local helpers = require 'gin.helpers.common'
+local postgresql_helpers = require 'gin.db.sql.postgresql.helpers'
 
 -- perf
 local assert = assert
@@ -12,7 +13,6 @@ local pairs = pairs
 local pcall = pcall
 local setmetatable = setmetatable
 local smatch = string.match
-local tconcat = table.concat
 local tinsert = table.insert
 local tonumber = tonumber
 
@@ -20,24 +20,14 @@ local tonumber = tonumber
 local PostgreSql = {}
 PostgreSql.default_database = 'postgres'
 
--- build location execute name
+
+-- locations
 function PostgreSql.location_for(options)
-    name = {
-        'gin',
-        options.adapter,
-        options.host,
-        options.port,
-        options.database,
-    }
-    return tconcat(name, '|')
+    return postgresql_helpers.location_for(options)
 end
 
 function PostgreSql.execute_location_for(options)
-    name = {
-        PostgreSql.location_for(options),
-        'execute'
-    }
-    return tconcat(name, '|')
+    return postgresql_helpers.execute_location_for(options)
 end
 
 local function postgresql_connect(options)

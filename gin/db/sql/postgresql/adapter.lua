@@ -1,34 +1,25 @@
+-- gin
+local postgresql_helpers = require 'gin.db.sql.postgresql.helpers'
+
 -- perf
 local error = error
 local require = require
 local smatch = string.match
-local tconcat = table.concat
 local tonumber = tonumber
+
 
 local PostgreSql = {}
 PostgreSql.default_database = 'postgres'
 
 
--- build location execute name
+-- locations
 function PostgreSql.location_for(options)
-    name = {
-        'gin',
-        options.adapter,
-        options.host,
-        options.port,
-        options.database,
-    }
-    return tconcat(name, '|')
+    return postgresql_helpers.location_for(options)
 end
 
 function PostgreSql.execute_location_for(options)
-    name = {
-        PostgreSql.location_for(options),
-        'execute'
-    }
-    return tconcat(name, '|')
+    return postgresql_helpers.execute_location_for(options)
 end
-
 
 -- quote
 function PostgreSql.quote(options, str)
