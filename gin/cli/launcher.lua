@@ -10,12 +10,15 @@ local helpers = require 'gin.helpers.common'
 local nginx_conf_source = 'config/nginx.conf'
 
 
+local GinLauncher = {}
+
+
 local function convert_boolean_to_onoff(value)
     if value == true then value = 'on' else value = 'off' end
     return value
 end
 
-local function nginx_conf_content()
+function GinLauncher.nginx_conf_content()
     -- read nginx.conf file
     local nginx_conf_template = helpers.read_file(nginx_conf_source)
 
@@ -65,11 +68,9 @@ function nginx_conf_file_path()
 end
 
 function base_launcher()
-    return BaseLauncher.new(nginx_conf_content(), nginx_conf_file_path())
+    return BaseLauncher.new(GinLauncher.nginx_conf_content(), nginx_conf_file_path())
 end
 
-
-local GinLauncher = {}
 
 function GinLauncher.start(env)
     -- init base_launcher
