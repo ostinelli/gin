@@ -130,19 +130,20 @@ function Router.call_controller(request, controller_name, action, params)
 
     local response
 
-    if ok then
-        -- successful
-        response = Response.new({ status = status_or_error, headers = headers, body = body })
-    else
-        -- controller raised an error
-        local ok, err = pcall(function() return Error.new(status_or_error.code, status_or_error.custom_attrs) end)
+    -- look after default signals on mathed controller
+    local actions = {'before_action', action, 'after_action'}
 
-        if ok then
-            -- API error
-            response = Response.new({ status = err.status, headers = err.headers, body = err.body })
-        else
-            -- another error, throw
-            error(status_or_error)
+    for index, action in ipairs(actions) do
+        if matched_controller[action] ~= nil then
+            -- call action
+            local ok, status_or_error, body, headers = pcall(function() return matched_controller[action](matched_controller) end)
+            if ok then
+                -- successful
+                response = Response.new({ status = status_or_error, headers = headers, body = body })
+            else
+                -- controller raised an error
+                response = Router.handle_error(status_or_error)
+            end
         end
     end
 
