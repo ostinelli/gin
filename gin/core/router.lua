@@ -123,9 +123,6 @@ function Router.call_controller(request, controller_name, action, params)
     local controller_instance = Controller.new(request, params)
     setmetatable(matched_controller, { __index = controller_instance })
 
-    -- call action
-    local ok, status_or_error, body, headers = pcall(function() return matched_controller[action](matched_controller) end)
-
     local response
 
     -- look after default signals on matched controller
