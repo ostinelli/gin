@@ -96,8 +96,11 @@ function PostgreSql.execute(options, sql)
     return db_execute(options, db, sql)
 end
 
-function append_to_sql(sql, append_sql)
-    local sql_without_last_semicolon = smatch(sql, "(.*);?")
+local function append_to_sql(sql, append_sql)
+    local sql_without_last_semicolon = smatch(sql, "(.*);")
+    if sql_without_last_semicolon ~= nil then
+        sql = sql_without_last_semicolon
+    end
     return sql_without_last_semicolon .. append_sql
 end
 

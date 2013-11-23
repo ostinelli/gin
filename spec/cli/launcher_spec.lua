@@ -17,6 +17,7 @@ describe("Launcher", function()
             read_file = function() return "" end,
             module_names_in_path = function() return {} end
         }
+        package.loaded['gin.db.sql.postgresql.adapter'] = nil
     end)
 
     after_each(function()
