@@ -150,6 +150,22 @@ function Router.call_controller(request, controller_name, action, params)
     return response
 end
 
+function Router.handle_error(status_or_error)
+  local response
+
+  local ok, err = pcall(function() return Error.new(status_or_error.code, status_or_error.custom_attrs) end)
+
+  if ok then
+      -- API error
+      response = Response.new({ status = err.status, headers = err.headers, body = err.body })
+  else
+      -- another error, throw
+      error(status_or_error)
+  end
+
+  return response
+end
+
 function Router.respond(ngx, response)
     -- set status
     ngx.status = response.status
