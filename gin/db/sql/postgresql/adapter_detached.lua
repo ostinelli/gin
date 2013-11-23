@@ -12,12 +12,33 @@ local pairs = pairs
 local pcall = pcall
 local setmetatable = setmetatable
 local smatch = string.match
+local tconcat = table.concat
 local tinsert = table.insert
 local tonumber = tonumber
 
 
 local PostgreSql = {}
 PostgreSql.default_database = 'postgres'
+
+-- build location execute name
+function PostgreSql.location_for(options)
+    name = {
+        'gin',
+        options.adapter,
+        options.host,
+        options.port,
+        options.database,
+    }
+    return tconcat(name, '|')
+end
+
+function PostgreSql.execute_location_for(options)
+    name = {
+        PostgreSql.location_for(options),
+        'execute'
+    }
+    return tconcat(name, '|')
+end
 
 local function postgresql_connect(options)
     local db = assert(dbi.Connect("PostgreSQL", options.database, options.user, options.password, options.host, options.port))

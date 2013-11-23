@@ -26,12 +26,11 @@ end
 -- add locations for databases
 local function gin_init_databases(gin_init)
     local modules = database_modules()
-    local postgresql_adapter = require 'gin.db.sql.postgresql.adapter'
 
     for _, module_name in ipairs(modules) do
         local db = require(module_name)
         if db.options.adapter == 'postgresql' then
-            local name = postgresql_adapter.location_for(db.options)
+            local name = db.adapter.location_for(db.options)
             gin_init = gin_init .. [[
     upstream ]] .. name .. [[ {
         postgres_server ]] .. db.options.host .. [[:]] .. db.options.port .. [[ dbname=]] .. db.options.database .. [[ user=]] .. db.options.user .. [[ password=]] .. db.options.password .. [[;
