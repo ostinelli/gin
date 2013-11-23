@@ -41,6 +41,7 @@ build = {
         ["gin.core.router"] = "gin/core/router.lua",
         ["gin.core.routes"] = "gin/core/routes.lua",
         ["gin.core.settings"] = "gin/core/settings.lua",
+        ["gin.db.sql.common.orm"] = "gin/db/sql/common/orm.lua",
         ["gin.db.sql.mysql.adapter"] = "gin/db/sql/mysql/adapter.lua",
         ["gin.db.sql.mysql.adapter_detached"] = "gin/db/sql/mysql/adapter_detached.lua",
         ["gin.db.sql.mysql.orm"] = "gin/db/sql/mysql/orm.lua",
