@@ -110,7 +110,7 @@ function PostgreSql.execute(options, sql)
     local db = postgresql_connect(options)
     -- execute
     local sth, row = db_execute(db, sql)
-    if row == nil then return end
+    if row == nil then return {} end
     -- build res
     local res = {}
     while row do

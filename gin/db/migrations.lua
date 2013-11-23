@@ -6,7 +6,7 @@ local Gin = require 'gin.core.gin'
 local helpers = require 'gin.helpers.common'
 
 -- settings
-local accepted_adapters = { "mysql" }
+local accepted_adapters = { "mysql", "postgresql" }
 
 
 local Migrations = {}
@@ -30,12 +30,18 @@ local function create_db(db)
     db.options.database = db_name
 end
 
+local function is_database_not_found_error(err)
+    local db_not_found = string.match(err, "Unknown database '.+'") -- mysql match
+    if db_not_found == nil then
+        db_not_found = string.match(err, 'database ".+" does not exist') -- postgresql match
+    end
+    return db_not_found ~= nil
+end
+
 local function ensure_db_and_schema_migrations_exist(db)
     local ok, tables = pcall(function() return db:tables() end)
-
     if ok == false then
-        local db_name = string.match(tables, "Unknown database '.+'")
-        if db_name ~= nil then
+        if is_database_not_found_error(tables) == true then
             -- database does not exist, create
             create_db(db)
             tables = db:tables()
@@ -118,6 +124,8 @@ local function run_migration(direction, module_name)
 
         -- dump schema
         dump_schema_for(db)
+    else
+        error(err)
     end
 
     -- return result
