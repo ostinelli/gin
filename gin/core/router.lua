@@ -40,8 +40,7 @@ local function create_request(ngx)
     local ok, request_or_error = pcall(function() return Request.new(ngx) end)
     if ok == false then
         -- parsing errors
-        local err = Error.new(request_or_error.code, request_or_error.custom_attrs)
-        response = Response.new({ status = err.status, body = err.body })
+        local response = Router.handle_error(request_or_error)
         Router.respond(ngx, response)
         return false
     end
@@ -134,9 +133,11 @@ function Router.call_controller(request, controller_name, action, params)
     local actions = {'before_action', action, 'after_action'}
 
     for index, action in ipairs(actions) do
+
         if matched_controller[action] ~= nil then
             -- call action
             local ok, status_or_error, body, headers = pcall(function() return matched_controller[action](matched_controller) end)
+
             if ok then
                 -- successful
                 response = Response.new({ status = status_or_error, headers = headers, body = body })
