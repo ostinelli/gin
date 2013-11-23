@@ -64,8 +64,7 @@ function Router.handler(ngx)
 
     if ok == false then
         -- match returned an error (for instance a 412 for no header match)
-        local err = Error.new(controller_name_or_error.code, controller_name_or_error.custom_attrs)
-        response = Response.new({ status = err.status, body = err.body })
+        response = Router.handle_error(controller_name_or_error)
         Router.respond(ngx, response)
 
     elseif controller_name_or_error then
