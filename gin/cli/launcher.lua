@@ -12,11 +12,102 @@ local nginx_conf_source = 'config/nginx.conf'
 
 local GinLauncher = {}
 
-
+-- convert true|false to on|off
 local function convert_boolean_to_onoff(value)
     if value == true then value = 'on' else value = 'off' end
     return value
 end
+
+-- get application database modules
+local function database_modules()
+    return helpers.module_names_in_path(Gin.app_dirs.db)
+end
+
+-- build name out of a db
+local function name_for(db)
+    name = {
+        'gin',
+        db.options.adapter,
+        db.options.host,
+        db.options.port,
+        db.options.database
+    }
+    return table.concat(name, '|')
+end
+
+-- add locations for databases
+local function gin_init_databases(gin_init)
+    local modules = database_modules()
+    for _, module_name in ipairs(modules) do
+        local db = require(module_name)
+        if db.options.adapter == 'postgresql' then
+            local name = name_for(db)
+            gin_init = gin_init .. [[
+    upstream ]] .. name .. [[ {
+        postgres_server ]] .. db.options.host .. [[:]] .. db.options.port .. [[ dbname=]] .. db.options.database .. [[ user=]] .. db.options.user .. [[ password=]] .. db.options.password .. [[;
+    }
+]]
+        end
+    end
+
+    return gin_init
+end
+
+-- gin init
+local function gin_init(nginx_content)
+    -- gin init
+    local gin_init = [[
+lua_code_cache ]] .. convert_boolean_to_onoff(Gin.settings.code_cache) .. [[;
+    lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
+]]
+
+    -- add db upstreams
+    gin_init = gin_init_databases(gin_init)
+
+    return string.gsub(nginx_content, "{{GIN_INIT}}", gin_init)
+end
+
+-- add locations for databases
+local function gin_runtime_databases(gin_runtime)
+    local modules = database_modules()
+    for _, module_name in ipairs(modules) do
+        local db = require(module_name)
+        if db.options.adapter == 'postgresql' then
+            local name = name_for(db)
+            gin_runtime = gin_runtime .. [[
+        location = /]] .. name .. [[|execute {
+            internal;
+            postgres_pass   ]] .. name .. [[;
+            postgres_query  $echo_request_body;
+        }
+]]
+        end
+    end
+
+    return gin_runtime
+end
+
+-- gin runtime
+local function gin_runtime(nginx_content)
+    local gin_runtime = [[
+location / {
+            content_by_lua 'require(\"gin.core.router\").handler(ngx)';
+        }
+]]
+    if Gin.settings.expose_api_console == true then
+        gin_runtime = gin_runtime .. [[
+        location /ginconsole {
+            content_by_lua 'require(\"gin.cli.api_console\").handler(ngx)';
+        }
+]]
+    end
+
+    -- add db locations
+    gin_runtime = gin_runtime_databases(gin_runtime)
+
+    return string.gsub(nginx_content, "{{GIN_RUNTIME}}", gin_runtime)
+end
+
 
 function GinLauncher.nginx_conf_content()
     -- read nginx.conf file
@@ -36,28 +127,9 @@ function GinLauncher.nginx_conf_content()
     nginx_content = string.gsub(nginx_content, "{{GIN_PORT}}", Gin.settings.port)
     nginx_content = string.gsub(nginx_content, "{{GIN_ENV}}", Gin.env)
 
-    -- gin init
-    local gin_init = [[
-lua_code_cache ]] .. convert_boolean_to_onoff(Gin.settings.code_cache) .. [[;
-    lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
-]]
-    nginx_content = string.gsub(nginx_content, "{{GIN_INIT}}", gin_init)
-
-    -- gin runtime
-    local gin_runtime = [[
-location / {
-            content_by_lua 'require(\"gin.core.router\").handler(ngx)';
-        }
-]]
-    if Gin.settings.expose_api_console == true then
-        gin_runtime = gin_runtime .. [[
-        # Gin console
-        location /ginconsole {
-            content_by_lua 'require(\"gin.cli.api_console\").handler(ngx)';
-        }
-]]
-    end
-    nginx_content = string.gsub(nginx_content, "{{GIN_RUNTIME}}", gin_runtime)
+    -- gin imit & runtime
+    nginx_content = gin_init(nginx_content)
+    nginx_content = gin_runtime(nginx_content)
 
     -- return
     return nginx_content

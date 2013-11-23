@@ -3,6 +3,7 @@ local lfs = require 'lfs'
 local prettyprint = require 'pl.pretty'
 
 -- perf
+local assert = assert
 local iopen = io.open
 local ipairs = ipairs
 local pairs = pairs
@@ -140,6 +141,29 @@ function CommonHelpers.shallowcopy(orig)
         copy = orig
     end
     return copy
+end
+
+function CommonHelpers.module_names_in_path(path)
+    local modules = {}
+
+    if CommonHelpers.folder_exists(path) then
+        for file_name in lfs.dir(path) do
+            if file_name ~= "." and file_name ~= ".." then
+                local file_path = path .. '/' .. file_name
+                local attr = lfs.attributes(file_path)
+                assert(type(attr) == "table")
+                if attr.mode ~= "directory" then
+                    local module_name = CommonHelpers.get_lua_module_name(file_path)
+                    if module_name ~= nil then
+                        -- add to modules' list
+                        tinsert(modules, module_name)
+                    end
+                end
+            end
+        end
+    end
+
+    return modules
 end
 
 return CommonHelpers

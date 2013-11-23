@@ -79,33 +79,9 @@ local function dump_schema_for(db)
     helpers.pp_to_file(schema, schema_dump_file_path)
 end
 
-local function get_lua_module_name(file_path)
-    return string.match(file_path, "(.*)%.lua")
-end
-
 -- get migration modules
 function Migrations.migration_modules()
-    local modules = {}
-
-    local path = Gin.app_dirs.migrations
-    if helpers.folder_exists(path) then
-        for file_name in lfs.dir(path) do
-            if file_name ~= "." and file_name ~= ".." then
-                local file_path = path .. '/' .. file_name
-                local attr = lfs.attributes(file_path)
-                assert(type(attr) == "table")
-                if attr.mode ~= "directory" then
-                    local module_name = get_lua_module_name(file_path)
-                    if module_name ~= nil then
-                        -- add migration module
-                        table.insert(modules, module_name)
-                    end
-                end
-            end
-        end
-    end
-
-    return modules
+    return helpers.module_names_in_path(Gin.app_dirs.migrations)
 end
 
 function Migrations.migration_modules_reverse()

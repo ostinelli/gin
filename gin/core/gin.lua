@@ -17,6 +17,7 @@ Gin.env = ogetenv("GIN_ENV") or 'development'
 Gin.app_dirs = {
     tmp = 'tmp',
     logs = 'logs',
+    db = 'db',
     schemas = 'db/schemas',
     migrations = 'db/migrations'
 }
