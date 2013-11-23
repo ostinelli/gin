@@ -139,7 +139,7 @@ function Router.call_controller(request, controller_name, action, params)
                 response = Response.new({ status = status_or_error, headers = headers, body = body })
             else
                 -- controller raised an error
-                response = Router.handle_error(status_or_error)
+                return Router.handle_error(status_or_error)
             end
         end
     end
