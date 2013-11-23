@@ -23,25 +23,15 @@ local function database_modules()
     return helpers.module_names_in_path(Gin.app_dirs.db)
 end
 
--- build name out of a db
-local function name_for(db)
-    name = {
-        'gin',
-        db.options.adapter,
-        db.options.host,
-        db.options.port,
-        db.options.database
-    }
-    return table.concat(name, '|')
-end
-
 -- add locations for databases
 local function gin_init_databases(gin_init)
     local modules = database_modules()
+    local postgresql_adapter = require 'gin.db.sql.postgresql.adapter'
+
     for _, module_name in ipairs(modules) do
         local db = require(module_name)
         if db.options.adapter == 'postgresql' then
-            local name = name_for(db)
+            local name = postgresql_adapter.location_for(db.options)
             gin_init = gin_init .. [[
     upstream ]] .. name .. [[ {
         postgres_server ]] .. db.options.host .. [[:]] .. db.options.port .. [[ dbname=]] .. db.options.database .. [[ user=]] .. db.options.user .. [[ password=]] .. db.options.password .. [[;
@@ -70,14 +60,18 @@ end
 -- add locations for databases
 local function gin_runtime_databases(gin_runtime)
     local modules = database_modules()
+    local postgresql_adapter = require 'gin.db.sql.postgresql.adapter'
+
     for _, module_name in ipairs(modules) do
         local db = require(module_name)
         if db.options.adapter == 'postgresql' then
-            local name = name_for(db)
+            local location = postgresql_adapter.location_for(db.options)
+            local execute_location = postgresql_adapter.execute_location_for(db.options)
+
             gin_runtime = gin_runtime .. [[
-        location = /]] .. name .. [[|execute {
+        location = /]] .. execute_location .. [[ {
             internal;
-            postgres_pass   ]] .. name .. [[;
+            postgres_pass   ]] .. location .. [[;
             postgres_query  $echo_request_body;
         }
 ]]
