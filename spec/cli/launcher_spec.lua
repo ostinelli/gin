@@ -87,6 +87,7 @@ describe("Launcher", function()
                     end
 
                     package.loaded['db/pgsql'] = {
+                        adapter = require('gin.db.sql.postgresql.adapter'),
                         options = {
                             adapter = "postgresql",
                             host = "127.15.22.32-example.com",
@@ -160,6 +161,7 @@ describe("Launcher", function()
                     end
 
                     package.loaded['db/pgsql'] = {
+                        adapter = require('gin.db.sql.postgresql.adapter'),
                         options = {
                             adapter = "postgresql",
                             host = "127.15.22.32-example.com",
