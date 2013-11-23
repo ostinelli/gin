@@ -128,7 +128,7 @@ function Router.call_controller(request, controller_name, action, params)
 
     local response
 
-    -- look after default signals on mathed controller
+    -- look after default signals on matched controller
     local actions = {'before_action', action, 'after_action'}
 
     for index, action in ipairs(actions) do
