@@ -137,8 +137,7 @@ http {
     sendfile on;
 
     # Gin initialization
-    lua_code_cache {{GIN_CODE_CACHE}};
-    lua_package_path "./?.lua;$prefix/lib/?.lua;#{= LUA_PACKAGE_PATH };;";
+    {{GIN_INIT}}
 
     server {
         # List port
@@ -148,16 +147,11 @@ http {
         access_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-access.log combined buffer=16k;
         # access_log off;
 
-        # Error log with buffer
+        # Error log
         error_log ]] .. Gin.app_dirs.logs .. [[/{{GIN_ENV}}-error.log;
 
-        # Gin
-        location / {
-            content_by_lua 'require(\"gin.core.router\").handler(ngx)';
-        }
-        location /ginconsole {
-            {{GIN_API_CONSOLE}}
-        }
+        # Gin runtime
+        {{GIN_RUNTIME}}
     }
 }
 ]]
