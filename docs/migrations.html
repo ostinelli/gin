@@ -93,6 +93,27 @@ Created new migration file
 
 <span class="k">return</span> <span class="n">SqlMigration</span>
 </code></pre></div>
+<blockquote>
+<p>If you&#39;re planning to use Gin&#39;s ORM, ensure to have an unique incremental key called <code>id</code> on the newly created tables
+(of type <code>AUTO_INCREMENT PRIMARY KEY</code> for MySQL, <code>SERIAL</code> for PostgreSQL).</p>
+</blockquote>
+
+<p>The corresponding <code>SqlMigration.up</code> method when using PostgreSQL is:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="p">[</span><span class="o">...</span><span class="p">]</span>
+
+<span class="k">function</span> <span class="nc">SqlMigration</span><span class="p">.</span><span class="nf">up</span><span class="p">()</span>
+    <span class="n">SqlMigration</span><span class="p">.</span><span class="n">db</span><span class="p">:</span><span class="n">execute</span><span class="p">(</span><span class="s">[[</span>
+<span class="s">        CREATE TABLE users (</span>
+<span class="s">            id SERIAL,</span>
+<span class="s">            first_name varchar(255) NOT NULL,</span>
+<span class="s">            last_name varchar(255),</span>
+<span class="s">            CONSTRAINT unique_first_name UNIQUE (first_name)</span>
+<span class="s">        );</span>
+<span class="s">    ]]</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</code></pre></div>
 <p>To run the migration:</p>
 <div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin migrate
 Migrating up in development <span class="nv">environment</span>

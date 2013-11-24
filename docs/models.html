@@ -53,14 +53,12 @@
 <p>However, Gin does come with a more traditional database helper that allows you to quickly define models that have SQL Object-Relational Mapping functionalities.</p>
 
 <blockquote>
-<p>Currently, only a MySQL adapter and ORM are supported.</p>
+<p>Currently, only the MySQL and PostgreSQL adapters and ORMs are supported.</p>
 </blockquote>
 
-<h5>MySQL and its ORM</h5>
+<h5>MySQL Connection and models</h5>
 
-<h6>Define a DB and a model</h6>
-
-<p>To create a MySQL model with ORM functionalities, we first need to define a new MySQL database in the file <code>./db/mysql.lua</code>, by requiring Gin&#39;s SQL helper and by specifying the <code>mysql</code> adapter like so:</p>
+<p>To create a MySQL connection and model with ORM functionalities, we first need to define a new MySQL database in the file <code>./db/mysql.lua</code>, by requiring Gin&#39;s SQL helper and by specifying the <code>mysql</code> adapter like so:</p>
 <div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">SqlDatabase</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.db.sql&#39;</span>
 <span class="kd">local</span> <span class="n">Gin</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.core.gin&#39;</span>
 
@@ -123,7 +121,34 @@ database object with the settings that correspond to the enivornment Gin is run 
 <p>For the ORM to work properly, the table <code>users</code> must have an <code>AUTO_INCREMENT PRIMARY KEY</code> named <code>id</code>. Please refer to <a href="../docs/migrations.html">migrations</a> for additional information.</p>
 </blockquote>
 
-<h6>Queries</h6>
+<h5>PostgreSQL Connection and models</h5>
+
+<p>To create a PostgreSQL connection and model with ORM functionalities, just proceed as instructed in the previous MySQL section. The only differences are:</p>
+
+<ul>
+<li><p>You&#39;ll need to specify the <code>postgresql</code> adapter in the database settings, like so:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">development</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">adapter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">postgresql&#39;</span><span class="p">,</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">127.0.0.1&quot;</span><span class="p">,</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">5432</span><span class="p">,</span>
+    <span class="n">database</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">demo_development&quot;</span><span class="p">,</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">postgres&quot;</span><span class="p">,</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">&quot;</span><span class="p">,</span>
+    <span class="n">pool</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="p">}</span>
+</code></pre></div></li>
+<li><p>You need to pass the PostgreSQL database to the <code>users</code> model. For instance, if you&#39;ve defined the PostgreSQL database in <code>./db/postgresql.lua</code>:</p>
+<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="c1">-- gin</span>
+<span class="kd">local</span> <span class="n">PostgreSql</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">db.postgresql&#39;</span>
+<span class="kd">local</span> <span class="n">SqlOrm</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.db.sql.orm&#39;</span>
+
+<span class="c1">-- define</span>
+<span class="k">return</span> <span class="n">SqlOrm</span><span class="p">.</span><span class="n">define_model</span><span class="p">(</span><span class="n">PostgreSql</span><span class="p">,</span> <span class="s1">&#39;</span><span class="s">users&#39;</span><span class="p">)</span>
+</code></pre></div></li>
+<li><p>For the ORM to work properly, the table <code>users</code> must have a <code>SERIAL</code> field named <code>id</code>.</p></li>
+</ul>
+
+<h5>ORM Queries</h5>
 
 <p>The <code>Users</code> model defined here above can now be used to perform standard SQL queries, after you&#39;ve required it:</p>
 <div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Users</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">app.models.users&#39;</span>
