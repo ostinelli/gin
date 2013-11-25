@@ -1,5 +1,4 @@
 -- perf
-local ipairs = ipairs
 local require = require
 
 
@@ -36,8 +35,8 @@ function SqlOrm.define_model(sql_database, table_name)
         local results = sql_database:execute(sql)
 
         local models = {}
-        for _, v in ipairs(results) do
-            models[#models+1] = GinModel.new(v)
+        for i = 1, #results do
+            models[#models+1] = GinModel.new(results[i])
         end
         return models
     end
