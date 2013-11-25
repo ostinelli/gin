@@ -3,7 +3,6 @@ local error = error
 local pairs = pairs
 local require = require
 local setmetatable = setmetatable
-local tinsert = table.insert
 local tconcat = table.concat
 
 local SqlDatabase = {}
@@ -23,7 +22,7 @@ function SqlDatabase.new(options)
     }
     for k, _ in pairs(options) do required_options[k] = nil end
     local missing_options = {}
-    for k, _ in pairs(required_options) do tinsert(missing_options, k) end
+    for k, _ in pairs(required_options) do missing_options[#missing_options+1] = k end
 
     if #missing_options > 0 then error("missing required database options: " .. tconcat(missing_options, ', ')) end
 

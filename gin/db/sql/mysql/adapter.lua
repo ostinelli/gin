@@ -3,7 +3,6 @@ local error = error
 local ipairs = ipairs
 local pairs = pairs
 local require = require
-local tinsert = table.insert
 local tonumber = tonumber
 
 -- settings
@@ -56,7 +55,7 @@ function MySql.tables(options)
 
     for _, v in pairs(res) do
         for _, table_name in pairs(v) do
-            tinsert(tables, table_name)
+            tables[#tables+1] = table_name
         end
     end
 
@@ -72,7 +71,7 @@ function MySql.schema(options)
     for i, table_name in ipairs(tables) do
         if table_name ~= Migration.migrations_table_name then
             local columns_info = MySql.execute(options, "SHOW COLUMNS IN " .. table_name .. ";")
-            tinsert(schema, { [table_name] = columns_info })
+            schema[#schema+1] = { [table_name] = columns_info }
         end
     end
 

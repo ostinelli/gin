@@ -3,7 +3,7 @@ local next = next
 local pairs = pairs
 local setmetatable = setmetatable
 local tconcat = table.concat
-local tinsert = table.insert
+local tinsert = function(t, v) t[#t+1] = v end
 local type = type
 
 -- field and values helper
