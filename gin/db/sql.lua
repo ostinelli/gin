@@ -3,7 +3,8 @@ local error = error
 local pairs = pairs
 local require = require
 local setmetatable = setmetatable
-
+local tinsert = table.insert
+local tconcat = table.concat
 
 local SqlDatabase = {}
 SqlDatabase.__index = SqlDatabase
