@@ -13,7 +13,6 @@ local pairs = pairs
 local pcall = pcall
 local setmetatable = setmetatable
 local smatch = string.match
-local tinsert = table.insert
 local tonumber = tonumber
 
 
@@ -58,7 +57,7 @@ function PostgreSql.tables(options)
 
     for _, v in pairs(res) do
         for _, table_name in pairs(v) do
-            tinsert(tables, table_name)
+            tables[#tables+1] = table_name
         end
     end
 
@@ -75,7 +74,7 @@ function PostgreSql.schema(options)
         if table_name ~= Migration.migrations_table_name then
             local sql = "SELECT column_name, column_default, is_nullable, data_type, character_maximum_length, numeric_precision, datetime_precision FROM information_schema.columns WHERE table_name ='" .. table_name .. "';"
             local table_info = PostgreSql.execute(options, sql)
-            tinsert(schema, { [table_name] = table_info })
+            schema[#schema+1] = { [table_name] = table_info }
         end
     end
 
@@ -105,7 +104,7 @@ function PostgreSql.execute(options, sql)
     local res = {}
     while row do
         local irow = helpers.shallowcopy(row)
-        tinsert(res, irow)
+        res[#res+1] = irow
         row = sth:fetch(true)
     end
     -- close

@@ -16,14 +16,12 @@ local Application = require 'config.application'
 
 -- perf
 local error = error
-local ipairs = ipairs
 local jencode = json.encode
 local pairs = pairs
 local pcall = pcall
 local require = require
 local setmetatable = setmetatable
 local smatch = string.match
-local tinsert = table.insert
 
 
 -- init Router and set routes
@@ -95,17 +93,18 @@ function Router.match(request)
     if routes_dispatchers == nil then error({ code = 102 }) end
 
     -- loop dispatchers to find route
-    for _, dispatcher in ipairs(routes_dispatchers) do
+    for i = 1, #routes_dispatchers do
+        local dispatcher = routes_dispatchers[i]
         if dispatcher[method] then -- avoid matching if method is not defined in dispatcher
             local match = { smatch(uri, dispatcher.pattern) }
 
             if #match > 0 then
                 local params = {}
-                for i, v in ipairs(match) do
-                    if dispatcher[method].params[i] then
-                        params[dispatcher[method].params[i]] = match[i]
+                for j = 1, #match do
+                    if dispatcher[method].params[j] then
+                        params[dispatcher[method].params[j]] = match[j]
                     else
-                        tinsert(params, match[i])
+                        params[#params+1] = match[j]
                     end
                 end
 
