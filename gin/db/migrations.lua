@@ -125,7 +125,7 @@ local function run_migration(direction, module_name)
         -- dump schema
         dump_schema_for(db)
     else
-        error(err)
+        return false, version, err
     end
 
     -- return result

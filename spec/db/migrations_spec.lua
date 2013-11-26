@@ -180,7 +180,7 @@ describe("Migrations", function()
             it("returns an error", function()
                 local ok, response = migrations.up()
 
-                err_message = "Cannot run migrations for the adapter 'unsupported-adapter'. Supported adapters are: 'mysql'."
+                err_message = "Cannot run migrations for the adapter 'unsupported-adapter'. Supported adapters are: 'mysql', 'postgresql'."
 
                 assert.are.equal(false, ok)
                 assert.are.same({
@@ -267,7 +267,7 @@ describe("Migrations", function()
                 it("returns the results", function()
                     local ok, response = migrations.down()
 
-                    err_message = "Cannot run migrations for the adapter 'unsupported-adapter'. Supported adapters are: 'mysql'."
+                    err_message = "Cannot run migrations for the adapter 'unsupported-adapter'. Supported adapters are: 'mysql', 'postgresql'."
 
                     assert.are.equal(false, ok)
                     assert.are.same({
