@@ -6,6 +6,7 @@ local error = error
 local require = require
 local smatch = string.match
 local tonumber = tonumber
+local function tappend(t, v) t[#t+1] = v end
 
 
 local PostgreSql = {}
@@ -34,7 +35,7 @@ function PostgreSql.tables(options)
 
     for _, v in pairs(res) do
         for _, table_name in pairs(v) do
-            tinsert(tables, table_name)
+            tappend(tables, table_name)
         end
     end
 
@@ -51,7 +52,7 @@ function PostgreSql.schema(options)
         if table_name ~= Migration.migrations_table_name then
             local sql = "SELECT column_name, column_default, is_nullable, data_type, character_maximum_length, numeric_precision, datetime_precision FROM information_schema.columns WHERE table_name ='" .. table_name .. "';"
             local columns_info = PostgreSql.execute(options, "SHOW COLUMNS IN " .. sql .. ";")
-            tinsert(schema, { [table_name] = columns_info })
+            tappend(schema, { [table_name] = columns_info })
         end
     end
 

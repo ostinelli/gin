@@ -13,8 +13,8 @@ local sfind = string.find
 local sgsub = string.gsub
 local smatch = string.match
 local ssub = string.sub
-local tinsert = table.insert
 local type = type
+local function tappend(t, v) t[#t+1] = v end
 
 
 local CommonHelpers = {}
@@ -54,7 +54,7 @@ function CommonHelpers.split(str, pat)
 
     while s do
         if s ~= 1 or cap ~= "" then
-            tinsert(t,cap)
+            tappend(t,cap)
         end
         last_end = e+1
         s, e, cap = sfind(str, fpat, last_end)
@@ -62,7 +62,7 @@ function CommonHelpers.split(str, pat)
 
     if last_end <= #str then
         cap = ssub(str, last_end)
-        tinsert(t, cap)
+        tappend(t, cap)
     end
 
     return t
@@ -156,7 +156,7 @@ function CommonHelpers.module_names_in_path(path)
                     local module_name = CommonHelpers.get_lua_module_name(file_path)
                     if module_name ~= nil then
                         -- add to modules' list
-                        tinsert(modules, module_name)
+                        tappend(modules, module_name)
                     end
                 end
             end

@@ -4,9 +4,9 @@ local pairs = pairs
 local setmetatable = setmetatable
 local sgsub = string.gsub
 local smatch = string.match
-local tinsert = table.insert
 local tostring = tostring
 local type = type
+local function tappend(t, v) t[#t+1] = v end
 
 
 --  versions
@@ -34,13 +34,13 @@ function Version:add(method, pattern, route_info)
     route_info.controller = route_info.controller .. "_controller"
     route_info.params = params
 
-    tinsert(self.routes.dispatchers[self.number], { pattern = pattern, [method] = route_info })
+    tappend(self.routes.dispatchers[self.number], { pattern = pattern, [method] = route_info })
 end
 
 function Version:build_named_parameters(pattern)
     local params = {}
     local new_pattern = sgsub(pattern, "/:([A-Za-z0-9_]+)", function(m)
-        tinsert(params, m)
+        tappend(params, m)
         return "/([A-Za-z0-9_]+)"
     end)
     return new_pattern, params

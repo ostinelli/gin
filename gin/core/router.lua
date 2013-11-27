@@ -23,7 +23,7 @@ local pcall = pcall
 local require = require
 local setmetatable = setmetatable
 local smatch = string.match
-local tinsert = table.insert
+local function tappend(t, v) t[#t+1] = v end
 
 
 -- init Router and set routes
@@ -105,7 +105,7 @@ function Router.match(request)
                     if dispatcher[method].params[i] then
                         params[dispatcher[method].params[i]] = match[i]
                     else
-                        tinsert(params, match[i])
+                        tappend(params, match[i])
                     end
                 end
 

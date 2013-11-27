@@ -3,20 +3,20 @@ local next = next
 local pairs = pairs
 local setmetatable = setmetatable
 local tconcat = table.concat
-local tinsert = table.insert
 local type = type
+local function tappend(t, v) t[#t+1] = v end
 
 -- field and values helper
 local function field_and_values(quote, attrs, concat)
     local fav = {}
     for field, value in pairs(attrs) do
         local key_pair = {}
-        tinsert(key_pair, field)
+        tappend(key_pair, field)
         if type(value) ~= 'number' then value = quote(value) end
-        tinsert(key_pair, "=")
-        tinsert(key_pair, value)
+        tappend(key_pair, "=")
+        tappend(key_pair, value)
 
-        tinsert(fav, tconcat(key_pair))
+        tappend(fav, tconcat(key_pair))
     end
     return tconcat(fav, concat)
 end
@@ -26,14 +26,14 @@ local function build_where(self, sql, attrs)
     if attrs ~= nil then
         if type(attrs) == 'table' then
             if next(attrs) ~= nil then
-                tinsert(sql, " WHERE (")
-                tinsert(sql, field_and_values(self.quote, attrs, ' AND '))
-                tinsert(sql, ")")
+                tappend(sql, " WHERE (")
+                tappend(sql, field_and_values(self.quote, attrs, ' AND '))
+                tappend(sql, ")")
             end
         else
-            tinsert(sql, " WHERE (")
-            tinsert(sql, attrs)
-            tinsert(sql, ")")
+            tappend(sql, " WHERE (")
+            tappend(sql, attrs)
+            tappend(sql, ")")
         end
     end
 end
@@ -65,18 +65,18 @@ function SqlCommonOrm:create(attrs)
     local fields = {}
     local values = {}
     for field, value in pairs(attrs) do
-        tinsert(fields, field)
+        tappend(fields, field)
         if type(value) ~= 'number' then value = self.quote(value) end
-        tinsert(values, value)
+        tappend(values, value)
     end
     -- build sql
-    tinsert(sql, "INSERT INTO ")
-    tinsert(sql, self.table_name)
-    tinsert(sql, " (")
-    tinsert(sql, tconcat(fields, ','))
-    tinsert(sql, ") VALUES (")
-    tinsert(sql, tconcat(values, ','))
-    tinsert(sql, ");")
+    tappend(sql, "INSERT INTO ")
+    tappend(sql, self.table_name)
+    tappend(sql, " (")
+    tappend(sql, tconcat(fields, ','))
+    tappend(sql, ") VALUES (")
+    tappend(sql, tconcat(values, ','))
+    tappend(sql, ");")
     -- hit server
     return tconcat(sql)
 end
@@ -85,30 +85,30 @@ function SqlCommonOrm:where(attrs, options)
     -- init sql
     local sql = {}
     -- start
-    tinsert(sql, "SELECT * FROM ")
-    tinsert(sql, self.table_name)
+    tappend(sql, "SELECT * FROM ")
+    tappend(sql, self.table_name)
     -- where
     build_where(self, sql, attrs)
     -- options
     if options then
         -- order
         if options.order ~= nil then
-            tinsert(sql, " ORDER BY ")
-            tinsert(sql, options.order)
+            tappend(sql, " ORDER BY ")
+            tappend(sql, options.order)
         end
         -- limit
         if options.limit ~= nil then
-            tinsert(sql, " LIMIT ")
-            tinsert(sql, options.limit)
+            tappend(sql, " LIMIT ")
+            tappend(sql, options.limit)
         end
         -- offset
         if options.offset ~= nil then
-            tinsert(sql, " OFFSET ")
-            tinsert(sql, options.offset)
+            tappend(sql, " OFFSET ")
+            tappend(sql, options.offset)
         end
     end
     -- close
-    tinsert(sql, ";")
+    tappend(sql, ";")
     -- execute
     return tconcat(sql)
 end
@@ -117,20 +117,20 @@ function SqlCommonOrm:delete_where(attrs, options)
     -- init sql
     local sql = {}
     -- start
-    tinsert(sql, "DELETE FROM ")
-    tinsert(sql, self.table_name)
+    tappend(sql, "DELETE FROM ")
+    tappend(sql, self.table_name)
     -- where
     build_where(self, sql, attrs)
     -- options
     if options then
         -- limit
         if options.limit ~= nil then
-            tinsert(sql, " LIMIT ")
-            tinsert(sql, options.limit)
+            tappend(sql, " LIMIT ")
+            tappend(sql, options.limit)
         end
     end
     -- close
-    tinsert(sql, ";")
+    tappend(sql, ";")
     -- execute
     return tconcat(sql)
 end
@@ -143,15 +143,15 @@ function SqlCommonOrm:update_where(attrs, where_attrs)
     -- init sql
     local sql = {}
     -- start
-    tinsert(sql, "UPDATE ")
-    tinsert(sql, self.table_name)
-    tinsert(sql, " SET ")
+    tappend(sql, "UPDATE ")
+    tappend(sql, self.table_name)
+    tappend(sql, " SET ")
     -- updates
-    tinsert(sql, field_and_values(self.quote, attrs, ','))
+    tappend(sql, field_and_values(self.quote, attrs, ','))
     -- where
     build_where(self, sql, where_attrs)
     -- close
-    tinsert(sql, ";")
+    tappend(sql, ";")
     -- execute
     return tconcat(sql)
 end
