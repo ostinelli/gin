@@ -5,7 +5,6 @@ local prettyprint = require 'pl.pretty'
 -- perf
 local assert = assert
 local iopen = io.open
-local ipairs = ipairs
 local pairs = pairs
 local pcall = pcall
 local require = require
@@ -80,11 +79,11 @@ function CommonHelpers.mkdirs(file_path)
     local parts = CommonHelpers.split_path(dir_path)
     -- loop
     local current_dir = nil
-    for _, part in ipairs(parts) do
+    for i = 1, #parts do
         if current_dir == nil then
-            current_dir = part
+            current_dir = parts[i]
         else
-            current_dir = current_dir .. '/' .. part
+            current_dir = current_dir .. '/' .. parts[i]
         end
         lfs.mkdir(current_dir)
     end
@@ -92,8 +91,8 @@ end
 
 -- value in table?
 function CommonHelpers.included_in_table(t, value)
-    for _, v in ipairs(t) do
-        if v == value then return true end
+    for i = 1, #t do
+        if t[i] == value then return true end
     end
     return false
 end
@@ -102,8 +101,8 @@ end
 function CommonHelpers.reverse_table(t)
     local size = #t + 1
     local reversed = {}
-    for i, v in ipairs(t) do
-        reversed[size - i] = v
+    for i = 1, #t  do
+        reversed[size - i] = t[i]
     end
     return reversed
 end
