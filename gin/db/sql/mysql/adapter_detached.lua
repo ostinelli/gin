@@ -12,8 +12,8 @@ local pairs = pairs
 local pcall = pcall
 local setmetatable = setmetatable
 local smatch = string.match
-local tinsert = table.insert
 local tonumber = tonumber
+local function tappend(t, v) t[#t+1] = v end
 
 
 local MySql = {}
@@ -46,7 +46,7 @@ function MySql.tables(options)
 
     for _, v in pairs(res) do
         for _, table_name in pairs(v) do
-            tinsert(tables, table_name)
+            tappend(tables, table_name)
         end
     end
 
@@ -62,7 +62,7 @@ function MySql.schema(options)
     for _, table_name in ipairs(tables) do
         if table_name ~= Migration.migrations_table_name then
             local table_info = MySql.execute(options, "SHOW COLUMNS IN " .. table_name .. ";")
-            tinsert(schema, { [table_name] = table_info })
+            tappend(schema, { [table_name] = table_info })
         end
     end
 
@@ -92,7 +92,7 @@ function MySql.execute(options, sql)
     local res = {}
     while row do
         local irow = helpers.shallowcopy(row)
-        tinsert(res, irow)
+        tappend(res, irow)
         row = sth:fetch(true)
     end
     -- close

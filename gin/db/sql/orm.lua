@@ -1,7 +1,7 @@
 -- perf
 local ipairs = ipairs
 local require = require
-local tinsert = table.insert
+local function tappend(t, v) t[#t+1] = v end
 
 
 local SqlOrm = {}
@@ -38,7 +38,7 @@ function SqlOrm.define_model(sql_database, table_name)
 
         local models = {}
         for _, v in ipairs(results) do
-            tinsert(models, GinModel.new(v))
+            tappend(models, GinModel.new(v))
         end
         return models
     end
