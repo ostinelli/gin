@@ -1,5 +1,4 @@
 -- perf
-local ipairs = ipairs
 local require = require
 local function tappend(t, v) t[#t+1] = v end
 
@@ -37,8 +36,8 @@ function SqlOrm.define_model(sql_database, table_name)
         local results = sql_database:execute(sql)
 
         local models = {}
-        for _, v in ipairs(results) do
-            tappend(models, GinModel.new(v))
+        for i = 1, #results do
+            tappend(models, GinModel.new(results[i]))
         end
         return models
     end
