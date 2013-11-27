@@ -76,8 +76,8 @@ end
 -- recursively make directories
 function CommonHelpers.mkdirs(file_path)
     -- get dir path and parts
-    dir_path = smatch(file_path, "(.*)/.*")
-    parts = CommonHelpers.split_path(dir_path)
+    local dir_path = smatch(file_path, "(.*)/.*")
+    local parts = CommonHelpers.split_path(dir_path)
     -- loop
     local current_dir = nil
     for _, part in ipairs(parts) do
