@@ -1,8 +1,8 @@
 package = "gin"
-version = "0.1.1-1"
+version = "0.1-1"
 
 source = {
-    url = "git://github.com/ostinelli/gin.git"
+    url = "git://github.com/vtemian/gin.git"
 }
 
 description = {
@@ -41,14 +41,9 @@ build = {
         ["gin.core.router"] = "gin/core/router.lua",
         ["gin.core.routes"] = "gin/core/routes.lua",
         ["gin.core.settings"] = "gin/core/settings.lua",
-        ["gin.db.sql.common.orm"] = "gin/db/sql/common/orm.lua",
         ["gin.db.sql.mysql.adapter"] = "gin/db/sql/mysql/adapter.lua",
         ["gin.db.sql.mysql.adapter_detached"] = "gin/db/sql/mysql/adapter_detached.lua",
         ["gin.db.sql.mysql.orm"] = "gin/db/sql/mysql/orm.lua",
-        ["gin.db.sql.postgresql.adapter"] = "gin/db/sql/postgresql/adapter.lua",
-        ["gin.db.sql.postgresql.adapter_detached"] = "gin/db/sql/postgresql/adapter_detached.lua",
-        ["gin.db.sql.postgresql.helpers"] = "gin/db/sql/postgresql/helpers.lua",
-        ["gin.db.sql.postgresql.orm"] = "gin/db/sql/postgresql/orm.lua",
         ["gin.db.sql.orm"] = "gin/db/sql/orm.lua",
         ["gin.db.migrations"] = "gin/db/migrations.lua",
         ["gin.db.sql"] = "gin/db/sql.lua",
