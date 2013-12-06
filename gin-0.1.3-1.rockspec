@@ -1,5 +1,5 @@
 package = "gin"
-version = "0.1.2-1"
+version = "0.1.3-1"
 
 source = {
     url = "git://github.com/ostinelli/gin.git"
@@ -20,7 +20,6 @@ dependencies = {
     "luasocket",
     "luafilesystem",
     "luaposix",
-    "penlight"
     "penlight",
     "luadbi"
 }

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### 0.1.3:
+ * Add DBI dependency
+ * Bug fixes
+
 ### 0.1.2:
  * Improve performance
  * Bug fixes
