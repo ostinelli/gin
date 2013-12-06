@@ -21,6 +21,8 @@ dependencies = {
     "luafilesystem",
     "luaposix",
     "penlight"
+    "penlight",
+    "luadbi"
 }
 
 build = {
