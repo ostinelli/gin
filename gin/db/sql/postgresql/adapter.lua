@@ -24,7 +24,7 @@ end
 
 -- quote
 function PostgreSql.quote(options, str)
-    return ngx.quote_sql_str(str)
+    return ndk.set_var.set_quote_pgsql_str(str)
 end
 
 -- return list of tables
