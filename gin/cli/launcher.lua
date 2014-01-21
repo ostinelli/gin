@@ -142,7 +142,7 @@ function GinLauncher.start(env)
     local ok, base_launcher = pcall(function() return base_launcher() end)
 
     if ok == false then
-        print(ansicolors("%{red}ERROR:%{reset} Cannot initialize launcher (is this a Gin project directory?)."))
+        print(ansicolors("%{red}ERROR:%{reset} Cannot initialize launcher: " .. base_launcher))
         return
     end
 
