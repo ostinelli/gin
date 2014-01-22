@@ -28,7 +28,7 @@ local help_description = [[
 
 GIN v]] .. Gin.version .. [[, a JSON-API web framework.
 
-Usage: gin COMMAND [ARGS]
+Usage: gin COMMAND [ARGS] [OPTIONS]
 
 The available gin commands are:
  new [name]             Create a new Gin application
@@ -38,6 +38,9 @@ The available gin commands are:
  generate migration     Create a new migration
  migrate                Run all migrations that have not been run
  migrate rollback       Rollback one migration
+
+Options:
+ --trace                Shows additional logs
 ]]
 
 local launcher = require 'gin.cli.launcher'
@@ -45,6 +48,14 @@ local application = require 'gin.cli.application'
 local migrations = require 'gin.cli.migrations'
 local console = require 'gin.cli.console'
 
+-- check trace
+GIN_TRACE = false
+if arg[#arg] == '--trace' then
+  table.remove(arg, #arg)
+  GIN_TRACE = true
+end
+
+-- check args
 if arg[1] == 'new' and arg[2] then application.new(arg[2])
 elseif arg[1] == 'start' then launcher.start()
 elseif arg[1] == 'stop' then launcher.stop()

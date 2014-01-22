@@ -22,9 +22,16 @@ local function remove_nginx_conf(nginx_conf_file_path)
 end
 
 local function nginx_command(env, nginx_conf_file_path, nginx_signal)
+    local devnull_logs = ""
+    if GIN_TRACE == false then devnull_logs = " 2>/dev/null" end
+
     local env_cmd = ""
     if env ~= nil then env_cmd = "-g \"env GIN_ENV=" .. env .. ";\"" end
-    local cmd = "nginx " .. nginx_signal .. " " .. env_cmd .. " -p `pwd`/ -c " .. nginx_conf_file_path .. " 2>/dev/null"
+    local cmd = "nginx " .. nginx_signal .. " " .. env_cmd .. " -p `pwd`/ -c " .. nginx_conf_file_path .. devnull_logs
+
+    if GIN_TRACE == true then
+        print(cmd)
+    end
 
     return os.execute(cmd)
 end
