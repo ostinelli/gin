@@ -23,13 +23,14 @@ local function database_modules()
     return helpers.module_names_in_path(Gin.app_dirs.db)
 end
 
--- add locations for databases
+-- add upstream for databases
 local function gin_init_databases(gin_init)
     local modules = database_modules()
 
     for _, module_name in ipairs(modules) do
         local db = require(module_name)
-        if db.options.adapter == 'postgresql' then
+
+        if type(db) == "table" and db.options.adapter == 'postgresql' then
             local name = db.adapter.location_for(db.options)
             gin_init = gin_init .. [[
     upstream ]] .. name .. [[ {
@@ -63,7 +64,8 @@ local function gin_runtime_databases(gin_runtime)
 
     for _, module_name in ipairs(modules) do
         local db = require(module_name)
-        if db.options.adapter == 'postgresql' then
+
+        if type(db) == "table" and db.options.adapter == 'postgresql' then
             local location = postgresql_adapter.location_for(db.options)
             local execute_location = postgresql_adapter.execute_location_for(db.options)
 
