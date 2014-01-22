@@ -1,5 +1,5 @@
 package = "gin"
-version = "0.1.3-1"
+version = "0.1.4-1"
 
 source = {
     url = "git://github.com/ostinelli/gin.git"
