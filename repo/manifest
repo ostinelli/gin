@@ -29,6 +29,13 @@ repository = {
          }, {
             arch = "rockspec"
          }
+      },
+      ['0.1.4-1'] = {
+         {
+            arch = "all"
+         }, {
+            arch = "rockspec"
+         }
       }
    }
 }
