@@ -25,6 +25,7 @@ local function mysql_connect(options)
     db:set_timeout(timeout_subsequent_ops)
     -- connect to db
     local db_options = {
+        path = options.path
         host = options.host,
         port = options.port,
         database = options.database,

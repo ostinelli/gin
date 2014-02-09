@@ -31,7 +31,7 @@ function PostgreSql.execute_location_for(options)
 end
 
 local function postgresql_connect(options)
-    local db = assert(dbi.Connect("PostgreSQL", options.database, options.user, options.password, options.host, options.port))
+    local db = assert(dbi.Connect("PostgreSQL", options.database, options.user, options.password, (options.path or options.host), options.port))
     db:autocommit(true)
 
     return db

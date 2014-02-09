@@ -9,7 +9,7 @@ function PostgreSqlHelpers.location_for(options)
     name = {
         'gin',
         options.adapter,
-        options.host,
+        (options.path or options.host),
         options.port,
         options.database,
     }

@@ -20,7 +20,7 @@ local MySql = {}
 MySql.default_database = 'mysql'
 
 local function mysql_connect(options)
-    local db = assert(dbi.Connect("MySQL", options.database, options.user, options.password, options.host, options.port))
+    local db = assert(dbi.Connect("MySQL", options.database, options.user, options.password, (options.path or options.host), options.port))
     db:autocommit(true)
 
     return db
