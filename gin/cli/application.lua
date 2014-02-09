@@ -85,6 +85,7 @@ local Gin = require 'gin.core.gin'
 -- local DbSettings = {
 --     development = {
 --         adapter = 'mysql',
+--         path = nil,
 --         host = "127.0.0.1",
 --         port = 3306,
 --         database = "{{APP_NAME}}_development",
@@ -95,6 +96,7 @@ local Gin = require 'gin.core.gin'
 
 --     test = {
 --         adapter = 'mysql',
+--         path = nil,
 --         host = "127.0.0.1",
 --         port = 3306,
 --         database = "{{APP_NAME}}_test",
@@ -105,6 +107,7 @@ local Gin = require 'gin.core.gin'
 
 --     production = {
 --         adapter = 'mysql',
+--         path = nil,
 --         host = "127.0.0.1",
 --         port = 3306,
 --         database = "{{APP_NAME}}_production",
