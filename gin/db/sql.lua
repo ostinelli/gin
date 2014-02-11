@@ -22,6 +22,9 @@ function SqlDatabase.new(options)
         pool = true
     }
     for k, _ in pairs(options) do required_options[k] = nil end
+    if options.path then
+        required_options.host, required_options.port = nil, nil
+    end
     local missing_options = {}
     for k, _ in pairs(required_options) do tappend(missing_options, k) end
 
