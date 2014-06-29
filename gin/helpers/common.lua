@@ -12,9 +12,9 @@ local sfind = string.find
 local sgsub = string.gsub
 local smatch = string.match
 local ssub = string.sub
-local tsort = table.sort
 local type = type
 local function tappend(t, v) t[#t+1] = v end
+
 
 local CommonHelpers = {}
 
@@ -33,8 +33,7 @@ end
 
 -- read file
 function CommonHelpers.read_file(file_path)
-    local f, err = iopen(file_path, "rb")
-    if (nil == f) then error('could not open: ' .. file_path .. ': ' .. err) end
+    local f = iopen(file_path, "rb")
     local content = f:read("*all")
     f:close()
     return content
@@ -162,7 +161,6 @@ function CommonHelpers.module_names_in_path(path)
             end
         end
     end
-    tsort(modules, function(a,b) return b > a end)
 
     return modules
 end
