@@ -22,7 +22,23 @@ describe("Integration", function()
 
             local urlencoded = IntegrationRunner.encode_table(args)
 
-            assert.are.same("arg~3=a%20tag&arg2=two%2fstring&arg2=another%2fstring&5=five&arg1=1", urlencoded)
+            assert.are.equal(67, #urlencoded)
+
+            local amppos = urlencoded:find("&", 6, true)
+            assert.is.number(amppos)
+            amppos = urlencoded:find("&", 1 + amppos, true)
+            assert.is.number(amppos)
+            amppos = urlencoded:find("&", 1 + amppos, true)
+            assert.is.number(amppos)
+            amppos = urlencoded:find("&", 1 + amppos, true)
+            assert.is.number(amppos)
+            assert.is_nil(urlencoded:find("&", 1 + amppos, true))
+
+            assert.is_number(urlencoded:find("arg~3=a%20tag", 1, true))
+            assert.is_number(urlencoded:find("arg2=two%2fstring", 1, true))
+            assert.is_number(urlencoded:find("arg2=another%2fstring", 1, true))
+            assert.is_number(urlencoded:find("5=five", 1, true))
+            assert.is_number(urlencoded:find("arg1=1", 1, true))
         end)
     end)
 
