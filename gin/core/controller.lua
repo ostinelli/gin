@@ -8,13 +8,12 @@ local Controller = {}
 Controller.__index = Controller
 
 function Controller.new(request, params)
-    params = params or {}
+    local p = params or {}
 
     local instance = {
-        params = params,
+        params = p,
         request = request
     }
-    setmetatable(instance, Controller)
     return instance
 end
 
