@@ -9,8 +9,8 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 
-      <link rel="stylesheet" href="../assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
-      <script src="../assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+      <link rel="stylesheet" href="../assets/application-1359763b6d352d2ceadd1d7e5ce63c2a.css">
+      <script src="../assets/application-dfb7ed62b2c9fe2bb66c4adc6a003717.js"></script>
   </head>
 
   <body>
@@ -39,10 +39,10 @@
       <h1>API Versioning</h1>
 
 <p>Gin uses the HTTP header <code>Accept</code> to version your API. The header has the format:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">application/vnd.{application-name}.v{version}+json
+<div class="highlight"><pre><code class="language-text" data-lang="text">application/vnd.{application-name}.v{version}+json
 </code></pre></div>
 <p>So for instance, if your application name (as defined in the file <code>./config/application.lua</code>) is <code>demo</code>, a client trying to access the version <code>1</code> of your API will have to send the header:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">Accept: application/vnd.demo.v1+json
+<div class="highlight"><pre><code class="language-text" data-lang="text">Accept: application/vnd.demo.v1+json
 </code></pre></div>
 <blockquote>
 <p>Gin only accepts requests that provide JSON in the body, hence the <code>+json</code> portion of the <code>Accept</code> header.</p>
@@ -53,7 +53,7 @@
 <h5>Minor versioning support</h5>
 
 <p>If you need to provide support for minor versioning of your APIs, a client can specify a minor version like <code>1.0.13-beta</code> by providing the header:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">Accept: application/vnd.demo.v1.0.13-beta+json
+<div class="highlight"><pre><code class="language-text" data-lang="text">Accept: application/vnd.demo.v1.0.13-beta+json
 </code></pre></div>
 <blockquote>
 <p>While support for major version numbers is baked into Gin by calling the controllers that correspond to a major version number, minor versioning can be supported at controllers&#39; level. Please see <a href="../docs/controllers.html">controllers</a> on how to do so.</p>

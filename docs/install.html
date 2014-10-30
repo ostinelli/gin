@@ -9,8 +9,8 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 
-      <link rel="stylesheet" href="../assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
-      <script src="../assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+      <link rel="stylesheet" href="../assets/application-1359763b6d352d2ceadd1d7e5ce63c2a.css">
+      <script src="../assets/application-dfb7ed62b2c9fe2bb66c4adc6a003717.js"></script>
   </head>
 
   <body>
@@ -46,46 +46,19 @@
 
 <p>The instructions here below describe the installation flow using <a href="http://brew.sh/">HomeBrew</a>.
 If you don&#39;t have it installed, you can easily install it by running:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>ruby -e <span class="s2">&quot;$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)&quot;</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby -e <span class="s2">&quot;$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)&quot;</span>
 </code></pre></div>
-<h5>OpenResty</h5>
+<h5>PCRE, Lua &amp; LuaJIT</h5>
 
-<p>Gin runs on <a href="http://openresty.org/">OpenResty</a>, a customized bundle of <a href="http://nginx.org/">Nginx</a>.</p>
-
-<ul>
-<li><p>Install Perl Compatible Regular Expressions &amp; LuaJIT</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>brew install pcre luajit
+<p>Install Perl Compatible Regular Expressions &amp; LuaJIT</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>brew install pcre lua luajit
 </code></pre></div>
-<p>Note down the installed version, you&#39;ll need this information in the next step.</p></li>
-<li><p>Install OpenResty</p>
+<p>Note down the installed version, you&#39;ll need this information in the next step.</p>
 
-<p>Go to <a href="http://openresty.org/#Download">OpenResty</a> in the downloads section and grab the latest Mainline release. Then:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>wget http://openresty.org/download/ngx_openresty-VERSION.tar.gz
-<span class="nv">$ </span>tar zxvf ngx_openresty-VERSION.tar.gz
-<span class="nv">$ </span><span class="nb">cd </span>ngx_openresty-VERSION/
-<span class="nv">$ </span>./configure <span class="se">\</span>
-    --with-cc-opt<span class="o">=</span><span class="s2">&quot;-I/usr/local/Cellar/pcre/PCRE-VERSION/include&quot;</span> <span class="se">\</span>
-    --with-ld-opt<span class="o">=</span><span class="s2">&quot;-L/usr/local/Cellar/pcre/PCRE-VERSION/lib&quot;</span> <span class="se">\</span>
-    --with-http_postgres_module <span class="se">\</span>
-    --with-luajit
-<span class="nv">$ </span>make
-<span class="nv">$ </span>make install
-</code></pre></div></li>
-<li><p>Configure the PATH to OpenResty</p>
+<h5>Luarocks</h5>
 
-<p>Assuming you have installed OpenResty into <code>/usr/local/openresty</code> (this is the default), make the nginx executable of your OpenResty installation available in the PATH environment, appending at the end of <code>~/.bash_profile</code>:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>/usr/local/openresty/nginx/sbin:<span class="nv">$PATH</span>
-</code></pre></div></li>
-<li><p>Check to see if OpenResty got successfully installed</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>nginx -v
-nginx version: ngx_openresty/1.4.3.3
-</code></pre></div></li>
-</ul>
-
-<h5>Lua &amp; Luarocks</h5>
-
-<p>Install Lua and its package manager.</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>brew install lua luarocks
+<p>Install Lua&#39;s package manager.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>brew install luarocks --with-luajit
 </code></pre></div>
 <h5>MySql</h5>
 
@@ -93,22 +66,25 @@ nginx version: ngx_openresty/1.4.3.3
 
 <ul>
 <li><p>Install MySql server and its header files</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>brew install mysql
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>brew install mysql
 </code></pre></div>
 <p>Ensure that it is installed:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>mysql --version
-mysql  Ver 14.14 Distrib 5.6.13, <span class="k">for </span>osx10.9 <span class="o">(</span>x86_64<span class="o">)</span> using  EditLine wrapper
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>mysql --version
+mysql  Ver 14.14 Distrib 5.6.21, <span class="k">for</span> osx10.10 <span class="o">(</span>x86_64<span class="o">)</span> using  EditLine wrapper
 </code></pre></div>
 <p>You may optionally want to start it automatically upon login, if so:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>cp /usr/local/Cellar/mysql/MYSQL-VERSION/homebrew.mxcl.mysql.plist ~/Library/LaunchAgents/
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
 </code></pre></div>
 <p>To launch it immediately without rebooting your box:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 </code></pre></div></li>
 <li><p>Install LuaDBI</p>
 
 <p>Now that you have MySql installed with the header files, proceed to install LuaDBI for MySql:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash">luarocks install luadbi-mysql
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">luarocks install luadbi-mysql
+</code></pre></div>
+<p>You may need to specify where to find the MySQL header files, like so:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">luarocks install luadbi-mysql <span class="nv">MYSQL_INCDIR</span><span class="o">=</span>/usr/local/opt/mysql/include/mysql
 </code></pre></div>
 <blockquote>
 <p>This additional driver is not needed by OpenResty since it has its own embedded driver. LuaDBI is used by Gin to run the console and the migrations.</p>
@@ -121,48 +97,89 @@ mysql  Ver 14.14 Distrib 5.6.13, <span class="k">for </span>osx10.9 <span class=
 
 <ul>
 <li><p>Install PostgreSql server and its header files</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>brew install postgresql
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>brew install postgresql
 </code></pre></div>
 <p>Ensure that it is installed:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ $ </span>psql --ver
-psql <span class="o">(</span>PostgreSQL<span class="o">)</span> 9.3.1
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>psql --ver
+psql <span class="o">(</span>PostgreSQL<span class="o">)</span> 9.3.5
+</code></pre></div>
+<p>You may optionally want to start it automatically upon login, if so:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
+</code></pre></div>
+<p>To launch it immediately without rebooting your box:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
 </code></pre></div>
 <p>Try to login with the default <code>postgres</code> role:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>psql -U postgres
-psql <span class="o">(</span>9.3.1<span class="o">)</span>
-Type <span class="s2">&quot;help&quot;</span> <span class="k">for </span>help.
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>psql -U postgres
+psql <span class="o">(</span>9.3.5<span class="o">)</span>
+Type <span class="s2">&quot;help&quot;</span> <span class="k">for</span> help.
 
 <span class="nv">postgres</span><span class="o">=</span><span class="c">#</span>
 </code></pre></div>
 <p>If previous instruction returns an error because your database isn&#39;t initialized yet, just issue the command:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash">initdb /usr/local/var/postgres
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">initdb /usr/local/var/postgres
 </code></pre></div>
 <p>If trying to login with the default user returns the error <code>psql: FATAL:  role &quot;postgres&quot; does not exist</code>, then simply create the default role:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>createuser -s postgres
-</code></pre></div>
-<p>You may optionally want to start it automatically upon login, if so:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>cp /usr/local/Cellar/mysql/POSTGRESQL-VERSION/homebrew.mxcl.postgresql.plist ~/Library/LaunchAgents/
-</code></pre></div>
-<p>To launch it immediately without rebooting your box:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>createuser -s postgres
 </code></pre></div></li>
 <li><p>Install LuaDBI</p>
 
 <p>Now that you have MySql installed with the header files, proceed to install LuaDBI for PostgreSql:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash">luarocks install luadbi-postgresql
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">luarocks install luadbi-postgresql
 </code></pre></div>
 <blockquote>
 <p>This additional driver is not needed by OpenResty since it has its own embedded driver. LuaDBI is used by Gin to run the console and the migrations.</p>
 </blockquote></li>
 </ul>
 
+<h5>OpenResty</h5>
+
+<p>Gin runs on <a href="http://openresty.org/">OpenResty</a>, a customized bundle of <a href="http://nginx.org/">Nginx</a>.</p>
+
+<ul>
+<li><p>Install OpenResty</p>
+
+<p>Go to <a href="http://openresty.org/#Download">OpenResty</a> in the downloads section and grab the latest Mainline release. Then:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>wget http://openresty.org/download/ngx_openresty-<span class="o">{</span>VERSION<span class="o">}</span>.tar.gz
+<span class="nv">$ </span>tar zxvf ngx_openresty-<span class="o">{</span>VERSION<span class="o">}</span>.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>ngx_openresty-<span class="o">{</span>VERSION<span class="o">}</span>/
+<span class="nv">$ </span>./configure <span class="se">\</span>
+    --with-cc-opt<span class="o">=</span><span class="s2">&quot;-I/usr/local/Cellar/pcre/{PCRE-VERSION}/include&quot;</span> <span class="se">\</span>
+    --with-ld-opt<span class="o">=</span><span class="s2">&quot;-L/usr/local/Cellar/pcre/{PCRE-VERSION}/lib&quot;</span> <span class="se">\</span>
+    --with-luajit
+<span class="nv">$ </span>make
+<span class="nv">$ </span>make install
+</code></pre></div>
+<blockquote>
+<p>Note: Ensure to properly substitute <code>{VERSION}</code> and <code>{PCRE-VERSION}</code> with OpenResty and PCRE versions respectively.</p>
+</blockquote>
+
+<p>If you plan to use PostgreSQL, then you need to have PostgreSQL already installed and
+the configure step needs to provide the additional option <code>--with-http_postgres_module</code>:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./configure <span class="se">\</span>
+    --with-cc-opt<span class="o">=</span><span class="s2">&quot;-I/usr/local/Cellar/pcre/{PCRE-VERSION}/include&quot;</span> <span class="se">\</span>
+    --with-ld-opt<span class="o">=</span><span class="s2">&quot;-L/usr/local/Cellar/pcre/{PCRE-VERSION}/lib&quot;</span> <span class="se">\</span>
+    --with-http_postgres_module <span class="se">\</span>
+    --with-luajit
+</code></pre></div></li>
+<li><p>Configure the PATH to OpenResty</p>
+
+<p>Assuming you have installed OpenResty into <code>/usr/local/openresty</code> (this is the default), make the nginx executable of your OpenResty installation available in the PATH environment, appending at the end of <code>~/.bash_profile</code>:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>/usr/local/openresty/nginx/sbin:<span class="nv">$PATH</span>
+</code></pre></div></li>
+<li><p>Check to see if OpenResty got successfully installed (you might need to <code>source ~/.bash_profile</code> or just restart the terminal for this to work):</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>nginx -v
+nginx version: openresty/1.7.4.1
+</code></pre></div></li>
+</ul>
+
 <h5>Gin</h5>
 
 <p>To install the latest Gin, issue the command:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>luarocks install --server<span class="o">=</span>http://gin.io/repo gin
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>luarocks install --server<span class="o">=</span>http://gin.io/repo gin
 </code></pre></div>
 <p>Check if the Gin client got correctly installed:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gin
 
            /++++/:
            NNNNNmm
@@ -186,7 +203,7 @@ Type <span class="s2">&quot;help&quot;</span> <span class="k">for </span>help.
    <span class="sb">`</span>hNNNNNMMMMMMMMNNmNNNy<span class="sb">`</span>
     ./osyhhddddddhhyss+:<span class="sb">`</span>
 
-GIN v0.1, a JSON-API web framework.
+GIN v0.1.4, a JSON-API web framework.
 
 Usage: gin COMMAND <span class="o">[</span>ARGS<span class="o">]</span>
 

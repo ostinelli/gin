@@ -9,8 +9,8 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 
-      <link rel="stylesheet" href="../assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
-      <script src="../assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+      <link rel="stylesheet" href="../assets/application-1359763b6d352d2ceadd1d7e5ce63c2a.css">
+      <script src="../assets/application-dfb7ed62b2c9fe2bb66c4adc6a003717.js"></script>
   </head>
 
   <body>
@@ -39,7 +39,7 @@
       <h1>Application Files</h1>
 
 <p>A greenfield <code>demo</code> application has the following structure:</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">-- demo
+<div class="highlight"><pre><code class="language-text" data-lang="text">-- demo
     |-- app
         |-- controllers
             |-- 1
@@ -91,7 +91,7 @@
 <h6><code>application.lua</code></h6>
 
 <p>This file is currently used only to define your application name and version. The application name is used to define the <code>Accept</code> header used in <a href="../docs/api_versioning.html">API versioning</a>. Here&#39;s what a normal file looks like:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">Application</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">Application</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">demo&quot;</span><span class="p">,</span>
     <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">0.0.1&quot;</span>
 <span class="p">}</span>
@@ -103,7 +103,7 @@
 <h6><code>nginx.conf</code></h6>
 
 <p>This file will be used to dinamically generate the file that will be used by an instance of OpenResty&#39;s <code>nginx</code>. It contains the necessary code to make Gin work, but can be customized at will like a normal <code>nginx.conf</code> file (for example, to add SSL support).</p>
-<div class="highlight"><pre><code class="text language-text" data-lang="text">pid tmp/{{GIN_ENV}}-nginx.pid;
+<div class="highlight"><pre><code class="language-text" data-lang="text">pid tmp/{{GIN_ENV}}-nginx.pid;
 
 # This number should be at maxium the number of CPU on the server
 worker_processes 4;
@@ -157,7 +157,7 @@ http {
 <h6><code>settings.lua</code></h6>
 
 <p>This file defines the Gin environments, and the settings to be used for every one of them. By default, Gin defines three environments: <code>development</code>, <code>test</code> and <code>production</code>. This is what a basic file looks like:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Settings</span> <span class="o">=</span> <span class="p">{}</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Settings</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="n">Settings</span><span class="p">.</span><span class="n">development</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">code_cache</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>

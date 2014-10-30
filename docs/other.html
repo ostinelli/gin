@@ -9,8 +9,8 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 
-      <link rel="stylesheet" href="../assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
-      <script src="../assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+      <link rel="stylesheet" href="../assets/application-1359763b6d352d2ceadd1d7e5ce63c2a.css">
+      <script src="../assets/application-dfb7ed62b2c9fe2bb66c4adc6a003717.js"></script>
   </head>
 
   <body>
@@ -41,7 +41,7 @@
 <h5>The Gin object</h5>
 
 <p>In your application, <code>Gin</code> exposes some attributes you might need. After you&#39;ve required it:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Gin</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.core.gin&#39;</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Gin</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.core.gin&#39;</span>
 </code></pre></div>
 <ul>
 <li><code>Gin.env</code>: returns the current environment (<code>development</code>, <code>test</code>, <code>production</code>, or any other environment you may be running Gin in)</li>
@@ -52,7 +52,7 @@
 <h5>JSON</h5>
 
 <p>If you need to manually encode/decode JSON, you can easily do so by first requiring <code>cjson</code>:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">json</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">cjson&#39;</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">json</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">cjson&#39;</span>
 </code></pre></div>
 <ul>
 <li>to encode: <code>json.encode(table)</code></li>
@@ -64,13 +64,13 @@
 <h5>Running in environments</h5>
 
 <p>To run Gin in an environment different than <code>development</code> (the default), ensure this environment has been defined where appropriate (at least in <code>./config/settings.lua</code>) and run:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ GIN_ENV</span><span class="o">={</span>environment<span class="o">}</span> gin start
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ GIN_ENV</span><span class="o">={</span>environment<span class="o">}</span> gin start
 </code></pre></div>
 <p>For instance, to run Gin in production:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ GIN_ENV</span><span class="o">=</span>production gin start
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ GIN_ENV</span><span class="o">=</span>production gin start
 </code></pre></div>
 <p>To stop:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ GIN_ENV</span><span class="o">={</span>environment<span class="o">}</span> gin stop
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ GIN_ENV</span><span class="o">={</span>environment<span class="o">}</span> gin stop
 </code></pre></div>
     </div>
 

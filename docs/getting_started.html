@@ -9,8 +9,8 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 
-      <link rel="stylesheet" href="../assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
-      <script src="../assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+      <link rel="stylesheet" href="../assets/application-1359763b6d352d2ceadd1d7e5ce63c2a.css">
+      <script src="../assets/application-dfb7ed62b2c9fe2bb66c4adc6a003717.js"></script>
   </head>
 
   <body>
@@ -39,10 +39,10 @@
       <h1>Getting Started</h1>
 
 <p>Ready to start your first Gin app? First, move to a workspace directory:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cd</span> ~/workspace
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cd</span> ~/workspace
 </code></pre></div>
 <p>Create a new Gin app called <code>demo</code>:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin new demo
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gin new demo
 Creating app demo...
   created file demo/spec/models/.gitkeep
   created file demo/app/models/.gitkeep
@@ -61,21 +61,21 @@ Creating app demo...
   created file demo/config/routes.lua
 </code></pre></div>
 <p>A new <code>hello world</code> app has been created for you. CD into the <code>demo</code> directory:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cd </span>demo
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cd </span>demo
 </code></pre></div>
 <p>The greenfield application just created for you comes with a simple controller and its test. You can run the test with
 <a href="http://olivinelabs.com/busted/">Busted</a>, the test library that is already included in Gin. To run all the tests for your application:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>busted
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>busted
 
 ●
-1 success / 0 failures / 0 pending : 0.039959 seconds.
+<span class="m">1</span> success / <span class="m">0</span> failures / <span class="m">0</span> pending : 0.039959 seconds.
 </code></pre></div>
 <p>We can now start up our <code>demo</code> application. Let&#39;s do so:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin start
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gin start
 Gin app in development was succesfully started on port 7200.
 </code></pre></div>
 <p>Open up the browser and point it to <a href="http://localhost:7200/">http://localhost:7200/</a>. You should see an error message:</p>
-<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
     <span class="nx">code</span><span class="o">:</span> <span class="mi">101</span><span class="p">,</span>
     <span class="nx">message</span><span class="o">:</span> <span class="s2">&quot;Invalid Accept header format.&quot;</span>
 <span class="p">}</span>
@@ -85,7 +85,7 @@ Gin app in development was succesfully started on port 7200.
 <p>It is however very practical for developers to play around with their API in a browser. To support this, Gin comes with an <a href="../docs/api_console.html">API console</a> that can be accessed in a browser at the address <a href="http://localhost:7200/ginconsole">http://localhost:7200/ginconsole</a>.</p>
 
 <p>Try it out now: open up the API console, then click on the <code>HIT</code> button. You should now see the Gin <code>hello world</code> of your <code>demo</code> application, in the response body:</p>
-<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
   <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Hello world from Gin!&quot;</span>
 <span class="p">}</span>
 </code></pre></div>

@@ -9,8 +9,8 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 
-      <link rel="stylesheet" href="../assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
-      <script src="../assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+      <link rel="stylesheet" href="../assets/application-1359763b6d352d2ceadd1d7e5ce63c2a.css">
+      <script src="../assets/application-dfb7ed62b2c9fe2bb66c4adc6a003717.js"></script>
   </head>
 
   <body>
@@ -41,7 +41,7 @@
 <p>As part of your application&#39;s default initializers, a <code>./config/errors.lua</code> file has been generated for you.</p>
 
 <p>This is what a simple error file looks like:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Errors</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">Errors</span> <span class="o">=</span> <span class="p">{</span>
     <span class="p">[</span><span class="mi">1000</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">status</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">Invalid request.&quot;</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s">X-Header&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">header&quot;</span> <span class="p">}</span> <span class="p">},</span>
 <span class="p">}</span>
 
@@ -58,10 +58,10 @@ an error, where:</p>
 </ul>
 
 <p>From a controller, raising these errors is as simple as calling:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">self</span><span class="p">:</span><span class="n">raise_error</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">self</span><span class="p">:</span><span class="n">raise_error</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
 </code></pre></div>
 <p>As per this example, this will return a HTTP status <code>400</code>, with the specified headers and the JSON body:</p>
-<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
     <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">1000</span><span class="p">,</span>
     <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Invalid request.&quot;</span>
 <span class="p">}</span>
@@ -73,31 +73,31 @@ an error, where:</p>
 <h5>Gin error responses</h5>
 
 <p>If no <code>Accept</code> header is provided by a client, Gin will respond with a <code>412</code> HTTP status and a JSON body specifying the following error:</p>
-<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
     <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
     <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Accept header not set.&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>If an invalid <code>Accept</code> header is provided by a client, Gin will respond with a <code>412</code> HTTP status and a JSON body specifying the following error:</p>
-<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
     <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">101</span><span class="p">,</span>
     <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Invalid Accept header format.&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>If the API version specified by the client is not supported by your application, Gin will respond with a <code>412</code> HTTP status and a JSON body specifying the following error:</p>
-<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
     <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">102</span><span class="p">,</span>
     <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Unsupported version specified in the Accept header.&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>If the JSON body provided in a request is invalid, Gin will respond with a <code>400</code> HTTP status and a JSON body specifying the following error:</p>
-<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
     <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">103</span><span class="p">,</span>
     <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Could not parse JSON in body.&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>If the JSON body provided in a request is not a JSON hash, Gin will respond with a <code>400</code> HTTP status and a JSON body specifying the following error:</p>
-<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
     <span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">104</span><span class="p">,</span>
     <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;Body should be a JSON hash.&quot;</span>
 <span class="p">}</span>

@@ -9,8 +9,8 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 
-      <link rel="stylesheet" href="./assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
-      <script src="./assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+      <link rel="stylesheet" href="./assets/application-1359763b6d352d2ceadd1d7e5ce63c2a.css">
+      <script src="./assets/application-dfb7ed62b2c9fe2bb66c4adc6a003717.js"></script>
   </head>
 
   <body>
@@ -47,7 +47,7 @@ called <a href="http://openresty.org/">OpenResty</a> and it&#39;s entirely writt
 For those not familiar with Lua, don&#39;t let that scare you away: Lua is really easy to use, very fast and simple to get started with.</p>
 
 <p>For instance, this is what a simple Gin controller looks like:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">InfoController</span> <span class="o">=</span> <span class="p">{}</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">InfoController</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="k">function</span> <span class="nf">InfoController</span><span class="p">:</span><span class="n">whoami</span><span class="p">()</span>
     <span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="p">{</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">gin&#39;</span> <span class="p">}</span>

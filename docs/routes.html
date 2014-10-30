@@ -9,8 +9,8 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 
-      <link rel="stylesheet" href="../assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
-      <script src="../assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+      <link rel="stylesheet" href="../assets/application-1359763b6d352d2ceadd1d7e5ce63c2a.css">
+      <script src="../assets/application-dfb7ed62b2c9fe2bb66c4adc6a003717.js"></script>
   </head>
 
   <body>
@@ -39,7 +39,7 @@
       <h1>Routes</h1>
 
 <p>Routes for your application are defined in the file <code>./config/routes.lua</code>. A very simple route file that exposes a <code>user</code> resource looks like this:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">routes</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.core.routes&#39;</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">routes</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.core.routes&#39;</span>
 
 <span class="c1">-- define version</span>
 <span class="kd">local</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">routes</span><span class="p">.</span><span class="n">version</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -54,19 +54,19 @@
 <span class="k">return</span> <span class="n">routes</span>
 </code></pre></div>
 <p>Let&#39;s see what these lines do. The first line specifies a container for version <code>1</code> of your routes:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">routes</span><span class="p">.</span><span class="n">version</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">routes</span><span class="p">.</span><span class="n">version</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
 <blockquote>
 <p>Gin require an integer number to define a version, as these routes are defined for major versions only. If you need to provide support for minor versions, it is possible to do so in <a href="../docs/controllers.html">controllers</a>.</p>
 </blockquote>
 
 <p>The other lines specify HTTP action routes specific to version <code>1</code>. For example:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">index&quot;</span> <span class="p">})</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">index&quot;</span> <span class="p">})</span>
 </code></pre></div>
 <p>This line routes all HTTP <code>GET</code> requests to <code>/users</code> to the action <code>index</code> of the controller <code>users_controller.lua</code>, whose complete path is <code>./app/controllers/1/users_controller.lua</code> (see <a href="../docs/api_versioning.html">API Versioning</a> for additional information on controller paths).</p>
 
 <p>If you need to provide support for multiple major versions, all you have to do is add multiple versions and build routes out of them, like so:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">routes</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.core.routes&#39;</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">routes</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">gin.core.routes&#39;</span>
 
 <span class="c1">-- define version 1</span>
 <span class="kd">local</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">routes</span><span class="p">.</span><span class="n">version</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -90,21 +90,21 @@
 <h5>Named routes</h5>
 
 <p>Named routes are supported, for instance:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users/:id&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">show&quot;</span> <span class="p">})</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users/:id&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">users&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">show&quot;</span> <span class="p">})</span>
 </code></pre></div>
 <p>This line routes all HTTP <code>GET</code> requests to <code>/users/{id}</code> to the action <code>show</code> of the controller <code>users_controller.lua</code>.</p>
 
 <p>Inside of the controller, the named parameter <code>:id</code> will be available as <code>self.params.id</code>. For example, in a <code>GET</code> request to <code>/users/gin</code>, the value of <code>self.params.id</code> in the controller&#39;s action <code>show</code> will be <code>gin</code>.</p>
 
 <p>Nested named routes are possible, for instance:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users/:user_id/messages/:id&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">messages&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">show&quot;</span> <span class="p">})</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/users/:user_id/messages/:id&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">messages&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">show&quot;</span> <span class="p">})</span>
 </code></pre></div>
 <p>This line will expose in the <code>show</code> action of the <code>messages_controller.lua</code> the two nested routes parameters <code>self.params.user_id</code> and <code>self.params.id</code>.</p>
 
 <h5>Patterns</h5>
 
 <p><a href="http://www.lua.org/pil/20.2.html">Lua patterns</a> are supported. For instance:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/pages/(.*)&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">pages&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">show&quot;</span> <span class="p">})</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">v1</span><span class="p">:</span><span class="n">GET</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">/pages/(.*)&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">controller</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">pages&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">show&quot;</span> <span class="p">})</span>
 </code></pre></div>
 <p>This will match all HTTP <code>GET</code> requests done to <code>/pages/*</code>. The captured portion of the route will be available in the <code>show</code> action of the controller <code>pages_controller.lua</code> as <code>self.params[1]</code>.</p>
 

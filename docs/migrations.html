@@ -9,8 +9,8 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 
-      <link rel="stylesheet" href="../assets/application-6f2e77e84ad9065a0feadc82b880cd42.css">
-      <script src="../assets/application-2079ecccecce249e09f2a3ae08342e79.js"></script>
+      <link rel="stylesheet" href="../assets/application-1359763b6d352d2ceadd1d7e5ce63c2a.css">
+      <script src="../assets/application-dfb7ed62b2c9fe2bb66c4adc6a003717.js"></script>
   </head>
 
   <body>
@@ -41,12 +41,12 @@
 <p>Gin implements a migration engine to help you handle the evolution of your databases. It currently only supports the SQL databases available in Gin (see <a href="../docs/models.html">models</a>).</p>
 
 <p>To create a new migration:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin generate migration
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gin generate migration
 Created new migration file
   db/migrations/20131107134407.lua
 </code></pre></div>
 <p>The migration name is just the timestamp of the moment the migration file was created. Open up the newly generated migration file:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">SqlMigration</span> <span class="o">=</span> <span class="p">{}</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">SqlMigration</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="c1">-- specify the database used in this migration (needed by the Gin migration engine)</span>
 <span class="c1">-- SqlMigration.db = require &#39;db.mysql&#39;</span>
@@ -70,7 +70,7 @@ Created new migration file
 </ul>
 
 <p>The following example migration file shows the creation of a <code>users</code> table, and the rollback of the migration which drops the table:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">SqlMigration</span> <span class="o">=</span> <span class="p">{}</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">SqlMigration</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="n">SqlMigration</span><span class="p">.</span><span class="n">db</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">db.mysql&#39;</span>
 
@@ -99,7 +99,7 @@ Created new migration file
 </blockquote>
 
 <p>The corresponding <code>SqlMigration.up</code> method when using PostgreSQL is:</p>
-<div class="highlight"><pre><code class="lua language-lua" data-lang="lua"><span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="p">[</span><span class="o">...</span><span class="p">]</span>
 
 <span class="k">function</span> <span class="nc">SqlMigration</span><span class="p">.</span><span class="nf">up</span><span class="p">()</span>
     <span class="n">SqlMigration</span><span class="p">.</span><span class="n">db</span><span class="p">:</span><span class="n">execute</span><span class="p">(</span><span class="s">[[</span>
@@ -115,7 +115,7 @@ Created new migration file
 <span class="p">[</span><span class="o">...</span><span class="p">]</span>
 </code></pre></div>
 <p>To run the migration:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin migrate
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gin migrate
 Migrating up in development <span class="nv">environment</span>
 <span class="o">==</span>&gt; Successfully applied migration: 20131107134407
 </code></pre></div>
@@ -126,7 +126,7 @@ Migrating up in development <span class="nv">environment</span>
 <p>You will now have the database <code>demo_development</code>.</p>
 
 <p>To rollback a single migration:</p>
-<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>gin migrate rollback
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gin migrate rollback
 Rolling back one migration in development environment
 &lt;<span class="o">==</span> Successfully rolled back migration: 20131107134407
 </code></pre></div>
