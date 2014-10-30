@@ -85,7 +85,13 @@ function SqlCommonOrm:where(attrs, options)
     -- init sql
     local sql = {}
     -- start
-    tappend(sql, "SELECT * FROM ")
+    if not options.select then
+	    tappend(sql, "SELECT * FROM ")
+    else
+	    tappend(sql, "SELECT ")
+	    tappend(sql, tconcat(options.select, ","))
+	    tappend(sql, " FROM ")
+    end
     tappend(sql, self.table_name)
     -- where
     build_where(self, sql, attrs)

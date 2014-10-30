@@ -51,6 +51,9 @@ function SqlOrm.define_model(sql_database, table_name)
         if options and options.order then
             merged_options.order = options.order
         end
+	if options and options.select then
+            merged_options.select = options.select
+	end
 
         return GinModel.where(attrs, merged_options)[1]
     end
