@@ -26,7 +26,7 @@ Gin already provides:
 
  * [API Versioning](http://gin.io/docs/api_versioning.html) embedded in the framework
  * [Routes](http://gin.io/docs/routes.html) with named and pattern routes support
- * [Controllers](/docs/controllers.html)
+ * [Controllers](http://gin.io/docs/controllers.html)
  * [Models](http://gin.io/docs/models.html) and a MySql ORM
  * [Migrations](http://gin.io/docs/migrations.html) for SQL engines
  * [Test helpers](http://gin.io/docs/testing.html) and wrappers
