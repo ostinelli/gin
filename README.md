@@ -36,3 +36,31 @@ Gin already provides:
  * A client to create, start and stop your applications
 
 Get started now! Please refer to the official [gin.io](http://gin.io) website for documentation.
+
+
+#### Contributing
+So you want to contribute? That's great!
+Please follow the guidelines below. It will make it easier to get merged in.
+
+Before implementing a new feature, please submit a ticket to discuss what you intend to do.
+Your feature might already be in the works, or an alternative implementation might have already been discussed.
+
+Every pull request should have its own topic branch.
+In this way, every additional adjustments to the original pull request might be done easily, and
+squashed with `git rebase -i`. The updated branch will be visible in the same pull request, so
+there will be no need to open new pull requests when there are changes to be applied.
+
+Do not commit to master in your fork.
+Provide a clean branch without merge commits.
+
+Ensure to include proper testing. To test gin you simply have to be in the project's root directory
+and issue:
+
+```
+$ busted
+
+●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ○
+195 successes / 0 failures / 0 pending : 0.156489 seconds.
+```
+
+There will be no merges without a clean build.
