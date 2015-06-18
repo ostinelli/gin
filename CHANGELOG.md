@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### 0.1.5:
+ * Add --trace option
+ * Freeze dependencies
+
 ### 0.1.4:
  * Bug fixes
 
