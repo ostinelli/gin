@@ -2,35 +2,42 @@ commands = {}
 modules = {}
 repository = {
    gin = {
-      ['0.1-1'] = {
+      ["0.1-1"] = {
          {
             arch = "all"
          }, {
             arch = "rockspec"
          }
       },
-      ['0.1.1-1'] = {
+      ["0.1.1-1"] = {
          {
             arch = "all"
          }, {
             arch = "rockspec"
          }
       },
-      ['0.1.2-1'] = {
+      ["0.1.2-1"] = {
          {
             arch = "all"
          }, {
             arch = "rockspec"
          }
       },
-      ['0.1.3-1'] = {
+      ["0.1.3-1"] = {
          {
             arch = "all"
          }, {
             arch = "rockspec"
          }
       },
-      ['0.1.4-1'] = {
+      ["0.1.4-1"] = {
+         {
+            arch = "all"
+         }, {
+            arch = "rockspec"
+         }
+      },
+      ["0.1.5-1"] = {
          {
             arch = "all"
          }, {
