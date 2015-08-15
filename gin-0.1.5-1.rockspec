@@ -13,7 +13,7 @@ description = {
 }
 
 dependencies = {
-    "lua = 5.2",
+    "lua = 5.1",
     "ansicolors = 1.0.2-3",
     "busted = 1.11.1",
     "lua-cjson = 2.1.0-1",
