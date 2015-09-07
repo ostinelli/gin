@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/ostinelli/gin.png?branch=master)](https://travis-ci.org/ostinelli/gin)
+[![License](http://img.shields.io/badge/License-MIT-red.svg)](LICENSE)
+
 # GIN JSON-API framework
 
 Gin is an JSON-API framework, currently in its early stage.

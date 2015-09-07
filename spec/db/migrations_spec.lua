@@ -11,11 +11,13 @@ CREATE TABLE schema_migrations (
 
 describe("Migrations", function()
     before_each(function()
-        migrations = require 'gin.db.migrations'
+        helper_common = require 'gin.helpers.common'
 
-        migrations.migration_modules = function()
+        helper_common.module_names_in_path = function(path)
             return { 'migration/1', 'migration/2' }
         end
+
+        migrations = require 'gin.db.migrations'
 
         stub(_G, "pp_to_file")
 
@@ -71,6 +73,7 @@ describe("Migrations", function()
 
     after_each(function()
         migrations = nil
+        helper_common = nil
         package.loaded['gin.db.migrations'] = nil
         package.loaded['migration/1'] = nil
         package.loaded['migration/2'] = nil
@@ -136,6 +139,7 @@ describe("Migrations", function()
         end)
 
         describe("when the database does not exist", function()
+            local called_one
             before_each(function()
                 called_one = false
                 package.loaded['migration/1'].db.tables = function(...)
@@ -245,7 +249,7 @@ describe("Migrations", function()
                 end)
 
                 it("blows up", function()
-                    local ok, err = pcall(function() return migrations.down() end)
+                    local ok, err = pcall(migrations.down)
 
                     assert.are.equal(false, ok)
                     assert.are.equal(true, string.find(err, "no database") > 0)

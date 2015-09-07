@@ -134,6 +134,7 @@ describe("Integration", function()
 
         it("calls the server with the correct parameters", function()
             local request_body_arg
+            local ltn12 = require 'ltn12'
             ltn12.source.string = function(request_body)
                 request_body_arg = request_body
                 return request_body

@@ -1,10 +1,19 @@
 require 'spec.spec_helper'
 
 -- gin
-local Request = require 'gin.core.request'
-
 
 describe("Request", function()
+
+    local ngx, Request
+
+    setup(function()
+        Request = require 'gin.core.request'
+    end)
+
+    teardown(function()
+        Request = nil
+    end)
+
     before_each(function()
         ngx = {
             var = {
@@ -67,7 +76,7 @@ describe("Request", function()
             it("raises an error", function()
                 ngx.req.get_body_data = function() return "not-json" end
 
-                ok, err = pcall(function() return Request.new(ngx) end)
+                local ok, err = pcall(function() return Request.new(ngx) end)
 
                 assert.are.equal(false, ok)
                 assert.are.equal(103, err.code)
@@ -78,7 +87,7 @@ describe("Request", function()
             it("raises an error", function()
                 ngx.req.get_body_data = function() return'["one", "two"]' end
 
-                ok, err = pcall(function() return Request.new(ngx) end)
+                local ok, err = pcall(Request.new, ngx)
 
                 assert.are.equal(false, ok)
                 assert.are.equal(104, err.code)
