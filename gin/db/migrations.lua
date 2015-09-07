@@ -75,7 +75,7 @@ local function remove_version(db, version)
 end
 
 local function version_from(module_name)
-    return string.match(module_name, ".*/(.*)")
+    return string.match(module_name, ".*/([^_$]*)")
 end
 
 local function dump_schema_for(db)
