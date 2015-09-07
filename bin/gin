@@ -59,7 +59,7 @@ end
 if arg[1] == 'new' and arg[2] then application.new(arg[2])
 elseif arg[1] == 'start' then launcher.start()
 elseif arg[1] == 'stop' then launcher.stop()
-elseif (arg[1] == 'generate' or arg[1] == 'g') and arg[2] == 'migration' then migrations.new()
+elseif (arg[1] == 'generate' or arg[1] == 'g') and arg[2] == 'migration' then migrations.new(arg[3])
 elseif arg[1] == 'migrate' and arg[2] == nil then migrations.up()
 elseif arg[1] == 'migrate' and arg[2] == "rollback" then migrations.down()
 elseif arg[1] == 'console' or arg[1] == 'c' then console.start()
