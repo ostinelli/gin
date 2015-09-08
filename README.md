@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ostinelli/gin.svg?branch=master)](https://travis-ci.org/ostinelli/gin)
+
 # GIN JSON-API framework
 
 Gin is an JSON-API framework, currently in its early stage.
