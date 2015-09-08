@@ -53,12 +53,20 @@
 <p>To get started:</p>
 
 <ul>
-<li>Select your method from the select box (<code>GET</code>, <code>POST</code>, ...)</li>
-<li>Set the full url of the server you want to play with</li>
-<li>Set the API version</li>
-<li>Set the request headers (if any)</li>
-<li>Set the request body (must be a valid JSON)</li>
-<li>Click on the <code>HIT</code> button to see the response</li>
+<li><p>Enable the console for your environment in your project&#39;s <code>config/settings.lua</code> file:</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">Settings</span><span class="p">.</span><span class="n">development</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">code_cache</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">7200</span><span class="p">,</span>
+    <span class="n">expose_api_console</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div></li>
+<li><p>Access the console at the address <code>/ginconsole</code></p></li>
+<li><p>Select your method from the select box (<code>GET</code>, <code>POST</code>, ...)</p></li>
+<li><p>Set the full url of the server you want to play with</p></li>
+<li><p>Set the API version</p></li>
+<li><p>Set the request headers (if any)</p></li>
+<li><p>Set the request body (must be a valid JSON)</p></li>
+<li><p>Click on the <code>HIT</code> button to see the response</p></li>
 </ul>
 
 <p>Please note that request headers should be specified one per line, for example:</p>

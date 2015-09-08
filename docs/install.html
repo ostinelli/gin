@@ -50,15 +50,19 @@ If you don&#39;t have it installed, you can easily install it by running:</p>
 </code></pre></div>
 <h5>PCRE, Lua &amp; LuaJIT</h5>
 
-<p>Install Perl Compatible Regular Expressions &amp; LuaJIT</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>brew install pcre lua luajit
+<p>Install Lua 5.1 (the version that runs in OpenResty) Perl Compatible Regular Expressions &amp; LuaJIT</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>brew install lua51 luajit pcre
 </code></pre></div>
 <p>Note down the installed version, you&#39;ll need this information in the next step.</p>
 
 <h5>Luarocks</h5>
 
-<p>If running luarocks doesn't produce any results, ensure to install Lua&#39;s package manager.</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>brew install luarocks --with-luajit
+<p>Install Lua&#39;s package manager.</p>
+
+<p>Luarocks is installed by default when installing Lua 5.2 with Homebrew, but since we&#39;re using Lua 5.1 (for compatibility with OpenResty) we need to install it manually. To do so, download the latest Luarocks from the <a href="https://github.com/keplerproject/luarocks/releases">official repository</a> (at the time of the writing, it&#39;s v2.2.2), untar the file and then install it:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./configure
+<span class="nv">$ </span>make build
+<span class="nv">$ </span>make install
 </code></pre></div>
 <h5>MySql</h5>
 
@@ -139,9 +143,9 @@ Type <span class="s2">&quot;help&quot;</span> <span class="k">for</span> help.
 <ul>
 <li><p>Install OpenResty</p>
 
-<p>Go to <a href="http://openresty.org/#Download">OpenResty</a> in the downloads section and grab the latest Mainline release. Then:</p>
+<p>Go to <a href="http://openresty.org/#Download">OpenResty</a> in the downloads section and grab the latest release. Then:</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>wget http://openresty.org/download/ngx_openresty-<span class="o">{</span>VERSION<span class="o">}</span>.tar.gz
-<span class="nv">$ </span>tar zxvf ngx_openresty-<span class="o">{</span>VERSION<span class="o">}</span>.tar.gz
+<span class="nv">$ </span>tar -zxvf ngx_openresty-<span class="o">{</span>VERSION<span class="o">}</span>.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>ngx_openresty-<span class="o">{</span>VERSION<span class="o">}</span>/
 <span class="nv">$ </span>./configure <span class="se">\</span>
     --with-cc-opt<span class="o">=</span><span class="s2">&quot;-I/usr/local/Cellar/pcre/{PCRE-VERSION}/include&quot;</span> <span class="se">\</span>
@@ -169,7 +173,7 @@ the configure step needs to provide the additional option <code>--with-http_post
 </code></pre></div></li>
 <li><p>Check to see if OpenResty got successfully installed (you might need to <code>source ~/.bash_profile</code> or just restart the terminal for this to work):</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>nginx -v
-nginx version: openresty/1.7.4.1
+nginx version: openresty/1.9.3.1
 </code></pre></div></li>
 </ul>
 
