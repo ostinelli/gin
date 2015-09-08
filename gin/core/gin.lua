@@ -8,7 +8,7 @@ local ogetenv = os.getenv
 local Gin = {}
 
 -- version
-Gin.version = '0.1.5'
+Gin.version = '0.2.0'
 
 -- environment
 Gin.env = ogetenv("GIN_ENV") or 'development'
