@@ -307,7 +307,7 @@ describe("Router", function()
             end)
 
             it("doesn't eat up the error", function()
-                ok, err = pcall(function()
+                local ok, err = pcall(function()
                     Router.call_controller(ngx, "controller_name", "action", "params")
                 end)
 
@@ -379,7 +379,7 @@ describe("Router", function()
 
             local request = Request.new(ngx)
 
-            ok, err = pcall(function() return Router.match(request) end)
+            local ok, err = pcall(function() return Router.match(request) end)
 
             assert.are.equal(false, ok)
             assert.are.equal(100, err.code)
@@ -390,7 +390,7 @@ describe("Router", function()
 
             local request = Request.new(ngx)
 
-            ok, err = pcall(function() return Router.match(request) end)
+            local ok, err = pcall(function() return Router.match(request) end)
 
             assert.are.equal(false, ok)
             assert.are.equal(101, err.code)
@@ -401,7 +401,7 @@ describe("Router", function()
 
             local request = Request.new(ngx)
 
-            ok, err = pcall(function() return Router.match(request) end)
+            local ok, err = pcall(function() return Router.match(request) end)
 
             assert.are.equal(false, ok)
             assert.are.equal(102, err.code)

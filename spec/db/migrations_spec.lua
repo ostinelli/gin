@@ -139,6 +139,7 @@ describe("Migrations", function()
         end)
 
         describe("when the database does not exist", function()
+            local called_one
             before_each(function()
                 called_one = false
                 package.loaded['migration/1'].db.tables = function(...)
@@ -248,7 +249,7 @@ describe("Migrations", function()
                 end)
 
                 it("blows up", function()
-                    local ok, err = pcall(function() return migrations.down() end)
+                    local ok, err = pcall(migrations.down)
 
                     assert.are.equal(false, ok)
                     assert.are.equal(true, string.find(err, "no database") > 0)

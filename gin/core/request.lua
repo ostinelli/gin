@@ -48,7 +48,7 @@ function Request:__index(index)
     if out then return out end
 
     if index == 'uri_params' then
-        self.__cache[index] = ngx.req.get_uri_args()
+        self.__cache[index] = self.ngx.req.get_uri_args()
         return self.__cache[index]
 
     else

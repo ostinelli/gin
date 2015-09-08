@@ -39,7 +39,7 @@ describe("Database SQL", function()
 
         describe("when not all the required options are passed", function()
             it("raises an error", function()
-                options = {
+                local options = {
                     adapter = 'mysql',
                     host = "127.0.0.1",
                     user = "root",
@@ -47,7 +47,7 @@ describe("Database SQL", function()
                     pool = 5
                 }
 
-                ok, err = pcall(function() return db.new(options) end)
+                local ok, err = pcall(SqlDatabase.new, options)
                 assert.are.equal(false, ok)
                 assert.are.not_equals(true, string.match(err, "missing required database options: database, port"))
             end)
