@@ -21,7 +21,7 @@ local CommonHelpers = {}
 
 -- try to require
 function CommonHelpers.try_require(module_name, default)
-    local ok, module_or_err = pcall(require, module_name)
+    local ok, module_or_err = pcall(function() return require(module_name) end)
 
     if ok == true then return module_or_err end
 
