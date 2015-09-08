@@ -31,16 +31,16 @@ GIN v]] .. Gin.version .. [[, a JSON-API web framework.
 Usage: gin COMMAND [ARGS] [OPTIONS]
 
 The available gin commands are:
- new [name]             Create a new Gin application
- start                  Starts the Gin server
- stop                   Stops the Gin server
- console                Start a Gin console
- generate migration     Create a new migration
- migrate                Run all migrations that have not been run
- migrate rollback       Rollback one migration
+ new [name]                Create a new Gin application
+ start                     Starts the Gin server
+ stop                      Stops the Gin server
+ console                   Start a Gin console
+ generate migration [name] Create a new migration (name is optional)
+ migrate                   Run all migrations that have not been run
+ migrate rollback          Rollback one migration
 
 Options:
- --trace                Shows additional logs
+ --trace                   Shows additional logs
 ]]
 
 local launcher = require 'gin.cli.launcher'
