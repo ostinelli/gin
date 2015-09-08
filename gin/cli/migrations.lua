@@ -61,7 +61,7 @@ local SqlMigrations = {}
 function SqlMigrations.new(name)
     -- define file path
     local timestamp = os.date("%Y%m%d%H%M%S")
-    local full_file_path = Gin.app_dirs.migrations .. '/' .. timestamp .. '.lua'
+    local full_file_path = Gin.app_dirs.migrations .. '/' .. timestamp .. (name and '_' .. name or '') .. '.lua'
 
     -- create file
     local fw = io.open(full_file_path, "w")

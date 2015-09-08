@@ -11,16 +11,17 @@ local require = require
 local sfind = string.find
 local sgsub = string.gsub
 local smatch = string.match
+local tsort = table.sort
 local ssub = string.sub
 local type = type
 local function tappend(t, v) t[#t+1] = v end
-
+local function desc(a, b) return a > b end
 
 local CommonHelpers = {}
 
 -- try to require
 function CommonHelpers.try_require(module_name, default)
-    local ok, module_or_err = pcall(function() return require(module_name) end)
+    local ok, module_or_err = pcall(require, module_name)
 
     if ok == true then return module_or_err end
 
@@ -97,14 +98,15 @@ function CommonHelpers.included_in_table(t, value)
     return false
 end
 
--- reverse table
-function CommonHelpers.reverse_table(t)
-    local size = #t + 1
-    local reversed = {}
-    for i = 1, #t  do
-        reversed[size - i] = t[i]
+function CommonHelpers.table_order(t, ...)
+    if ... == false then
+        tsort(t, desc)
+    elseif ... and type(...) == 'function' then
+        tsort(t, ...)
+    else
+        tsort(t)
     end
-    return reversed
+    return t
 end
 
 -- pretty print to file
