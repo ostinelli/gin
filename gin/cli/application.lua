@@ -153,6 +153,13 @@ http {
         # Gin runtime
         {{GIN_RUNTIME}}
     }
+
+    # set temp paths
+    proxy_temp_path tmp;
+    client_body_temp_path tmp;
+    fastcgi_temp_path tmp;
+    scgi_temp_path tmp;
+    uwsgi_temp_path tmp;
 }
 ]]
 
