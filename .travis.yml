@@ -1,0 +1,7 @@
+language: c
+sudo: false
+
+branches:
+  only: master
+
+script: none
