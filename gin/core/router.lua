@@ -122,11 +122,12 @@ end
 function Router.call_controller(request, controller_name, action, params)
     -- load matched controller and set metatable to new instance of controller
     local matched_controller = require(controller_name)
+    setmetatable(matched_controller, Controller)
     local controller_instance = Controller.new(request, params)
-    setmetatable(matched_controller, { __index = controller_instance })
+    setmetatable(controller_instance, {__index = matched_controller}) 
 
     -- call action
-    local ok, status_or_error, body, headers = pcall(function() return matched_controller[action](matched_controller) end)
+    local ok, status_or_error, body, headers = pcall(function() return controller_instance[action](controller_instance) end)
 
     local response
 
