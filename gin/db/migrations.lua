@@ -75,7 +75,7 @@ local function remove_version(db, version)
 end
 
 local function version_from(module_name)
-    return string.match(module_name, ".*/(.*)")
+    return string.match(module_name, ".*/([^_$]*)")
 end
 
 local function dump_schema_for(db)
@@ -87,11 +87,11 @@ end
 
 -- get migration modules
 function Migrations.migration_modules()
-    return helpers.module_names_in_path(Gin.app_dirs.migrations)
+    return helpers.table_order(helpers.module_names_in_path(Gin.app_dirs.migrations))
 end
 
 function Migrations.migration_modules_reverse()
-    return helpers.reverse_table(Migrations.migration_modules())
+    return helpers.table_order(helpers.module_names_in_path(Gin.app_dirs.migrations), false)
 end
 
 local function run_migration(direction, module_name)
