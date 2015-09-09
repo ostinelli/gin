@@ -36,7 +36,7 @@ describe("MySqlOrm", function()
 
         describe("when no attrs are specified", function()
             it("raises an error", function()
-                ok, err = pcall(function() return orm:create() end)
+                local ok, err = pcall(function() return orm:create() end)
 
                 assert.are.equal(false, ok)
                 assert.are.equal(true, string.find(err, "no attributes were specified to create new model instance") > 0)
@@ -244,7 +244,7 @@ describe("MySqlOrm", function()
     describe("#update_where", function()
         describe("when no attrs are specified", function()
             it("raises an error", function()
-                ok, err = pcall(function() return orm:update_where() end)
+                local ok, err = pcall(function() return orm:update_where() end)
 
                 assert.are.equal(false, ok)
                 assert.are.equal(true, string.find(err, "no attributes were specified to create new model instance") > 0)

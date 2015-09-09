@@ -426,7 +426,7 @@ describe("SqlOrm", function()
                 end)
 
                 it("returns an error", function()
-                    ok, err = pcall(function() return model:delete() end)
+                    local ok, err = pcall(function() return model:delete() end)
 
                     assert.are.equal(false, ok)
                     assert.are.equal(true, string.find(err, "cannot delete a model without an id") > 0)

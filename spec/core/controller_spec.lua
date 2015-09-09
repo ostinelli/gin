@@ -44,7 +44,7 @@ describe("Controller", function()
 
     describe("#raise_error", function()
         it("raises an error with a code", function()
-            ok, err = pcall(function() controller:raise_error(1000) end)
+            local ok, err = pcall(function() controller:raise_error(1000) end)
 
             assert.are.equal(false, ok)
             assert.are.equal(1000, err.code)
@@ -52,7 +52,7 @@ describe("Controller", function()
 
         it("raises an error with a code and custom attributes", function()
             local custom_attrs = { custom_attr_1 = "1", custom_attr_2 = "2" }
-            ok, err = pcall(function() controller:raise_error(1000, custom_attrs) end)
+            local ok, err = pcall(function() controller:raise_error(1000, custom_attrs) end)
 
             assert.are.equal(false, ok)
             assert.are.equal(1000, err.code)
