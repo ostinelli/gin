@@ -90,6 +90,17 @@ describe("SqlOrm", function()
             it("calls the orm with the correct params", function()
                 Model.create({ first_name = 'roberto', last_name = 'gin' })
                 assert.are.same({ first_name = 'roberto', last_name = 'gin' }, attrs_arg)
+                assert.are.same("id", Model.__id_col)
+            end)
+
+            it("may use table_name .. '_id' as primary key", function()
+                Model = SqlOrm.define_model(MySql, 'users', true)
+                assert.are.same("users_id", Model.__id_col)
+            end)
+
+            it("may use an arbitrary column as primary key", function()
+                Model = SqlOrm.define_model(MySql, 'users', 'my_primary_column')
+                assert.are.same("my_primary_column", Model.__id_col)
             end)
 
             it("calls execute_and_return_last_id with the correct params", function()
@@ -101,6 +112,19 @@ describe("SqlOrm", function()
                 local model = Model.create({ first_name = 'roberto', last_name = 'gin' })
                 assert.are.same({ id = 10, first_name = 'roberto', last_name = 'gin' }, model)
             end)
+
+            it("returns a new model with table name based id", function()
+                Model = SqlOrm.define_model(MySql, 'users', true)
+                local model = Model.create({ first_name = 'roberto', last_name = 'gin' })
+                assert.are.same({ users_id = 10, first_name = 'roberto', last_name = 'gin' }, model)
+            end)
+
+            it("returns a new model with arbitrary id", function()
+                Model = SqlOrm.define_model(MySql, 'users', 'my_primary_column')
+                local model = Model.create({ first_name = 'roberto', last_name = 'gin' })
+                assert.are.same({ my_primary_column = 10, first_name = 'roberto', last_name = 'gin' }, model)
+            end)
+
         end)
 
         describe(".where", function()
