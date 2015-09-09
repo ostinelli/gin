@@ -85,7 +85,7 @@ function SqlOrm.define_model(sql_database, table_name, id_col)
     end
 
     function GinModel:save()
-        local id_col = GinModel.__id_col or table_name .. '_id'
+        local id_col = GinModel.__id_col
         if self[id_col] ~= nil then
             local id = self[id_col]
             self[id_col] = nil
