@@ -86,8 +86,8 @@ function SqlOrm.define_model(sql_database, table_name, id_col)
 
     function GinModel:save()
         local id_col = GinModel.__id_col
-        if self[id_col] ~= nil then
-            local id = self[id_col]
+        local id = self[id_col]
+        if id ~= nil then
             self[id_col] = nil
             local result = GinModel.update_where(self, { [id_col] = id })
             self[id_col] = id
@@ -98,8 +98,10 @@ function SqlOrm.define_model(sql_database, table_name, id_col)
     end
 
     function GinModel:delete()
-        if self.id ~= nil then
-            return GinModel.delete_where({ id = self.id })
+        local id_col = GinModel.__id_col
+        local id = self[id_col]
+        if id ~= nil then
+            return GinModel.delete_where({ [id_col] = id })
         else
             error("cannot delete a model without an id")
         end

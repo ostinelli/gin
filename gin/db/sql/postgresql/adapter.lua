@@ -101,7 +101,7 @@ function PostgreSql.execute_and_return_last_id(options, sql, id_col)
     -- execute query and get last id
     sql = append_to_sql(sql, " RETURNING " .. id_col .. ";")
     local res = db_execute(options, db, sql)
-    return tonumber(res[1].id)
+    return tonumber(res[1][id_col])
 end
 
 return PostgreSql
