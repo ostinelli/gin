@@ -47,7 +47,7 @@ describe("Database SQL", function()
                     pool = 5
                 }
 
-                ok, err = pcall(function() return db.new(options) end)
+                local ok, err = pcall(function() return db.new(options) end)
                 assert.are.equal(false, ok)
                 assert.are.not_equals(true, string.match(err, "missing required database options: database, port"))
             end)

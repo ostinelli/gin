@@ -139,6 +139,7 @@ describe("Migrations", function()
         end)
 
         describe("when the database does not exist", function()
+            local called_one
             before_each(function()
                 called_one = false
                 package.loaded['migration/1'].db.tables = function(...)

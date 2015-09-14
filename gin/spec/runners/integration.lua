@@ -2,6 +2,7 @@
 local http = require 'socket.http'
 local url = require 'socket.url'
 local json = require 'cjson'
+local ltn12 = require 'ltn12'
 
 -- gin
 local Gin = require 'gin.core.gin'

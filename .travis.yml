@@ -14,4 +14,4 @@ before_install:
 
 install: luarocks install *.rockspec --only-deps
 
-script: busted_bootstrap
+script: busted

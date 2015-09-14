@@ -67,7 +67,7 @@ describe("Request", function()
             it("raises an error", function()
                 ngx.req.get_body_data = function() return "not-json" end
 
-                ok, err = pcall(function() return Request.new(ngx) end)
+                local ok, err = pcall(function() return Request.new(ngx) end)
 
                 assert.are.equal(false, ok)
                 assert.are.equal(103, err.code)
@@ -78,7 +78,7 @@ describe("Request", function()
             it("raises an error", function()
                 ngx.req.get_body_data = function() return'["one", "two"]' end
 
-                ok, err = pcall(function() return Request.new(ngx) end)
+                local ok, err = pcall(function() return Request.new(ngx) end)
 
                 assert.are.equal(false, ok)
                 assert.are.equal(104, err.code)
