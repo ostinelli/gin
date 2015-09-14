@@ -124,14 +124,14 @@ local function append_to_sql(sql, append_sql)
 end
 
 -- execute a query and return the last ID
-function PostgreSql.execute_and_return_last_id(options, sql)
+function PostgreSql.execute_and_return_last_id(options, sql, id_col)
     -- connect
     local db = postgresql_connect(options)
     -- execute sql and get last id
-    sql = append_to_sql(sql, " RETURNING id;")
+    sql = append_to_sql(sql, " RETURNING " .. id_col .. ";")
     -- get last id
     local sth, row = db_execute(db, sql)
-    local id = row.id
+    local id = row[id_col]
     -- close
     sth:close()
     postgresql_close(db)

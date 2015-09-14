@@ -5,9 +5,23 @@ local function tappend(t, v) t[#t+1] = v end
 
 local SqlOrm = {}
 
-function SqlOrm.define_model(sql_database, table_name)
+--- Define a model.
+-- The default primary key is set to 'id'
+-- @param sql_database the sql database instance
+-- @param table_name the name of the table to create a lightweight orm mapping for
+-- @param id_col set to true to use table_name .. '_id' as primary key,
+-- set to arbitrary string to use any other column as primary key
+function SqlOrm.define_model(sql_database, table_name, id_col)
     local GinModel = {}
     GinModel.__index = GinModel
+    if true == id_col then
+        id_col = table_name .. '_id'
+    elseif id_col then
+        id_col = tostring(id_col)
+    else
+        id_col = 'id' -- backward compatible default
+    end
+    GinModel.__id_col = id_col
 
     -- init
     local function quote(str)
@@ -23,10 +37,11 @@ function SqlOrm.define_model(sql_database, table_name)
 
     function GinModel.create(attrs)
         local sql = orm:create(attrs)
-        local id = sql_database:execute_and_return_last_id(sql)
+        local id_col = GinModel.__id_col
+        local id = sql_database:execute_and_return_last_id(sql, id_col)
 
         local model = GinModel.new(attrs)
-        model.id = id
+        model[id_col] = id
 
         return model
     end
@@ -70,11 +85,12 @@ function SqlOrm.define_model(sql_database, table_name)
     end
 
     function GinModel:save()
-        if self.id ~= nil then
-            local id = self.id
-            self.id = nil
-            local result = GinModel.update_where(self, { id = id })
-            self.id = id
+        local id_col = GinModel.__id_col
+        local id = self[id_col]
+        if id ~= nil then
+            self[id_col] = nil
+            local result = GinModel.update_where(self, { [id_col] = id })
+            self[id_col] = id
             return result
         else
             return GinModel.create(self)
@@ -82,8 +98,10 @@ function SqlOrm.define_model(sql_database, table_name)
     end
 
     function GinModel:delete()
-        if self.id ~= nil then
-            return GinModel.delete_where({ id = self.id })
+        local id_col = GinModel.__id_col
+        local id = self[id_col]
+        if id ~= nil then
+            return GinModel.delete_where({ [id_col] = id })
         else
             error("cannot delete a model without an id")
         end

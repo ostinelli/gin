@@ -99,17 +99,18 @@ function MySql.execute(options, sql)
     return res
 end
 
--- execute a query and return the last ID
-function MySql.execute_and_return_last_id(options, sql)
+--- Execute a query and return the last ID
+function MySql.execute_and_return_last_id(options, sql, id_col)
     -- get db object
     local db = mysql_connect(options)
     -- execute query
     db_execute(options, db, sql)
     -- get last id
-    local res = db_execute(options, db, "SELECT LAST_INSERT_ID() AS id;")
+    local id_col = id_col
+    local res = db_execute(options, db, "SELECT LAST_INSERT_ID() AS " .. id_col .. ";")
     -- keepalive
     mysql_keepalive(db, options)
-    return tonumber(res[1].id)
+    return tonumber(res[1][id_col])
 end
 
 return MySql

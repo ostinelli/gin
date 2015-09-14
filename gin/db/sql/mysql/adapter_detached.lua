@@ -103,15 +103,15 @@ function MySql.execute(options, sql)
 end
 
 -- execute a query and return the last ID
-function MySql.execute_and_return_last_id(options, sql)
+function MySql.execute_and_return_last_id(options, sql, id_col)
     -- connect
     local db = mysql_connect(options)
     -- execute sql
     local sth, row = db_execute(db, sql)
     sth:close()
     -- get last id
-    local sth, row = db_execute(db, "SELECT BINARY LAST_INSERT_ID() as id;")
-    local id = row.id
+    local sth, row = db_execute(db, "SELECT BINARY LAST_INSERT_ID() AS " .. id_col .. ";")
+    local id = row[id_col]
     -- close
     sth:close()
     mysql_close(db)
