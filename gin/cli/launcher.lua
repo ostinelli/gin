@@ -34,7 +34,7 @@ local function gin_init_databases(gin_init)
             local name = db.adapter.location_for(db.options)
             gin_init = gin_init .. [[
     upstream ]] .. name .. [[ {
-        postgres_server ]] .. db.options.host .. [[:]] .. db.options.port .. [[ dbname=]] .. db.options.database .. [[ user=]] .. db.options.user .. [[ password=]] .. db.options.password .. [[;
+        postgres_server ]] .. (db.options.path and db.options.path or (db.options.host .. [[:]] .. db.options.port)) .. [[ dbname=]] .. db.options.database .. [[ user=]] .. db.options.user .. [[ password=]] .. db.options.password .. [[;
     }
 ]]
         end
